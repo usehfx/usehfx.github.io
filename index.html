@@ -1371,7 +1371,7 @@ async function renderProfile() {
 
     const verifyBtn = document.getElementById('verify-again-btn');
     if (verifyBtn) {
-      verifyBtn.onclick = () => showVerifyModal(currentUser.verifyCode || '000000');
+      verifyBtn.onclick = () => showVerifyModal();
     }
   } catch(err) { c.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`; }
 }
