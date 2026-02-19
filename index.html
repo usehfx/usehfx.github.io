@@ -782,6 +782,7 @@ async function renderMarkets(searchQuery = '') {
 }
 
 // ========== CREATE MARKET ==========
+// ========== CREATE MARKET ==========
 function showCreateMarketModal() {
   if (!currentUser?.verified) { showToast('Verify your email to create markets', 'error'); return; }
   openModal('Create New Market', `
@@ -802,7 +803,9 @@ function showCreateMarketModal() {
             <option value="Events">Events</option>
             <option value="Academics">Academics</option>
             <option value="Misc">Misc</option>
+            <option value="custom">Custom...</option>
           </select>
+          <input type="text" id="cm-custom-category" placeholder="Type custom category..." style="display:none; margin-top:8px;">
         </div>
         <div class="form-group">
           <label>Close Date (optional)</label>
@@ -815,11 +818,26 @@ function showCreateMarketModal() {
     <button class="btn btn-primary" id="cm-submit">Create Market</button>
   `);
 
+  // Toggle custom input visibility
+  const categorySelect = document.getElementById('cm-category');
+  const customInput = document.getElementById('cm-custom-category');
+  
+  categorySelect.onchange = () => {
+    customInput.style.display = categorySelect.value === 'custom' ? 'block' : 'none';
+    if (categorySelect.value !== 'custom') customInput.value = '';
+  };
+
   document.getElementById('cm-submit').onclick = async () => {
     const title = document.getElementById('cm-title').value.trim();
     const desc = document.getElementById('cm-desc').value.trim();
-    const category = document.getElementById('cm-category').value;
+    let category = document.getElementById('cm-category').value;
     const closeDate = document.getElementById('cm-close-date').value;
+
+    // Handle custom category
+    if (category === 'custom') {
+      category = customInput.value.trim();
+      if (!category) { showToast('Please enter a custom category name', 'error'); return; }
+    }
 
     if (!title) { showToast('Please enter a market title', 'error'); return; }
 
