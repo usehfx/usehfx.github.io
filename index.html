@@ -1284,6 +1284,7 @@ async function renderLeaderboard() {
     if (!users) { c.innerHTML = '<div class="empty-state"><h3>No users yet</h3></div>'; return; }
 
     let list = Object.entries(users).map(([id, u]) => ({ id, ...u }));
+    list = list.filter(u => u.role !== 'banned');
     let sortBy = 'balance';
 
     function render(sort) {
