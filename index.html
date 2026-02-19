@@ -6,6 +6,12 @@
 <title>HFX - Hackley Prediction Market</title>
 <meta name="description" content="HFX: A Hackley-exclusive prediction market platform. Trade on school events, sports, and more.">
 <meta name="theme-color" content="#0a0a0f">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){
+    emailjs.init("gWgHwkPBzHaIeiuRW");
+  })();
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -435,7 +441,7 @@ function navigate(page, data) {
   renderPage();
 }
 
-// Nav click handlers
+// Nav click rs
 document.getElementById('main-nav').addEventListener('click', e => {
   if (e.target.dataset.page) navigate(e.target.dataset.page);
 });
@@ -522,7 +528,7 @@ function renderAuth(mode = 'login') {
         </div>
       </div>
     `;
-    document.getElementById('login-form').onsubmit = handleLogin;
+    document.getElementById('login-form').onsubmit = Login;
     document.getElementById('go-signup').onclick = e => { e.preventDefault(); renderAuth('signup'); };
   } else {
     c.innerHTML = `
@@ -556,12 +562,12 @@ function renderAuth(mode = 'login') {
         </div>
       </div>
     `;
-    document.getElementById('signup-form').onsubmit = handleSignup;
+    document.getElementById('signup-form').onsubmit = Signup;
     document.getElementById('go-login').onclick = e => { e.preventDefault(); renderAuth('login'); };
   }
 }
 
-async function handleLogin(e) {
+async function Login(e) {
   e.preventDefault();
   const email = document.getElementById('login-email').value.trim().toLowerCase();
   const pw = document.getElementById('login-password').value;
@@ -580,7 +586,7 @@ async function handleLogin(e) {
   } catch(err) { showToast('Login failed: ' + err.message, 'error'); }
 }
 
-async function handleSignup(e) {
+async function Signup(e) {
   e.preventDefault();
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim().toLowerCase();
@@ -601,7 +607,10 @@ async function handleSignup(e) {
     }
 
     const hash = await hashPassword(pw);
+    
+    // Generate 6-digit OTP
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+    
     const userData = {
       name,
       email,
@@ -609,7 +618,7 @@ async function handleSignup(e) {
       balance: 1000,
       role: 'user',
       verified: false,
-      verifyCode,
+      verifyCode, // Save the code to the DB
       createdAt: Date.now(),
       trades: 0,
       profit: 0
@@ -617,23 +626,63 @@ async function handleSignup(e) {
 
     const res = await dbPush('users', userData);
     saveSession({ id: res.name, ...userData });
-    showToast('Account created! You received 1,000 HFX Credits.', 'success');
+    
+    // Send Email via EmailJS
+    // Service ID: service_lytp94p
+    // Template ID: template_gyr9kcp
+    await emailjs.send("service_lytp94p", "template_gyr9kcp", {
+      to_email: email,
+      username: name,
+      otp_code: verifyCode
+    });
+
+    showToast('Account created! Check your email for the code.', 'success');
 
     // Show verification modal
-    showVerifyModal(verifyCode);
-  } catch(err) { showToast('Signup failed: ' + err.message, 'error'); }
+    showVerifyModal();
+  } catch(err) { 
+    console.error(err);
+    showToast('Signup failed: ' + err.message, 'error'); 
+  }
 }
 
-function showVerifyModal(code) {
+function showVerifyModal() {
   openModal('Verify Your Email', `
     <div style="text-align:center">
-      <p style="color:var(--text-secondary);margin-bottom:16px">In a real setup, a verification code would be sent to your Hackley email. For this demo, here is your code:</p>
-      <div style="font-size:2rem;font-weight:800;font-family:var(--font-mono);color:var(--accent);letter-spacing:.2em;margin:20px 0">${code}</div>
+      <p style="color:var(--text-secondary);margin-bottom:16px">A 6-digit verification code has been sent to your email. Enter it below:</p>
       <div class="form-group">
         <input type="text" id="verify-input" placeholder="Enter 6-digit code" maxlength="6" style="text-align:center;font-size:1.2rem;letter-spacing:.2em">
       </div>
     </div>
   `, `<button class="btn btn-primary" id="verify-submit" style="width:100%">Verify Account</button>`);
+
+  document.getElementById('verify-submit').onclick = async () => {
+    const input = document.getElementById('verify-input').value.trim();
+    
+    if (input.length !== 6) {
+        showToast('Please enter a 6-digit code.', 'error');
+        return;
+    }
+
+    // Check code against DB
+    try {
+        const userInDb = await dbGet(`users/${currentUser.id}`);
+        
+        if (userInDb && userInDb.verifyCode === input) {
+            await dbUpdate(`users/${currentUser.id}`, { verified: true, verifyCode: null });
+            currentUser.verified = true;
+            saveSession(currentUser);
+            closeModal();
+            showToast('Email verified! You can now trade and create markets.', 'success');
+            init();
+        } else {
+            showToast('Invalid code. Please try again.', 'error');
+        }
+    } catch (err) {
+        showToast('Verification failed. Please try again.', 'error');
+    }
+  };
+}
 
   document.getElementById('verify-submit').onclick = async () => {
     const input = document.getElementById('verify-input').value.trim();
@@ -721,7 +770,7 @@ async function renderMarkets(searchQuery = '') {
         </div>
       `;
 
-      // Event handlers
+      // Event rs
       c.querySelectorAll('.cat-pill').forEach(btn => {
         btn.onclick = () => render(btn.dataset.cat);
       });
@@ -1094,7 +1143,7 @@ async function renderMarketDetail(marketId) {
       </div>
     `;
 
-    // Event handlers
+    // Event rs
     document.getElementById('back-to-markets').onclick = () => navigate('markets');
 
     const buyYes = document.getElementById('detail-buy-yes');
