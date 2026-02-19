@@ -1484,7 +1484,7 @@ async function renderAdmin() {
                     <td style="color:var(--text-muted);font-size:.8rem">${esc(u.email)}</td>
                     <td style="font-family:var(--font-mono)">${(u.balance || 0).toLocaleString()}</td>
                     <td>${u.verified ? '<span class="badge badge-active">Yes</span>' : '<span class="badge badge-pending">No</span>'}</td>
-                    <td><span class="badge ${u.role === 'admin' ? 'badge-active' : u.role === 'moderator' ? 'badge-pending' : 'badge-resolved'}">${u.role || 'user'}</span></td>
+                    <td><span class="badge ${u.role === 'admin' ? 'badge-active' : u.role === 'moderator' ? 'badge-pending' : u.role === 'banned' ? 'badge-rejected' : 'badge-resolved'}">${u.role || 'user'}</span></td>
                     <td>
                       ${currentUser.role === 'admin' && u.id !== currentUser.id ? `
                         <select class="role-select" data-user-id="${u.id}" style="padding:4px 8px;font-size:.78rem;width:auto">
