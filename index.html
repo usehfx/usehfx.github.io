@@ -1325,15 +1325,20 @@ async function renderLeaderboard() {
 }
 
 // ========== PROFILE ==========
+// ========== PROFILE ==========
 async function renderProfile() {
   const c = document.getElementById('page-content');
   if (!currentUser) { renderAuth(); return; }
 
   try {
-    const [trades, user] = await Promise.all([
+    // ADDED: Fetch markets as well so we can find the names
+    const [trades, user, marketsData] = await Promise.all([
       dbGet('trades'),
-      dbGet(`users/${currentUser.id}`)
+      dbGet(`users/${currentUser.id}`),
+      dbGet('markets')
     ]);
+
+    const markets = marketsData || {};
 
     if (user) {
       currentUser = { ...currentUser, ...user };
@@ -1377,15 +1382,20 @@ async function renderProfile() {
               `<table class="admin-table">
                 <thead><tr><th>Market</th><th>Side</th><th>Shares</th><th>Cost</th><th>Time</th></tr></thead>
                 <tbody>
-                  ${myTrades.slice(0, 50).map(t => `
-                    <tr>
-                      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.marketId)}</td>
-                      <td><span class="badge ${t.side === 'YES' ? 'badge-active' : 'badge-rejected'}">${t.side}</span></td>
-                      <td style="font-family:var(--font-mono)">${t.shares}</td>
-                      <td style="font-family:var(--font-mono)">${(t.cost || 0).toFixed(2)}</td>
-                      <td style="color:var(--text-muted)">${timeAgo(t.timestamp)}</td>
-                    </tr>
-                  `).join('')}
+                  ${myTrades.slice(0, 50).map(t => {
+                    // Look up the market name using the ID
+                    const marketInfo = markets[t.marketId];
+                    const marketName = marketInfo ? marketInfo.title : t.marketId; // Fallback to ID if market deleted
+                    return `
+                      <tr>
+                        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(marketName)}</td>
+                        <td><span class="badge ${t.side === 'YES' ? 'badge-active' : 'badge-rejected'}">${t.side}</span></td>
+                        <td style="font-family:var(--font-mono)">${t.shares}</td>
+                        <td style="font-family:var(--font-mono)">${(t.cost || 0).toFixed(2)}</td>
+                        <td style="color:var(--text-muted)">${timeAgo(t.timestamp)}</td>
+                      </tr>
+                    `;
+                  }).join('')}
                 </tbody>
               </table>`
             }
@@ -1400,7 +1410,6 @@ async function renderProfile() {
     }
   } catch(err) { c.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`; }
 }
-
 // ========== ADMIN / MODERATOR ==========
 async function renderAdmin() {
   const c = document.getElementById('page-content');
