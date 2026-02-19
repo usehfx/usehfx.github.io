@@ -913,7 +913,7 @@ async function loadTradeModal(marketId, side) {
         </div>
       `;
 
-      document.getElementById('trade-shares').oninput = e => {
+      document.getElementById('trade-shares').onchange = e => {
         shares = Math.max(1, parseInt(e.target.value) || 1);
         renderTradeContent();
       };
