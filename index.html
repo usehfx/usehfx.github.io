@@ -645,6 +645,7 @@ async function Signup(e) {
     showToast('Signup failed: ' + err.message, 'error'); 
   }
 }
+  
 function showVerifyModal() {
   openModal('Verify Your Email', `
     <div style="text-align:center">
@@ -680,6 +681,7 @@ function showVerifyModal() {
       showToast('Verification failed. Please try again.', 'error');
     }
   };
+}
 
 // ========== MARKETS PAGE ==========
 async function renderMarkets(searchQuery = '') {
