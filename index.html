@@ -469,6 +469,12 @@ async function init() {
       if (!u) { clearSession(); renderAuth(); return; }
       currentUser = { ...currentUser, ...u, id: currentUser.id };
       saveSession(currentUser);
+      if (currentUser.role === 'banned') {
+        clearSession();
+        const msg = currentUser.banReason || 'You have been banned from HFX.';
+        document.body.innerHTML = '<div style="display:flex;height:100vh;background:#000;color:red;align-items:center;justify-content:center;font-family:sans-serif;flex-direction:column;gap:16px"><h1>BANNED</h1><p style="color:#ff6666;font-size:1.1rem">' + msg + '</p></div>';
+        return;
+      }
     } catch(e) { /* continue with cached */ }
 
     document.getElementById('main-header').style.display = '';
@@ -1485,6 +1491,7 @@ async function renderAdmin() {
                           <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
                           <option value="moderator" ${u.role === 'moderator' ? 'selected' : ''}>Mod</option>
                           <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                          <option value="banned" ${u.role === 'banned' ? 'selected' : ''}>Banned</option>
                         </select>
                       ` : '-'}
                     </td>
