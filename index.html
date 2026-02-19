@@ -1463,8 +1463,8 @@ async function renderAdmin() {
       c.querySelectorAll('[data-reject]').forEach(btn => {
         btn.onclick = async () => {
           try {
-            await dbUpdate(`markets/${btn.dataset.reject}`, { status: 'rejected' });
-            showToast('Market rejected', 'info');
+            await dbDelete(`markets/${btn.dataset.reject}`); 
+            showToast('Market deleted', 'info');
             renderAdmin();
           } catch(err) { showToast('Failed', 'error'); }
         };
