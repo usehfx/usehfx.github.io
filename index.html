@@ -645,7 +645,6 @@ async function Signup(e) {
     showToast('Signup failed: ' + err.message, 'error'); 
   }
 }
-
 function showVerifyModal() {
   openModal('Verify Your Email', `
     <div style="text-align:center">
@@ -658,43 +657,27 @@ function showVerifyModal() {
 
   document.getElementById('verify-submit').onclick = async () => {
     const input = document.getElementById('verify-input').value.trim();
-    
+
     if (input.length !== 6) {
-        showToast('Please enter a 6-digit code.', 'error');
-        return;
+      showToast('Please enter a 6-digit code.', 'error');
+      return;
     }
 
-    // Check code against DB
     try {
-        const userInDb = await dbGet(`users/${currentUser.id}`);
-        
-        if (userInDb && userInDb.verifyCode === input) {
-            await dbUpdate(`users/${currentUser.id}`, { verified: true, verifyCode: null });
-            currentUser.verified = true;
-            saveSession(currentUser);
-            closeModal();
-            showToast('Email verified! You can now trade and create markets.', 'success');
-            init();
-        } else {
-            showToast('Invalid code. Please try again.', 'error');
-        }
-    } catch (err) {
-        showToast('Verification failed. Please try again.', 'error');
-    }
-  };
-}
+      const userInDb = await dbGet(`users/${currentUser.id}`);
 
-  document.getElementById('verify-submit').onclick = async () => {
-    const input = document.getElementById('verify-input').value.trim();
-    if (input === code) {
-      await dbUpdate(`users/${currentUser.id}`, { verified: true });
-      currentUser.verified = true;
-      saveSession(currentUser);
-      closeModal();
-      showToast('Email verified! You can now trade and create markets.', 'success');
-      init();
-    } else {
-      showToast('Invalid code. Try again.', 'error');
+      if (userInDb && userInDb.verifyCode === input) {
+        await dbUpdate(`users/${currentUser.id}`, { verified: true, verifyCode: null });
+        currentUser.verified = true;
+        saveSession(currentUser);
+        closeModal();
+        showToast('Email verified! You can now trade and create markets.', 'success');
+        init();
+      } else {
+        showToast('Invalid code. Please try again.', 'error');
+      }
+    } catch (err) {
+      showToast('Verification failed. Please try again.', 'error');
     }
   };
 }
