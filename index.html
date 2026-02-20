@@ -1121,12 +1121,24 @@ async function renderMarketDetail(marketId) {
                   </div>
                 ` : '<p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px">Verify your email to comment</p>'}
                 ${commentsList.length === 0 ? '<p style="color:var(--text-muted);font-size:.85rem">No comments yet. Be the first!</p>' :
-                  commentsList.map(cm => `
+                  commentsList.filter(cm => cm.status !== 'hidden').map(cm => `
                     <div class="comment">
                       <div class="comment-header">
                         <div class="comment-avatar">${initials(cm.userName)}</div>
                         <span class="comment-name">${esc(cm.userName)}</span>
                         <span class="comment-time">${timeAgo(cm.timestamp)}</span>
+                        ${currentUser && cm.userId !== currentUser.id ? `
+                          <button onclick="reportComment('${marketId}','${cm.id}',${JSON.stringify(cm.text)},${JSON.stringify(cm.userName)})" 
+                            style="margin-left:auto;background:transparent;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .2s"
+                            onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'"
+                            title="Report comment">⚑ Report</button>
+                        ` : ''}
+                        ${(currentUser?.role === 'admin' || currentUser?.role === 'moderator') ? `
+                          <button onclick="deleteComment('${marketId}','${cm.id}')"
+                            style="margin-left:${cm.userId === currentUser.id ? 'auto' : '4px'};background:transparent;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .2s"
+                            onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'"
+                            title="Delete comment">✕ Delete</button>
+                        ` : ''}
                       </div>
                       <div class="comment-text">${esc(cm.text)}</div>
                     </div>
