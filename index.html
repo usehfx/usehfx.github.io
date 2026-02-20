@@ -1457,6 +1457,10 @@ async function renderAdmin() {
     const pendingMarkets = markets.filter(m => m.status === 'pending');
     const activeMarkets = markets.filter(m => m.status === 'active');
     let activeTab = 'pending';
+    const reportedCommentsData = await dbGet('reportedComments');
+    const pendingReports = reportedCommentsData 
+      ? Object.entries(reportedCommentsData).map(([id,r])=>({id,...r})).filter(r=>r.status==='pending')
+      : [];
 
     function render(tab) {
       activeTab = tab;
@@ -1601,6 +1605,24 @@ async function renderAdmin() {
 
     render('pending');
   } catch(err) { c.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`; }
+}
+
+async function deleteComment(marketId, commentId) {
+  if (!confirm('Delete this comment?')) return;
+  try {
+    await dbUpdate(`comments/${marketId}/${commentId}`, { status: 'hidden' });
+    // Also mark any reports for this comment as resolved
+    const reports = await dbGet('reportedComments');
+    if (reports) {
+      const matching = Object.entries(reports).filter(([_, r]) => r.commentId === commentId);
+      for (const [rid] of matching) {
+        await dbUpdate(`reportedComments/${rid}`, { status: 'deleted' });
+      }
+    }
+    showToast('Comment removed', 'success');
+    if (currentPage === 'market-detail') renderMarketDetail(marketId);
+    else renderAdmin();
+  } catch(err) { showToast('Failed to delete comment', 'error'); }
 }
 
 async function resolveMarket(marketId, resolution) {
