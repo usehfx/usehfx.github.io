@@ -1084,7 +1084,7 @@ async function loadTradeModal(marketId,side){
 
     function renderTC(){
       const cost=shares*price;
-      const potentialWin=shares-cost;
+      const potentialWin=cost;
       document.getElementById('trade-modal-content').innerHTML=`
         <div>
           <h3 style="font-size:.9rem;font-weight:600;margin-bottom:16px;color:var(--text-secondary)">${esc(market.title)}</h3>
