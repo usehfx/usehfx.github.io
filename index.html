@@ -1471,6 +1471,7 @@ async function renderAdmin() {
             <button class="${tab === 'pending' ? 'active' : ''}" data-tab="pending">Pending (${pendingMarkets.length})</button>
             <button class="${tab === 'active' ? 'active' : ''}" data-tab="active">Active Markets</button>
             <button class="${tab === 'users' ? 'active' : ''}" data-tab="users">Users (${users.length})</button>
+            <button class="${tab === 'comments' ? 'active' : ''}" data-tab="comments">Reports ${pendingReports.length > 0 ? `<span style="background:var(--red);color:#fff;padding:1px 6px;border-radius:10px;font-size:.7rem;margin-left:4px">${pendingReports.length}</span>` : ''}</button>
           </div>
 
           ${tab === 'pending' ? `
