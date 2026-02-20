@@ -1100,7 +1100,7 @@ async function loadTradeModal(marketId,side){
             <div><span>Cost per point</span><span style="font-family:var(--font-mono)">${price.toFixed(2)} pts</span></div>
             <div><span>Confidence points</span><span style="font-family:var(--font-mono)">${shares}</span></div>
             <div class="total"><span>Total Cost</span><span style="color:var(--accent);font-family:var(--font-mono)">${cost.toFixed(2)} pts</span></div>
-            <div><span>If correct, earn</span><span style="color:var(--accent);font-family:var(--font-mono)">+${potentialWin.toFixed(2)} pts</span></div>
+            <div><span>If correct, earn</span><span style="color:var(--accent);font-family:var(--font-mono)">+${potentialWin.toFixed(2)} pts profit (${(cost+potentialWin).toFixed(2)} returned)</span></div>
           </div>
           <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:12px">Your Accuracy Score: <strong style="color:var(--text)">${currentUser.balance.toLocaleString()} pts</strong></div>
           <button class="btn ${side==='YES'?'btn-primary':'btn-danger'}" id="trade-confirm" style="width:100%;padding:14px">
