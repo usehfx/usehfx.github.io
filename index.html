@@ -327,7 +327,7 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
       </div>
       <nav id="main-nav">
         <button data-page="markets" class="active">Forecasts</button>
-        <button data-page="census">Census</button>
+        <button data-page="census">Polling</button>
         <button data-page="leaderboard">Leaderboard</button>
         <button data-page="profile">My Predictions</button>
         <button data-page="admin" id="admin-nav-btn" style="display:none">Admin</button>
@@ -859,7 +859,7 @@ async function renderCensus(searchQuery=''){
       c.innerHTML=`
         <div class="page">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-            <h1 class="page-title" style="margin:0">📊 Census & Polls</h1>
+            <h1 class="page-title" style="margin:0">📊 Polling</h1>
             ${currentUser?.verified?'<button class="btn btn-purple" id="create-census-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg> New Poll</button>':'<span class="badge badge-pending">Verify email to create</span>'}
           </div>
           <div class="cat-pills">${categories.map(ct=>`<button class="cat-pill census-pill ${ct===activeCategory?'active':''}" data-cat="${ct}">${ct}</button>`).join('')}</div>
