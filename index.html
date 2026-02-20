@@ -3,14 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HFX - Hackley Prediction Market</title>
-<meta name="description" content="HFX: A Hackley-exclusive prediction market platform. Trade on school events, sports, and more.">
+<title>HFX - Hackley Forecasting</title>
+<meta name="description" content="HFX: Hackley's forecasting and census platform. Predict outcomes, vote on polls, track your accuracy.">
 <meta name="theme-color" content="#0a0a0f">
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script type="text/javascript">
-  (function(){
-    emailjs.init("gWgHwkPBzHaIeiuRW");
-  })();
+  (function(){ emailjs.init("gWgHwkPBzHaIeiuRW"); })();
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -31,8 +29,12 @@
   --red-dim:#ff4d6a33;
   --yellow:#ffd666;
   --yellow-dim:#ffd66633;
+  --purple:#a78bfa;
+  --purple-dim:#a78bfa22;
+  --blue:#60a5fa;
+  --blue-dim:#60a5fa22;
   --radius:10px;
-  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --font:'Sora',system-ui,sans-serif;
   --font-mono:'JetBrains Mono','SF Mono',monospace;
 }
 html{font-size:16px;scroll-behavior:smooth}
@@ -52,75 +54,89 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 /* Layout */
 #app{display:flex;flex-direction:column;min-height:100vh}
-header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.92);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
 .header-inner{max-width:1280px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:16px}
-.logo{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;color:var(--text);display:flex;align-items:center;gap:8px}
-.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;color:var(--bg)}
+.logo{font-size:1.2rem;font-weight:800;letter-spacing:-.03em;color:var(--text);display:flex;align-items:center;gap:8px}
+.logo-mark{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;color:var(--bg)}
+.logo-sub{font-size:.65rem;font-weight:600;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-left:2px;align-self:flex-end;margin-bottom:2px}
 nav{display:flex;gap:4px;margin-left:12px}
-nav button{padding:8px 14px;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--text-secondary);background:transparent;transition:all .2s}
+nav button{padding:7px 13px;border-radius:8px;font-size:.82rem;font-weight:600;color:var(--text-secondary);background:transparent;transition:all .2s}
 nav button:hover,nav button.active{color:var(--text);background:var(--bg-card)}
 nav button.active{color:var(--accent)}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.search-box{position:relative;width:220px}
-.search-box input{padding-left:36px;font-size:.85rem;height:36px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px}
+.search-box{position:relative;width:210px}
+.search-box input{padding-left:36px;font-size:.82rem;height:36px;background:var(--bg-surface);border:1px solid var(--border);border-radius:8px}
 .search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted)}
-.balance-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;font-size:.85rem;font-weight:600;color:var(--accent)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:.85rem;font-weight:600;transition:all .2s;white-space:nowrap}
+.score-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;font-size:.82rem;font-weight:700;color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:.82rem;font-weight:700;transition:all .2s;white-space:nowrap}
 .btn-primary{background:var(--accent);color:var(--bg)}
 .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
 .btn-secondary{background:var(--bg-card);color:var(--text);border:1px solid var(--border)}
 .btn-secondary:hover{background:var(--bg-card-hover);border-color:var(--text-muted)}
 .btn-danger{background:var(--red-dim);color:var(--red);border:1px solid var(--red)}
 .btn-danger:hover{background:var(--red);color:#fff}
-.btn-sm{padding:6px 12px;font-size:.8rem}
+.btn-purple{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple)}
+.btn-purple:hover{background:var(--purple);color:#fff}
+.btn-sm{padding:5px 11px;font-size:.77rem}
 .btn-ghost{background:transparent;color:var(--text-secondary);padding:6px 10px}
 .btn-ghost:hover{color:var(--text);background:var(--bg-card)}
 
 /* Main */
 main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
-.page-title{font-size:1.5rem;font-weight:700;margin-bottom:20px;letter-spacing:-.02em}
+.page-title{font-size:1.4rem;font-weight:800;margin-bottom:20px;letter-spacing:-.03em}
 
 /* Cards */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s,transform .2s}
 .card:hover{border-color:var(--text-muted);transform:translateY(-2px)}
-.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .card-body{padding:20px}
 
-/* Market Card */
+/* Forecast Card */
 .market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
 .market-card{cursor:pointer}
 .market-card .mc-top{padding:16px 20px}
-.market-card .mc-category{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px}
-.market-card .mc-title{font-size:1rem;font-weight:600;line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.market-card .mc-desc{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
-.market-card .mc-meta{display:flex;align-items:center;gap:12px;font-size:.75rem;color:var(--text-muted)}
-.market-card .mc-meta span{display:flex;align-items:center;gap:4px}
+.market-card .mc-category{font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.market-card .mc-title{font-size:.97rem;font-weight:700;line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.market-card .mc-desc{font-size:.8rem;color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.market-card .mc-meta{display:flex;align-items:center;gap:12px;font-size:.72rem;color:var(--text-muted)}
 .market-card .mc-bottom{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px}
-.market-card .mc-bottom .trade-btn{flex:1;padding:10px;border-radius:8px;font-size:.85rem;font-weight:700;text-align:center;transition:all .15s}
-.trade-btn.yes{background:var(--accent-dim);color:var(--accent);border:1px solid transparent}
-.trade-btn.yes:hover{background:var(--accent);color:var(--bg);border-color:var(--accent)}
-.trade-btn.no{background:var(--red-dim);color:var(--red);border:1px solid transparent}
-.trade-btn.no:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.market-card .mc-bottom .pred-btn{flex:1;padding:10px;border-radius:8px;font-size:.82rem;font-weight:700;text-align:center;transition:all .15s}
+.pred-btn.yes{background:var(--accent-dim);color:var(--accent);border:1px solid transparent}
+.pred-btn.yes:hover{background:var(--accent);color:var(--bg)}
+.pred-btn.no{background:var(--red-dim);color:var(--red);border:1px solid transparent}
+.pred-btn.no:hover{background:var(--red);color:#fff}
+
+/* Census Card */
+.census-card{cursor:pointer;border-left:3px solid var(--purple)}
+.census-card .mc-category{color:var(--purple) !important}
+.census-badge{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple);padding:2px 8px;border-radius:12px;font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.poll-option-bar{margin-bottom:8px}
+.poll-option-bar .bar-label{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px}
+.poll-option-bar .bar-track{height:6px;background:var(--bg-surface);border-radius:3px;overflow:hidden}
+.poll-option-bar .bar-fill{height:100%;border-radius:3px;background:var(--purple);transition:width .6s ease}
+.poll-option-bar .bar-fill.leading{background:var(--accent)}
 
 /* Category pills */
 .cat-pills{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
-.cat-pill{padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.cat-pill{padding:5px 13px;border-radius:20px;font-size:.77rem;font-weight:700;background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all .2s}
 .cat-pill:hover,.cat-pill.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+.cat-pill.census-pill:hover,.cat-pill.census-pill.active{background:var(--purple-dim);border-color:var(--purple);color:var(--purple)}
 
 /* Status badges */
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 .badge-active{background:var(--accent-dim);color:var(--accent)}
 .badge-pending{background:var(--yellow-dim);color:var(--yellow)}
 .badge-resolved{background:var(--bg-surface);color:var(--text-muted)}
 .badge-rejected{background:var(--red-dim);color:var(--red)}
+.badge-census{background:var(--purple-dim);color:var(--purple)}
 
 /* Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;transform:scale(.95);transition:transform .2s}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;transform:scale(.95);transition:transform .2s}
 .modal-overlay.open .modal{transform:scale(1)}
 .modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-header h2{font-size:1.1rem;font-weight:700}
+.modal-header h2{font-size:1.05rem;font-weight:700}
 .modal-close{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:transparent;color:var(--text-muted);font-size:1.2rem;transition:all .2s}
 .modal-close:hover{background:var(--bg-surface);color:var(--text)}
 .modal-body{padding:24px}
@@ -128,20 +144,20 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
 
 /* Forms */
 .form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:.82rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
-.form-group .hint{font-size:.75rem;color:var(--text-muted);margin-top:4px}
+.form-group label{display:block;font-size:.79rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.form-group .hint{font-size:.73rem;color:var(--text-muted);margin-top:4px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-/* Trading panel */
+/* Trade/Predict panel */
 .trade-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
 .trade-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--bg-surface);border-radius:8px;padding:4px}
-.trade-tab{flex:1;padding:8px;border-radius:6px;font-size:.85rem;font-weight:600;text-align:center;background:transparent;color:var(--text-secondary);transition:all .2s}
+.trade-tab{flex:1;padding:8px;border-radius:6px;font-size:.82rem;font-weight:700;text-align:center;background:transparent;color:var(--text-secondary);transition:all .2s}
 .trade-tab.active-yes{background:var(--accent);color:var(--bg)}
 .trade-tab.active-no{background:var(--red);color:#fff}
 .trade-input-group{display:flex;align-items:center;gap:8px;margin-bottom:12px;background:var(--bg-surface);border-radius:8px;padding:4px 12px}
-.trade-input-group label{font-size:.8rem;color:var(--text-muted);white-space:nowrap}
+.trade-input-group label{font-size:.77rem;color:var(--text-muted);white-space:nowrap;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .trade-input-group input{border:none;background:transparent;text-align:right;font-size:1.1rem;font-weight:700;padding:8px 0}
-.trade-summary{margin:16px 0;padding:12px;background:var(--bg-surface);border-radius:8px;font-size:.82rem}
+.trade-summary{margin:16px 0;padding:12px;background:var(--bg-surface);border-radius:8px;font-size:.8rem}
 .trade-summary div{display:flex;justify-content:space-between;padding:4px 0}
 .trade-summary .total{font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:4px;padding-top:8px}
 
@@ -149,12 +165,13 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
 .market-detail-grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
 .market-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .stat-card{background:var(--bg-surface);border-radius:8px;padding:14px;text-align:center}
-.stat-card .stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px}
-.stat-card .stat-value{font-size:1.2rem;font-weight:700;font-family:var(--font-mono)}
+.stat-card .stat-label{font-size:.67rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:4px;font-weight:700}
+.stat-card .stat-value{font-size:1.2rem;font-weight:800;font-family:var(--font-mono)}
 .stat-card .stat-value.green{color:var(--accent)}
 .stat-card .stat-value.red{color:var(--red)}
+.stat-card .stat-value.purple{color:var(--purple)}
 
-/* Price chart placeholder */
+/* Price chart */
 .price-chart{background:var(--bg-surface);border-radius:var(--radius);height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);margin-bottom:20px;position:relative;overflow:hidden}
 .price-chart canvas{position:absolute;inset:0}
 
@@ -162,67 +179,88 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
 .comment{padding:12px 0;border-bottom:1px solid var(--border)}
 .comment:last-child{border:none}
 .comment-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.comment-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--accent)}
-.comment-name{font-size:.82rem;font-weight:600}
-.comment-time{font-size:.72rem;color:var(--text-muted)}
-.comment-text{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.comment-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:.67rem;font-weight:800;color:var(--accent)}
+.comment-name{font-size:.8rem;font-weight:700}
+.comment-time{font-size:.7rem;color:var(--text-muted)}
+.comment-text{font-size:.83rem;color:var(--text-secondary);line-height:1.6}
 
 /* Leaderboard */
 .lb-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .15s}
 .lb-row:hover{background:var(--bg-card-hover)}
-.lb-rank{width:28px;font-size:.85rem;font-weight:700;color:var(--text-muted);text-align:center;font-family:var(--font-mono)}
-.lb-rank.top{color:var(--accent);font-size:1rem}
-.lb-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--accent)}
+.lb-rank{width:32px;font-size:.82rem;font-weight:800;color:var(--text-muted);text-align:center;font-family:var(--font-mono)}
+.lb-rank.top{color:var(--accent);font-size:.95rem}
+.lb-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:.77rem;font-weight:800;color:var(--accent)}
 .lb-info{flex:1}
-.lb-name{font-size:.9rem;font-weight:600}
-.lb-email{font-size:.75rem;color:var(--text-muted)}
-.lb-value{font-size:.95rem;font-weight:700;font-family:var(--font-mono);color:var(--accent)}
+.lb-name{font-size:.88rem;font-weight:700}
+.lb-email{font-size:.72rem;color:var(--text-muted)}
+.lb-value{font-size:.92rem;font-weight:800;font-family:var(--font-mono);color:var(--accent)}
 
 /* Profile */
 .profile-header{display:flex;align-items:center;gap:20px;margin-bottom:24px}
-.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:var(--accent)}
-.profile-info h2{font-size:1.2rem;font-weight:700}
-.profile-info p{font-size:.85rem;color:var(--text-secondary)}
+.profile-avatar{width:64px;height:64px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:var(--accent)}
+.profile-info h2{font-size:1.2rem;font-weight:800}
+.profile-info p{font-size:.83rem;color:var(--text-secondary)}
 .portfolio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
 
 /* Tabs */
 .tab-bar{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px}
-.tab-bar button{padding:10px 18px;font-size:.85rem;font-weight:600;color:var(--text-muted);background:transparent;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
+.tab-bar button{padding:10px 18px;font-size:.82rem;font-weight:700;color:var(--text-muted);background:transparent;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
 .tab-bar button:hover{color:var(--text)}
 .tab-bar button.active{color:var(--accent);border-bottom-color:var(--accent)}
 
 /* Admin table */
 .admin-table{width:100%;border-collapse:collapse}
-.admin-table th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);padding:10px 14px;border-bottom:1px solid var(--border);font-weight:600}
-.admin-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:.85rem;vertical-align:middle}
+.admin-table th{text-align:left;font-size:.69rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);padding:10px 14px;border-bottom:1px solid var(--border);font-weight:700}
+.admin-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:.83rem;vertical-align:middle}
 .admin-table tr:hover td{background:var(--bg-card-hover)}
 
 /* Toast */
 .toast-container{position:fixed;top:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
-.toast{padding:14px 20px;border-radius:10px;font-size:.85rem;font-weight:500;max-width:360px;animation:slideIn .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.toast{padding:14px 20px;border-radius:10px;font-size:.83rem;font-weight:600;max-width:360px;animation:slideIn .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.3)}
 .toast-success{background:var(--accent);color:var(--bg)}
 .toast-error{background:var(--red);color:#fff}
 .toast-info{background:var(--bg-card);color:var(--text);border:1px solid var(--border)}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* Auth pages */
+/* Auth */
 .auth-container{max-width:420px;margin:60px auto;padding:0 20px}
 .auth-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:32px}
-.auth-card h1{font-size:1.3rem;font-weight:700;margin-bottom:4px;text-align:center}
-.auth-card .subtitle{font-size:.85rem;color:var(--text-secondary);margin-bottom:24px;text-align:center}
-.auth-card .divider{text-align:center;color:var(--text-muted);font-size:.8rem;margin:16px 0;position:relative}
-.auth-card .switch-link{text-align:center;font-size:.85rem;color:var(--text-secondary);margin-top:16px}
+.auth-card h1{font-size:1.3rem;font-weight:800;margin-bottom:4px;text-align:center}
+.auth-card .subtitle{font-size:.83rem;color:var(--text-secondary);margin-bottom:24px;text-align:center}
+.auth-card .switch-link{text-align:center;font-size:.83rem;color:var(--text-secondary);margin-top:16px}
+
+/* Disclaimer */
+.disclaimer-bar{background:var(--blue-dim);border:1px solid var(--blue);border-radius:8px;padding:10px 16px;font-size:.77rem;color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:20px}
 
 /* Empty state */
 .empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
-.empty-state svg{margin-bottom:16px;opacity:.3}
-.empty-state h3{font-size:1.1rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
-.empty-state p{font-size:.85rem}
+.empty-state h3{font-size:1.05rem;font-weight:700;color:var(--text-secondary);margin-bottom:6px}
+.empty-state p{font-size:.83rem}
 
 /* Loading */
 .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-page{display:flex;align-items:center;justify-content:center;height:300px;flex-direction:column;gap:12px;color:var(--text-muted)}
+
+/* Census voting */
+.census-vote-option{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .2s;background:var(--bg-surface)}
+.census-vote-option:hover{border-color:var(--purple);background:var(--purple-dim)}
+.census-vote-option.selected{border-color:var(--purple);background:var(--purple-dim)}
+.census-vote-option .opt-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.census-vote-option.selected .opt-radio{border-color:var(--purple);background:var(--purple)}
+.census-vote-option .opt-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff;opacity:0;transition:opacity .2s}
+.census-vote-option.selected .opt-radio::after{opacity:1}
+.census-vote-option .opt-label{font-size:.88rem;font-weight:600}
+
+/* Census results bars */
+.census-result-option{margin-bottom:12px}
+.census-result-option .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.census-result-option .name{font-size:.85rem;font-weight:600}
+.census-result-option .pct{font-size:.82rem;font-weight:800;font-family:var(--font-mono);color:var(--purple)}
+.census-result-option.leading .pct{color:var(--accent)}
+.census-result-option .track{height:8px;background:var(--bg-surface);border-radius:4px;overflow:hidden}
+.census-result-option .fill{height:100%;border-radius:4px;background:var(--purple);transition:width .8s cubic-bezier(.4,0,.2,1)}
+.census-result-option.leading .fill{background:var(--accent)}
 
 /* Responsive */
 @media(max-width:900px){
@@ -233,7 +271,7 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
 @media(max-width:640px){
   .header-inner{padding:0 12px}
   nav{display:none}
-  .search-box{width:140px}
+  .search-box{width:130px}
   .market-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .market-stats{grid-template-columns:1fr}
@@ -244,76 +282,90 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
 /* Mobile nav */
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--border);padding:8px 0;z-index:100}
 .mobile-nav-inner{display:flex;justify-content:space-around}
-.mobile-nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;background:transparent;color:var(--text-muted);font-size:.65rem;font-weight:600;border-radius:8px}
+.mobile-nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;background:transparent;color:var(--text-muted);font-size:.62rem;font-weight:700;border-radius:8px}
 .mobile-nav button.active{color:var(--accent)}
 .mobile-nav button svg{width:20px;height:20px}
 @media(max-width:640px){.mobile-nav{display:block}main{padding-bottom:80px}}
 
-/* Notification dot */
-.notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;position:absolute;top:0;right:0}
 .icon-btn{position:relative;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:transparent;color:var(--text-secondary);transition:all .2s}
 .icon-btn:hover{background:var(--bg-card);color:var(--text)}
-
-/* Verified badge */
 .verified-check{color:var(--accent);display:inline-flex;margin-left:4px}
-
-/* Resolution banner */
-.resolution-banner{padding:16px 20px;border-radius:var(--radius);margin-bottom:16px;display:flex;align-items:center;gap:12px;font-weight:600}
+.resolution-banner{padding:16px 20px;border-radius:var(--radius);margin-bottom:16px;display:flex;align-items:center;gap:12px;font-weight:700}
 .resolution-banner.yes-won{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent)}
 .resolution-banner.no-won{background:var(--red-dim);color:var(--red);border:1px solid var(--red)}
-
-/* Transitions */
 .page{animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Census option add row */
+.option-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.option-row input{flex:1}
+.option-row .remove-opt{width:32px;height:32px;border-radius:6px;background:var(--red-dim);color:var(--red);border:1px solid var(--red);font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;font-family:var(--font)}
+.option-row .remove-opt:hover{background:var(--red);color:#fff}
+
+/* Census detail */
+.census-detail-bar{margin-bottom:12px}
+
+/* Page type selector */
+.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.type-card{border:2px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .2s;text-align:center}
+.type-card:hover{border-color:var(--text-muted)}
+.type-card.selected-forecast{border-color:var(--accent);background:var(--accent-dim)}
+.type-card.selected-census{border-color:var(--purple);background:var(--purple-dim)}
+.type-card .type-icon{font-size:1.8rem;margin-bottom:6px}
+.type-card .type-name{font-size:.9rem;font-weight:800}
+.type-card .type-desc{font-size:.72rem;color:var(--text-muted);margin-top:2px}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div id="app">
-  <!-- Header -->
   <header id="main-header" style="display:none">
     <div class="header-inner">
-      <div class="logo"><div class="logo-mark">H</div>HFX</div>
+      <div class="logo">
+        <div class="logo-mark">H</div>
+        HFX
+        <span class="logo-sub">Forecasts</span>
+      </div>
       <nav id="main-nav">
-        <button data-page="markets" class="active">Markets</button>
+        <button data-page="markets" class="active">Forecasts</button>
+        <button data-page="census">Census</button>
         <button data-page="leaderboard">Leaderboard</button>
-        <button data-page="profile">Portfolio</button>
+        <button data-page="profile">My Predictions</button>
         <button data-page="admin" id="admin-nav-btn" style="display:none">Admin</button>
       </nav>
       <div class="header-right">
         <div class="search-box">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" id="global-search" placeholder="Search markets..." aria-label="Search markets">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="global-search" placeholder="Search..." aria-label="Search">
         </div>
-        <div class="balance-badge" id="balance-display" title="Your HFX Credits balance">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H11.5v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.65c.09 1.56 1.26 2.44 2.85 2.76V19h1.73v-1.67c1.52-.29 2.72-1.16 2.72-2.74-.01-2.2-1.9-2.96-3.64-3.45z"/></svg>
-          <span id="balance-amount">0</span>
+        <div class="score-badge" id="balance-display" title="Your Accuracy Score">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <span id="balance-amount">0</span> pts
         </div>
-        <button class="icon-btn" id="notif-btn" title="Notifications" aria-label="Notifications">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-        </button>
         <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
       </div>
     </div>
   </header>
 
-  <!-- Mobile nav -->
   <div class="mobile-nav" id="mobile-nav" style="display:none">
     <div class="mobile-nav-inner">
       <button data-page="markets" class="active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
-        Markets
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Forecast
       </button>
-      <button data-page="leaderboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 010-5C6 4 6 9 6 9zm12 0h1.5a2.5 2.5 0 000-5C18 4 18 9 18 9zm-5 11v-3m-2 0h4a1 1 0 001-1v-1a5 5 0 00-5-5 5 5 0 00-5 5v1a1 1 0 001 1h4z"/></svg>
-        Ranks
+      <button data-page="census">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Census
       </button>
-      <button data-page="create" id="mobile-create-btn">
+      <button data-page="create-any" id="mobile-create-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
         Create
+      </button>
+      <button data-page="leaderboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        Ranks
       </button>
       <button data-page="profile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -322,19 +374,15 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
     </div>
   </div>
 
-  <!-- Toast container -->
   <div class="toast-container" id="toast-container"></div>
-
-  <!-- Page content -->
   <main id="page-content"></main>
 </div>
 
-<!-- Modal -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal" id="modal" role="dialog" aria-modal="true">
     <div class="modal-header">
       <h2 id="modal-title"></h2>
-      <button class="modal-close" id="modal-close" aria-label="Close modal">&times;</button>
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
     <div class="modal-footer" id="modal-footer"></div>
@@ -342,480 +390,280 @@ main{flex:1;max-width:1280px;margin:0 auto;padding:24px 20px;width:100%}
 </div>
 
 <script>
-// ========== FIREBASE REST API ==========
+// ========== FIREBASE ==========
 const DB = 'https://usehsx-default-rtdb.firebaseio.com';
+async function dbGet(path){const r=await fetch(`${DB}/${path}.json`);if(!r.ok)throw new Error('DB read failed');return r.json()}
+async function dbSet(path,data){const r=await fetch(`${DB}/${path}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('DB write failed');return r.json()}
+async function dbPush(path,data){const r=await fetch(`${DB}/${path}.json`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('DB push failed');return r.json()}
+async function dbUpdate(path,data){const r=await fetch(`${DB}/${path}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!r.ok)throw new Error('DB update failed');return r.json()}
+async function dbDelete(path){const r=await fetch(`${DB}/${path}.json`,{method:'DELETE'});if(!r.ok)throw new Error('DB delete failed')}
 
-async function dbGet(path) {
-  const r = await fetch(`${DB}/${path}.json`);
-  if (!r.ok) throw new Error('DB read failed');
-  return r.json();
-}
-async function dbSet(path, data) {
-  const r = await fetch(`${DB}/${path}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-  if (!r.ok) throw new Error('DB write failed');
-  return r.json();
-}
-async function dbPush(path, data) {
-  const r = await fetch(`${DB}/${path}.json`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-  if (!r.ok) throw new Error('DB push failed');
-  return r.json();
-}
-async function dbUpdate(path, data) {
-  const r = await fetch(`${DB}/${path}.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-  if (!r.ok) throw new Error('DB update failed');
-  return r.json();
-}
-async function dbDelete(path) {
-  const r = await fetch(`${DB}/${path}.json`, { method: 'DELETE' });
-  if (!r.ok) throw new Error('DB delete failed');
-}
+// ========== AUTH ==========
+let currentUser=null;
+function saveSession(u){currentUser=u;localStorage.setItem('hfx_session',JSON.stringify(u))}
+function loadSession(){try{currentUser=JSON.parse(localStorage.getItem('hfx_session'))}catch(e){currentUser=null}return currentUser}
+function clearSession(){currentUser=null;localStorage.removeItem('hfx_session')}
 
-// ========== AUTH STATE ==========
-let currentUser = null;
-
-function saveSession(user) {
-  currentUser = user;
-  localStorage.setItem('hfx_session', JSON.stringify(user));
-}
-function loadSession() {
-  try { currentUser = JSON.parse(localStorage.getItem('hfx_session')); } catch(e) { currentUser = null; }
-  return currentUser;
-}
-function clearSession() {
-  currentUser = null;
-  localStorage.removeItem('hfx_session');
-}
-
-// ========== UTILITY ==========
-function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
-function timeAgo(ts) {
-  const s = Math.floor((Date.now() - ts) / 1000);
-  if (s < 60) return 'just now';
-  if (s < 3600) return Math.floor(s / 60) + 'm ago';
-  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
-  if (s < 604800) return Math.floor(s / 86400) + 'd ago';
-  return new Date(ts).toLocaleDateString();
-}
-function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
-function initials(name) { return (name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
-async function hashPassword(pw) {
-  const enc = new TextEncoder().encode(pw + 'hfx_salt_2024');
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
+// ========== UTILS ==========
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function timeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';return new Date(ts).toLocaleDateString()}
+function esc(str){const d=document.createElement('div');d.textContent=str;return d.innerHTML}
+function initials(name){return(name||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+async function hashPassword(pw){const enc=new TextEncoder().encode(pw+'hfx_salt_2024');const buf=await crypto.subtle.digest('SHA-256',enc);return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}
 
 // ========== TOAST ==========
-function showToast(msg, type = 'info') {
-  const c = document.getElementById('toast-container');
-  const t = document.createElement('div');
-  t.className = `toast toast-${type}`;
-  t.textContent = msg;
-  c.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100%)'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300); }, 3000);
-}
+function showToast(msg,type='info'){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(100%)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300)},3000)}
 
 // ========== MODAL ==========
-function openModal(title, bodyHtml, footerHtml) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').innerHTML = bodyHtml;
-  document.getElementById('modal-footer').innerHTML = footerHtml || '';
-  document.getElementById('modal-overlay').classList.add('open');
-}
-function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
-document.getElementById('modal-close').onclick = closeModal;
-document.getElementById('modal-overlay').onclick = e => { if (e.target === e.currentTarget) closeModal(); };
+function openModal(title,bodyHtml,footerHtml){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=bodyHtml;document.getElementById('modal-footer').innerHTML=footerHtml||'';document.getElementById('modal-overlay').classList.add('open')}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open')}
+document.getElementById('modal-close').onclick=closeModal;
+document.getElementById('modal-overlay').onclick=e=>{if(e.target===e.currentTarget)closeModal()};
 
 // ========== NAVIGATION ==========
-let currentPage = 'markets';
-let currentMarketId = null;
+let currentPage='markets';
+let currentMarketId=null;
+let currentCensusId=null;
 
-function navigate(page, data) {
-  currentPage = page;
-  if (data) currentMarketId = data;
-
-  // Update nav active states
-  document.querySelectorAll('#main-nav button, .mobile-nav button').forEach(b => {
-    b.classList.toggle('active', b.dataset.page === page);
+function navigate(page,data){
+  currentPage=page;
+  if(page==='market-detail')currentMarketId=data;
+  if(page==='census-detail')currentCensusId=data;
+  document.querySelectorAll('#main-nav button, .mobile-nav button').forEach(b=>{
+    b.classList.toggle('active',b.dataset.page===page);
   });
-
   renderPage();
 }
 
-// Nav click rs
-document.getElementById('main-nav').addEventListener('click', e => {
-  if (e.target.dataset.page) navigate(e.target.dataset.page);
+document.getElementById('main-nav').addEventListener('click',e=>{
+  if(e.target.dataset.page)navigate(e.target.dataset.page);
 });
-document.querySelector('.mobile-nav-inner')?.addEventListener('click', e => {
-  const btn = e.target.closest('[data-page]');
-  if (btn) {
-    if (btn.dataset.page === 'create') { showCreateMarketModal(); return; }
+document.querySelector('.mobile-nav-inner')?.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-page]');
+  if(btn){
+    if(btn.dataset.page==='create-any'){showCreateAnyModal();return;}
     navigate(btn.dataset.page);
   }
 });
-document.getElementById('logout-btn').onclick = () => { clearSession(); init(); };
-
-// Search
-document.getElementById('global-search').addEventListener('input', function() {
-  if (currentPage === 'markets') renderMarkets(this.value);
+document.getElementById('logout-btn').onclick=()=>{clearSession();init()};
+document.getElementById('global-search').addEventListener('input',function(){
+  if(currentPage==='markets')renderMarkets(this.value);
+  if(currentPage==='census')renderCensus(this.value);
 });
 
-// ========== INITIALIZATION ==========
-async function init() {
+// ========== INIT ==========
+async function init(){
   loadSession();
-  if (currentUser) {
-    // Verify user still exists in DB
-    try {
-      const u = await dbGet(`users/${currentUser.id}`);
-      if (!u) { clearSession(); renderAuth(); return; }
-      currentUser = { ...currentUser, ...u, id: currentUser.id };
+  if(currentUser){
+    try{
+      const u=await dbGet(`users/${currentUser.id}`);
+      if(!u){clearSession();renderAuth();return;}
+      currentUser={...currentUser,...u,id:currentUser.id};
       saveSession(currentUser);
-      if (currentUser.role === 'banned') {
+      if(currentUser.role==='banned'){
         clearSession();
-        const msg = currentUser.banReason || 'You have been banned from HFX.';
-        document.body.innerHTML = '<div style="display:flex;height:100vh;background:#000;color:red;align-items:center;justify-content:center;font-family:sans-serif;flex-direction:column;gap:16px"><h1>BANNED</h1><p style="color:#ff6666;font-size:1.1rem">' + msg + '</p></div>';
+        const msg=currentUser.banReason||'You have been banned from HFX.';
+        document.body.innerHTML='<div style="display:flex;height:100vh;background:#000;color:red;align-items:center;justify-content:center;font-family:sans-serif;flex-direction:column;gap:16px"><h1>BANNED</h1><p style="color:#ff6666">'+msg+'</p></div>';
         return;
       }
-    } catch(e) { /* continue with cached */ }
-
-    document.getElementById('main-header').style.display = '';
-    document.getElementById('mobile-nav').style.display = '';
-    document.getElementById('balance-amount').textContent = (currentUser.balance || 1000).toLocaleString();
-    document.getElementById('admin-nav-btn').style.display = (currentUser.role === 'admin' || currentUser.role === 'moderator') ? '' : 'none';
+    }catch(e){}
+    document.getElementById('main-header').style.display='';
+    document.getElementById('mobile-nav').style.display='';
+    document.getElementById('balance-amount').textContent=(currentUser.balance||1000).toLocaleString();
+    document.getElementById('admin-nav-btn').style.display=(currentUser.role==='admin'||currentUser.role==='moderator')?'':'none';
     navigate('markets');
-  } else {
-    document.getElementById('main-header').style.display = 'none';
-    document.getElementById('mobile-nav').style.display = 'none';
+  }else{
+    document.getElementById('main-header').style.display='none';
+    document.getElementById('mobile-nav').style.display='none';
     renderAuth();
   }
 }
 
-// ========== RENDER ROUTER ==========
-function renderPage() {
-  const c = document.getElementById('page-content');
-  c.innerHTML = '<div class="loading-page"><div class="spinner"></div></div>';
-
-  switch(currentPage) {
-    case 'markets': renderMarkets(); break;
-    case 'market-detail': renderMarketDetail(currentMarketId); break;
-    case 'leaderboard': renderLeaderboard(); break;
-    case 'profile': renderProfile(); break;
-    case 'admin': renderAdmin(); break;
-    default: renderMarkets();
+// ========== ROUTER ==========
+function renderPage(){
+  const c=document.getElementById('page-content');
+  c.innerHTML='<div class="loading-page"><div class="spinner"></div></div>';
+  switch(currentPage){
+    case'markets':renderMarkets();break;
+    case'market-detail':renderMarketDetail(currentMarketId);break;
+    case'census':renderCensus();break;
+    case'census-detail':renderCensusDetail(currentCensusId);break;
+    case'leaderboard':renderLeaderboard();break;
+    case'profile':renderProfile();break;
+    case'admin':renderAdmin();break;
+    default:renderMarkets();
   }
 }
 
-// ========== AUTH PAGES ==========
-function renderAuth(mode = 'login') {
-  const c = document.getElementById('page-content');
-  if (mode === 'login') {
-    c.innerHTML = `
+// ========== AUTH ==========
+function renderAuth(mode='login'){
+  const c=document.getElementById('page-content');
+  if(mode==='login'){
+    c.innerHTML=`
       <div class="auth-container page">
         <div style="text-align:center;margin-bottom:32px">
-          <div class="logo" style="justify-content:center;font-size:1.6rem;margin-bottom:8px">
-            <div class="logo-mark" style="width:36px;height:36px;font-size:1rem">H</div>HFX
+          <div class="logo" style="justify-content:center;font-size:1.5rem;margin-bottom:8px">
+            <div class="logo-mark" style="width:36px;height:36px;font-size:1rem">H</div>HFX Forecasts
           </div>
-          <p style="color:var(--text-secondary);font-size:.9rem">Hackley Prediction Market</p>
+          <p style="color:var(--text-secondary);font-size:.85rem">Hackley's Prediction & Census Platform</p>
         </div>
         <div class="auth-card">
           <h1>Welcome back</h1>
-          <p class="subtitle">Sign in to start trading</p>
+          <p class="subtitle">Sign in to start forecasting</p>
           <form id="login-form">
             <div class="form-group">
-              <label for="login-email">Email</label>
+              <label>Email</label>
               <input type="email" id="login-email" placeholder="you@students.hackleyschool.org" required>
             </div>
             <div class="form-group">
-              <label for="login-password">Password</label>
+              <label>Password</label>
               <input type="password" id="login-password" placeholder="Enter your password" required>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:.9rem;margin-top:8px">Sign In</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;margin-top:8px">Sign In</button>
           </form>
           <p class="switch-link">No account? <a href="#" id="go-signup">Sign up here</a></p>
         </div>
-      </div>
-    `;
-    document.getElementById('login-form').onsubmit = Login;
-    document.getElementById('go-signup').onclick = e => { e.preventDefault(); renderAuth('signup'); };
-  } else {
-    c.innerHTML = `
+      </div>`;
+    document.getElementById('login-form').onsubmit=Login;
+    document.getElementById('go-signup').onclick=e=>{e.preventDefault();renderAuth('signup')};
+  }else{
+    c.innerHTML=`
       <div class="auth-container page">
         <div style="text-align:center;margin-bottom:32px">
-          <div class="logo" style="justify-content:center;font-size:1.6rem;margin-bottom:8px">
-            <div class="logo-mark" style="width:36px;height:36px;font-size:1rem">H</div>HFX
+          <div class="logo" style="justify-content:center;font-size:1.5rem;margin-bottom:8px">
+            <div class="logo-mark" style="width:36px;height:36px;font-size:1rem">H</div>HFX Forecasts
           </div>
-          <p style="color:var(--text-secondary);font-size:.9rem">Join the Hackley Prediction Market</p>
+          <p style="color:var(--text-secondary);font-size:.85rem">Join Hackley's Prediction & Census Platform</p>
         </div>
         <div class="auth-card">
           <h1>Create account</h1>
           <p class="subtitle">Use your Hackley school email</p>
           <form id="signup-form">
             <div class="form-group">
-              <label for="signup-name">Display Name</label>
+              <label>Display Name</label>
               <input type="text" id="signup-name" placeholder="Your name" required>
             </div>
             <div class="form-group">
-              <label for="signup-email">Hackley Email</label>
+              <label>Hackley Email</label>
               <input type="email" id="signup-email" placeholder="you@students.hackleyschool.org" required>
               <p class="hint">Must end in @students.hackleyschool.org</p>
             </div>
             <div class="form-group">
-              <label for="signup-password">Password</label>
+              <label>Password</label>
               <input type="password" id="signup-password" placeholder="At least 6 characters" required minlength="6">
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:.9rem;margin-top:8px">Create Account</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;margin-top:8px">Create Account</button>
           </form>
           <p class="switch-link">Already registered? <a href="#" id="go-login">Sign in</a></p>
         </div>
-      </div>
-    `;
-    document.getElementById('signup-form').onsubmit = Signup;
-    document.getElementById('go-login').onclick = e => { e.preventDefault(); renderAuth('login'); };
+      </div>`;
+    document.getElementById('signup-form').onsubmit=Signup;
+    document.getElementById('go-login').onclick=e=>{e.preventDefault();renderAuth('login')};
   }
 }
 
-async function Login(e) {
+async function Login(e){
   e.preventDefault();
-  const email = document.getElementById('login-email').value.trim().toLowerCase();
-  const pw = document.getElementById('login-password').value;
-
-  try {
-    const users = await dbGet('users');
-    if (!users) { showToast('No account found', 'error'); return; }
-    const hash = await hashPassword(pw);
-    const entry = Object.entries(users).find(([_, u]) => u.email === email && u.passwordHash === hash);
-    if (!entry) { showToast('Invalid email or password', 'error'); return; }
-
-    const [id, user] = entry;
-    saveSession({ id, ...user });
-    showToast('Welcome back!', 'success');
+  const email=document.getElementById('login-email').value.trim().toLowerCase();
+  const pw=document.getElementById('login-password').value;
+  try{
+    const users=await dbGet('users');
+    if(!users){showToast('No account found','error');return}
+    const hash=await hashPassword(pw);
+    const entry=Object.entries(users).find(([_,u])=>u.email===email&&u.passwordHash===hash);
+    if(!entry){showToast('Invalid email or password','error');return}
+    const[id,user]=entry;
+    saveSession({id,...user});
+    showToast('Welcome back!','success');
     init();
-  } catch(err) { showToast('Login failed: ' + err.message, 'error'); }
+  }catch(err){showToast('Login failed: '+err.message,'error')}
 }
 
-async function Signup(e) {
+async function Signup(e){
   e.preventDefault();
-  const name = document.getElementById('signup-name').value.trim();
-  const email = document.getElementById('signup-email').value.trim().toLowerCase();
-  const pw = document.getElementById('signup-password').value;
-
-  if (!email.endsWith('@students.hackleyschool.org')) {
-    showToast('Must use a Hackley school email (@students.hackleyschool.org)', 'error');
-    return;
-  }
-  if (pw.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
-
-  try {
-    // Check if email exists
-    const users = await dbGet('users');
-    if (users) {
-      const exists = Object.values(users).find(u => u.email === email);
-      if (exists) { showToast('An account with this email already exists', 'error'); return; }
-    }
-
-    const hash = await hashPassword(pw);
-    
-    // Generate 6-digit OTP
-    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
-    
-    const userData = {
-      name,
-      email,
-      passwordHash: hash,
-      balance: 1000,
-      role: 'user',
-      verified: false,
-      verifyCode, // Save the code to the DB
-      createdAt: Date.now(),
-      trades: 0,
-      profit: 0
-    };
-
-    const res = await dbPush('users', userData);
-    saveSession({ id: res.name, ...userData });
-    
-    // Send Email via EmailJS
-    // Service ID: service_lytp94p
-    // Template ID: template_gyr9kcp
-    await emailjs.send("service_lytp94p", "template_gyr9kcp", {
-      to_email: email,
-      username: name,
-      otp_code: verifyCode
-    });
-
-    showToast('Account created! Check your email for the code.', 'success');
-
-    // Show verification modal
+  const name=document.getElementById('signup-name').value.trim();
+  const email=document.getElementById('signup-email').value.trim().toLowerCase();
+  const pw=document.getElementById('signup-password').value;
+  if(!email.endsWith('@students.hackleyschool.org')){showToast('Must use a Hackley school email','error');return}
+  if(pw.length<6){showToast('Password must be at least 6 characters','error');return}
+  try{
+    const users=await dbGet('users');
+    if(users){const exists=Object.values(users).find(u=>u.email===email);if(exists){showToast('Account already exists','error');return}}
+    const hash=await hashPassword(pw);
+    const verifyCode=Math.floor(100000+Math.random()*900000).toString();
+    const userData={name,email,passwordHash:hash,balance:1000,role:'user',verified:false,verifyCode,createdAt:Date.now(),trades:0,profit:0,predictions:0,correct:0};
+    const res=await dbPush('users',userData);
+    saveSession({id:res.name,...userData});
+    await emailjs.send("service_lytp94p","template_gyr9kcp",{to_email:email,username:name,otp_code:verifyCode});
+    showToast('Account created! Check your email for verification code.','success');
     showVerifyModal();
-  } catch(err) { 
-    console.error(err);
-    showToast('Signup failed: ' + err.message, 'error'); 
-  }
+  }catch(err){showToast('Signup failed: '+err.message,'error')}
 }
-  
-function showVerifyModal() {
-  openModal('Verify Your Email', `
+
+function showVerifyModal(){
+  openModal('Verify Your Email',`
     <div style="text-align:center">
-      <p style="color:var(--text-secondary);margin-bottom:16px">A 6-digit verification code has been sent to your email. Enter it below:</p>
+      <p style="color:var(--text-secondary);margin-bottom:16px">A 6-digit verification code has been sent to your Hackley email.</p>
       <div class="form-group">
         <input type="text" id="verify-input" placeholder="Enter 6-digit code" maxlength="6" style="text-align:center;font-size:1.2rem;letter-spacing:.2em">
       </div>
     </div>
-  `, `<button class="btn btn-primary" id="verify-submit" style="width:100%">Verify Account</button>`);
-
-  document.getElementById('verify-submit').onclick = async () => {
-    const input = document.getElementById('verify-input').value.trim();
-
-    if (input.length !== 6) {
-      showToast('Please enter a 6-digit code.', 'error');
-      return;
-    }
-
-    try {
-      const userInDb = await dbGet(`users/${currentUser.id}`);
-
-      if (userInDb && userInDb.verifyCode === input) {
-        await dbUpdate(`users/${currentUser.id}`, { verified: true, verifyCode: null });
-        currentUser.verified = true;
-        saveSession(currentUser);
-        closeModal();
-        showToast('Email verified! You can now trade and create markets.', 'success');
-        init();
-      } else {
-        showToast('Invalid code. Please try again.', 'error');
-      }
-    } catch (err) {
-      showToast('Verification failed. Please try again.', 'error');
-    }
+  `,`<button class="btn btn-primary" id="verify-submit" style="width:100%">Verify Account</button>`);
+  document.getElementById('verify-submit').onclick=async()=>{
+    const input=document.getElementById('verify-input').value.trim();
+    if(input.length!==6){showToast('Please enter a 6-digit code.','error');return}
+    try{
+      const userInDb=await dbGet(`users/${currentUser.id}`);
+      if(userInDb&&userInDb.verifyCode===input){
+        await dbUpdate(`users/${currentUser.id}`,{verified:true,verifyCode:null});
+        currentUser.verified=true;saveSession(currentUser);closeModal();
+        showToast('Email verified! You can now predict and vote.','success');init();
+      }else{showToast('Invalid code. Please try again.','error')}
+    }catch(err){showToast('Verification failed.','error')}
   };
 }
 
-// ========== MARKETS PAGE ==========
-async function renderMarkets(searchQuery = '') {
-  const c = document.getElementById('page-content');
-  try {
-    const marketsData = await dbGet('markets');
-    let markets = marketsData ? Object.entries(marketsData).map(([id, m]) => ({ id, ...m })) : [];
-
-    // Only show approved or user's own markets
-    markets = markets.filter(m => m.status === 'active' || m.status === 'resolved' || (m.creatorId === currentUser?.id));
-
-    // Filter by search
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      markets = markets.filter(m => m.title.toLowerCase().includes(q) || (m.description || '').toLowerCase().includes(q) || (m.category || '').toLowerCase().includes(q));
-    }
-
-    // Sort: active first, then by creation time
-    markets.sort((a, b) => {
-      if (a.status === 'active' && b.status !== 'active') return -1;
-      if (a.status !== 'active' && b.status === 'active') return 1;
-      return (b.createdAt || 0) - (a.createdAt || 0);
-    });
-
-    const categories = ['All', 'Sports', 'Events', 'Academics', 'Misc'];
-    let activeCategory = 'All';
-
-    function render(cat) {
-      activeCategory = cat;
-      let filtered = cat === 'All' ? markets : markets.filter(m => m.category === cat);
-
-      c.innerHTML = `
-        <div class="page">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-            <h1 class="page-title" style="margin:0">Markets</h1>
-            ${currentUser?.verified ? '<button class="btn btn-primary" id="create-market-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg> New Market</button>' : '<span class="badge badge-pending">Verify email to create markets</span>'}
-          </div>
-          <div class="cat-pills">${categories.map(ct => `<button class="cat-pill ${ct === activeCategory ? 'active' : ''}" data-cat="${ct}">${ct}</button>`).join('')}</div>
-          ${filtered.length === 0 ? `
-            <div class="empty-state">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
-              <h3>No markets yet</h3>
-              <p>Be the first to create a prediction market!</p>
-            </div>
-          ` : `
-            <div class="market-grid">
-              ${filtered.map(m => `
-                <div class="card market-card" data-market-id="${m.id}">
-                  <div class="mc-top">
-                    <div class="mc-category">${esc(m.category || 'Misc')} ${m.status === 'resolved' ? `<span class="badge badge-resolved" style="margin-left:6px">Resolved</span>` : m.status === 'pending' ? '<span class="badge badge-pending" style="margin-left:6px">Pending</span>' : ''}</div>
-                    <div class="mc-title">${esc(m.title)}</div>
-                    <div class="mc-desc">${esc(m.description || '')}</div>
-                    <div class="mc-meta">
-                      <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> ${timeAgo(m.createdAt)}</span>
-                      <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> ${m.totalTraders || 0} traders</span>
-                      <span>Vol: ${(m.volume || 0).toLocaleString()}</span>
-                    </div>
-                  </div>
-                  <div class="mc-bottom">
-                    ${m.status === 'resolved' ?
-                      `<div style="flex:1;text-align:center;padding:10px;font-weight:700;color:${m.resolution === 'YES' ? 'var(--accent)' : 'var(--red)'}">${m.resolution === 'YES' ? 'Resolved YES' : 'Resolved NO'}</div>` :
-                      `<button class="trade-btn yes" data-market-id="${m.id}" data-side="YES">Yes ${Math.round((m.yesPrice || 0.5) * 100)}%</button>
-                       <button class="trade-btn no" data-market-id="${m.id}" data-side="NO">No ${Math.round((1 - (m.yesPrice || 0.5)) * 100)}%</button>`
-                    }
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          `}
-        </div>
-      `;
-
-      // Event rs
-      c.querySelectorAll('.cat-pill').forEach(btn => {
-        btn.onclick = () => render(btn.dataset.cat);
-      });
-      c.querySelectorAll('.market-card').forEach(card => {
-        card.onclick = e => {
-          if (e.target.closest('.trade-btn')) return;
-          navigate('market-detail', card.dataset.marketId);
-        };
-      });
-      c.querySelectorAll('.trade-btn').forEach(btn => {
-        btn.onclick = e => {
-          e.stopPropagation();
-          if (!currentUser?.verified) { showToast('Verify your email first to trade', 'error'); return; }
-          showTradeModal(btn.dataset.marketId, btn.dataset.side);
-        };
-      });
-      const createBtn = document.getElementById('create-market-btn');
-      if (createBtn) createBtn.onclick = showCreateMarketModal;
-    }
-
-    render(activeCategory);
-  } catch(err) {
-    c.innerHTML = `<div class="empty-state"><h3>Failed to load markets</h3><p>${esc(err.message)}</p></div>`;
-  }
+// ========== CREATE (UNIFIED) ==========
+function showCreateAnyModal(){
+  if(!currentUser?.verified){showToast('Verify your email to create content','error');return}
+  openModal('What would you like to create?',`
+    <div class="type-selector">
+      <div class="type-card" id="type-forecast" onclick="selectCreateType('forecast')">
+        <div class="type-icon">🎯</div>
+        <div class="type-name">Forecast Question</div>
+        <div class="type-desc">Yes/No predictions with probability tracking</div>
+      </div>
+      <div class="type-card" id="type-census" onclick="selectCreateType('census')">
+        <div class="type-icon">📊</div>
+        <div class="type-name">Census Poll</div>
+        <div class="type-desc">Multi-choice polls to survey opinions</div>
+      </div>
+    </div>
+    <div id="create-form-container"></div>
+  `,`
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" id="create-submit" style="display:none">Submit for Review</button>
+  `);
 }
 
-// ========== COMMENT REPORTING ==========
-async function reportComment(marketId, commentId, commentText, commentUser) {
-  try {
-    await dbPush('reportedComments', {
-      marketId,
-      commentId,
-      commentText,
-      commentUser,
-      reportedBy: currentUser.id,
-      reportedByName: currentUser.name,
-      timestamp: Date.now(),
-      status: 'pending' // pending | dismissed | deleted
-    });
-    showToast('Comment reported to moderators', 'success');
-  } catch(err) { showToast('Failed to report comment', 'error'); }
-}
+function selectCreateType(type){
+  document.querySelectorAll('.type-card').forEach(c=>c.className='type-card');
+  document.getElementById(`type-${type}`).className=`type-card selected-${type}`;
+  const container=document.getElementById('create-form-container');
+  const submitBtn=document.getElementById('create-submit');
+  submitBtn.style.display='';
 
-// ========== CREATE MARKET ==========
-function showCreateMarketModal() {
-  if (!currentUser?.verified) { showToast('Verify your email to create markets', 'error'); return; }
-  openModal('Create New Market', `
-    <form id="create-market-form">
+  if(type==='forecast'){
+    submitBtn.className='btn btn-primary';
+    submitBtn.onclick=submitForecast;
+    container.innerHTML=`
       <div class="form-group">
-        <label>Question / Title</label>
-        <input type="text" id="cm-title" placeholder="Will the basketball team win on Friday?" required maxlength="200">
+        <label>Question</label>
+        <input type="text" id="cm-title" placeholder="Will the basketball team win Friday's game?" required maxlength="200">
       </div>
       <div class="form-group">
         <label>Description</label>
-        <textarea id="cm-desc" placeholder="Add context, rules, and resolution criteria..." rows="3"></textarea>
+        <textarea id="cm-desc" placeholder="Add context and resolution criteria..." rows="2"></textarea>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -827,291 +675,551 @@ function showCreateMarketModal() {
             <option value="Misc">Misc</option>
             <option value="custom">Custom...</option>
           </select>
-          <input type="text" id="cm-custom-category" placeholder="Type custom category..." style="display:none; margin-top:8px;">
+          <input type="text" id="cm-custom-category" placeholder="Type custom category..." style="display:none;margin-top:8px">
         </div>
         <div class="form-group">
           <label>Close Date (optional)</label>
           <input type="date" id="cm-close-date">
         </div>
+      </div>`;
+    document.getElementById('cm-category').onchange=function(){
+      document.getElementById('cm-custom-category').style.display=this.value==='custom'?'block':'none';
+    };
+  }else{
+    submitBtn.className='btn btn-purple';
+    submitBtn.onclick=submitCensus;
+    container.innerHTML=`
+      <div class="form-group">
+        <label>Poll Question</label>
+        <input type="text" id="cp-title" placeholder="Who is the best teacher at Hackley?" required maxlength="200">
       </div>
-    </form>
-  `, `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-primary" id="cm-submit">Create Market</button>
-  `);
+      <div class="form-group">
+        <label>Description (optional)</label>
+        <textarea id="cp-desc" placeholder="Add context..." rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Answer Options</label>
+        <div id="options-container">
+          <div class="option-row"><input type="text" class="census-opt" placeholder="Option 1" required><button class="remove-opt" onclick="removeOption(this)" title="Remove">×</button></div>
+          <div class="option-row"><input type="text" class="census-opt" placeholder="Option 2" required><button class="remove-opt" onclick="removeOption(this)" title="Remove">×</button></div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="addOption()">+ Add Option</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="cp-category">
+            <option value="Teachers">Teachers</option>
+            <option value="School Life">School Life</option>
+            <option value="Sports">Sports</option>
+            <option value="Events">Events</option>
+            <option value="Misc">Misc</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Anonymous Votes?</label>
+          <select id="cp-anonymous">
+            <option value="yes">Yes — hide voter names</option>
+            <option value="no">No — show who voted</option>
+          </select>
+        </div>
+      </div>`;
+  }
+}
 
-  // Toggle custom input visibility
-  const categorySelect = document.getElementById('cm-category');
-  const customInput = document.getElementById('cm-custom-category');
-  
-  categorySelect.onchange = () => {
-    customInput.style.display = categorySelect.value === 'custom' ? 'block' : 'none';
-    if (categorySelect.value !== 'custom') customInput.value = '';
-  };
+function addOption(){
+  const container=document.getElementById('options-container');
+  const count=container.querySelectorAll('.option-row').length+1;
+  const row=document.createElement('div');row.className='option-row';
+  row.innerHTML=`<input type="text" class="census-opt" placeholder="Option ${count}"><button class="remove-opt" onclick="removeOption(this)" title="Remove">×</button>`;
+  container.appendChild(row);
+}
 
-  document.getElementById('cm-submit').onclick = async () => {
-    const title = document.getElementById('cm-title').value.trim();
-    const desc = document.getElementById('cm-desc').value.trim();
-    let category = document.getElementById('cm-category').value;
-    const closeDate = document.getElementById('cm-close-date').value;
+function removeOption(btn){
+  const rows=document.querySelectorAll('.option-row');
+  if(rows.length<=2){showToast('Need at least 2 options','error');return}
+  btn.closest('.option-row').remove();
+}
 
-    // Handle custom category
-    if (category === 'custom') {
-      category = customInput.value.trim();
-      if (!category) { showToast('Please enter a custom category name', 'error'); return; }
+async function submitForecast(){
+  const title=document.getElementById('cm-title')?.value.trim();
+  const desc=document.getElementById('cm-desc')?.value.trim();
+  let category=document.getElementById('cm-category')?.value;
+  const closeDate=document.getElementById('cm-close-date')?.value;
+  if(category==='custom'){
+    category=document.getElementById('cm-custom-category').value.trim();
+    if(!category){showToast('Please enter a custom category','error');return}
+  }
+  if(!title){showToast('Please enter a question','error');return}
+  try{
+    const market={title,description:desc,category,closeDate:closeDate||null,creatorId:currentUser.id,creatorName:currentUser.name,status:'pending',yesPrice:0.5,noPrice:0.5,yesShares:100,noShares:100,volume:0,totalTraders:0,liquidity:1000,createdAt:Date.now(),resolution:null,type:'forecast'};
+    await dbPush('markets',market);
+    closeModal();showToast('Forecast submitted for moderator review!','success');
+    renderMarkets();
+  }catch(err){showToast('Failed: '+err.message,'error')}
+}
+
+async function submitCensus(){
+  const title=document.getElementById('cp-title')?.value.trim();
+  const desc=document.getElementById('cp-desc')?.value.trim();
+  const category=document.getElementById('cp-category')?.value;
+  const anonymous=document.getElementById('cp-anonymous')?.value==='yes';
+  const optEls=document.querySelectorAll('.census-opt');
+  const options=Array.from(optEls).map(el=>el.value.trim()).filter(v=>v);
+  if(!title){showToast('Please enter a poll question','error');return}
+  if(options.length<2){showToast('Need at least 2 options','error');return}
+  try{
+    const census={title,description:desc,category,anonymous,options,votes:{},totalVotes:0,creatorId:currentUser.id,creatorName:currentUser.name,status:'pending',createdAt:Date.now(),type:'census'};
+    await dbPush('censuses',census);
+    closeModal();showToast('Poll submitted for moderator review!','success');
+    renderCensus();
+  }catch(err){showToast('Failed: '+err.message,'error')}
+}
+
+// ========== MARKETS / FORECASTS PAGE ==========
+async function renderMarkets(searchQuery=''){
+  const c=document.getElementById('page-content');
+  try{
+    const marketsData=await dbGet('markets');
+    let markets=marketsData?Object.entries(marketsData).map(([id,m])=>({id,...m})):[];
+    markets=markets.filter(m=>m.status==='active'||m.status==='resolved'||(m.creatorId===currentUser?.id));
+    if(searchQuery){const q=searchQuery.toLowerCase();markets=markets.filter(m=>m.title.toLowerCase().includes(q)||(m.description||'').toLowerCase().includes(q)||(m.category||'').toLowerCase().includes(q))}
+    markets.sort((a,b)=>{if(a.status==='active'&&b.status!=='active')return -1;if(a.status!=='active'&&b.status==='active')return 1;return(b.createdAt||0)-(a.createdAt||0)});
+
+    const categories=['All','Sports','Events','Academics','Misc'];
+    let activeCategory='All';
+
+    function render(cat){
+      activeCategory=cat;
+      let filtered=cat==='All'?markets:markets.filter(m=>m.category===cat);
+      c.innerHTML=`
+        <div class="page">
+          <div class="disclaimer-bar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            HFX Forecasts uses fictional Accuracy Points only — no real money or gambling involved.
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+            <h1 class="page-title" style="margin:0">🎯 Forecast Questions</h1>
+            ${currentUser?.verified?'<button class="btn btn-primary" id="create-market-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg> New Forecast</button>':'<span class="badge badge-pending">Verify email to create</span>'}
+          </div>
+          <div class="cat-pills">${categories.map(ct=>`<button class="cat-pill ${ct===activeCategory?'active':''}" data-cat="${ct}">${ct}</button>`).join('')}</div>
+          ${filtered.length===0?`<div class="empty-state"><h3>No forecasts yet</h3><p>Be the first to create a prediction question!</p></div>`:`
+            <div class="market-grid">
+              ${filtered.map(m=>`
+                <div class="card market-card" data-market-id="${m.id}">
+                  <div class="mc-top">
+                    <div class="mc-category">🎯 ${esc(m.category||'Misc')} ${m.status==='resolved'?`<span class="badge badge-resolved">Resolved</span>`:m.status==='pending'?'<span class="badge badge-pending">Pending</span>':''}</div>
+                    <div class="mc-title">${esc(m.title)}</div>
+                    <div class="mc-desc">${esc(m.description||'')}</div>
+                    <div class="mc-meta">
+                      <span>${timeAgo(m.createdAt)}</span>
+                      <span>${m.totalTraders||0} participants</span>
+                      <span>Vol: ${(m.volume||0).toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div class="mc-bottom">
+                    ${m.status==='resolved'?
+                      `<div style="flex:1;text-align:center;padding:10px;font-weight:700;color:${m.resolution==='YES'?'var(--accent)':'var(--red)'}">Resolved: ${m.resolution}</div>`:
+                      `<button class="pred-btn yes" data-market-id="${m.id}" data-side="YES">Forecast YES ${Math.round((m.yesPrice||0.5)*100)}%</button>
+                       <button class="pred-btn no" data-market-id="${m.id}" data-side="NO">Forecast NO ${Math.round((1-(m.yesPrice||0.5))*100)}%</button>`
+                    }
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>`;
+      c.querySelectorAll('.cat-pill').forEach(btn=>{btn.onclick=()=>render(btn.dataset.cat)});
+      c.querySelectorAll('.market-card').forEach(card=>{
+        card.onclick=e=>{if(e.target.closest('.pred-btn'))return;navigate('market-detail',card.dataset.marketId)};
+      });
+      c.querySelectorAll('.pred-btn').forEach(btn=>{
+        btn.onclick=e=>{
+          e.stopPropagation();
+          if(!currentUser?.verified){showToast('Verify your email first','error');return}
+          showTradeModal(btn.dataset.marketId,btn.dataset.side);
+        };
+      });
+      const cb=document.getElementById('create-market-btn');
+      if(cb)cb.onclick=()=>{showCreateAnyModal();selectCreateType('forecast')};
+    }
+    render(activeCategory);
+  }catch(err){c.innerHTML=`<div class="empty-state"><h3>Failed to load</h3><p>${esc(err.message)}</p></div>`}
+}
+
+// ========== CENSUS PAGE ==========
+async function renderCensus(searchQuery=''){
+  const c=document.getElementById('page-content');
+  try{
+    const data=await dbGet('censuses');
+    let censuses=data?Object.entries(data).map(([id,p])=>({id,...p})):[];
+    censuses=censuses.filter(p=>p.status==='active'||p.status==='closed'||(p.creatorId===currentUser?.id));
+    if(searchQuery){const q=searchQuery.toLowerCase();censuses=censuses.filter(p=>p.title.toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q))}
+    censuses.sort((a,b)=>{if(a.status==='active'&&b.status!=='active')return -1;if(a.status!=='active'&&b.status==='active')return 1;return(b.createdAt||0)-(a.createdAt||0)});
+
+    const categories=['All','Teachers','School Life','Sports','Events','Misc'];
+    let activeCategory='All';
+
+    function render(cat){
+      activeCategory=cat;
+      let filtered=cat==='All'?censuses:censuses.filter(p=>p.category===cat);
+      c.innerHTML=`
+        <div class="page">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+            <h1 class="page-title" style="margin:0">📊 Census & Polls</h1>
+            ${currentUser?.verified?'<button class="btn btn-purple" id="create-census-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg> New Poll</button>':'<span class="badge badge-pending">Verify email to create</span>'}
+          </div>
+          <div class="cat-pills">${categories.map(ct=>`<button class="cat-pill census-pill ${ct===activeCategory?'active':''}" data-cat="${ct}">${ct}</button>`).join('')}</div>
+          ${filtered.length===0?`<div class="empty-state"><h3>No polls yet</h3><p>Create the first census poll!</p></div>`:`
+            <div class="market-grid">
+              ${filtered.map(p=>{
+                const total=p.totalVotes||0;
+                const opts=p.options||[];
+                const votes=p.votes||{};
+                // Tally votes per option
+                const counts={};
+                opts.forEach(o=>{counts[o]=0});
+                Object.values(votes).forEach(v=>{if(counts[v]!==undefined)counts[v]++});
+                const maxCount=Math.max(...Object.values(counts),0);
+                const leadingOpt=opts.find(o=>counts[o]===maxCount&&maxCount>0);
+                const hasVoted=currentUser&&votes[currentUser.id];
+                return`
+                  <div class="card market-card census-card" data-census-id="${p.id}">
+                    <div class="mc-top">
+                      <div class="mc-category">📊 ${esc(p.category||'Misc')} <span class="census-badge">Census</span> ${p.status==='closed'?'<span class="badge badge-resolved" style="margin-left:4px">Closed</span>':p.status==='pending'?'<span class="badge badge-pending" style="margin-left:4px">Pending</span>':''}</div>
+                      <div class="mc-title">${esc(p.title)}</div>
+                      <div class="mc-meta" style="margin-bottom:10px">
+                        <span>${timeAgo(p.createdAt)}</span>
+                        <span>${total} vote${total!==1?'s':''}</span>
+                        ${p.anonymous?'<span>Anonymous</span>':''}
+                      </div>
+                      ${total>0?`
+                        <div>
+                          ${opts.slice(0,3).map(opt=>{
+                            const pct=total>0?Math.round((counts[opt]||0)/total*100):0;
+                            const isLeading=opt===leadingOpt;
+                            return`<div class="poll-option-bar">
+                              <div class="bar-label"><span style="font-size:.77rem;font-weight:${isLeading?700:400}">${esc(opt)}</span><span style="font-size:.72rem;font-weight:700;color:${isLeading?'var(--accent)':'var(--purple)'}">${pct}%</span></div>
+                              <div class="bar-track"><div class="bar-fill ${isLeading?'leading':''}" style="width:${pct}%"></div></div>
+                            </div>`;
+                          }).join('')}
+                          ${opts.length>3?`<div style="font-size:.72rem;color:var(--text-muted);margin-top:4px">+${opts.length-3} more options</div>`:''}
+                        </div>
+                      `:`<div style="font-size:.8rem;color:var(--text-muted)">${opts.length} options — be the first to vote!</div>`}
+                    </div>
+                    <div class="mc-bottom">
+                      <button class="pred-btn ${hasVoted?'yes':'no'}" style="flex:1;background:${hasVoted?'var(--accent-dim)':'var(--purple-dim)'};color:${hasVoted?'var(--accent)':'var(--purple)'}" data-census-id="${p.id}">
+                        ${hasVoted?'✓ You Voted — View Results':'Vote Now'}
+                      </button>
+                    </div>
+                  </div>`;
+              }).join('')}
+            </div>
+          `}
+        </div>`;
+      c.querySelectorAll('.cat-pill').forEach(btn=>{btn.onclick=()=>render(btn.dataset.cat)});
+      c.querySelectorAll('.census-card').forEach(card=>{
+        card.onclick=e=>{if(e.target.closest('.pred-btn'))return;navigate('census-detail',card.dataset.censusId)};
+      });
+      c.querySelectorAll('[data-census-id]').forEach(btn=>{
+        btn.onclick=e=>{
+          e.stopPropagation();
+          if(!currentUser?.verified){showToast('Verify your email to vote','error');return}
+          navigate('census-detail',btn.dataset.censusId);
+        };
+      });
+      const cb=document.getElementById('create-census-btn');
+      if(cb)cb.onclick=()=>{showCreateAnyModal();selectCreateType('census')};
+    }
+    render(activeCategory);
+  }catch(err){c.innerHTML=`<div class="empty-state"><h3>Failed to load</h3><p>${esc(err.message)}</p></div>`}
+}
+
+// ========== CENSUS DETAIL ==========
+async function renderCensusDetail(censusId){
+  const c=document.getElementById('page-content');
+  try{
+    const poll=await dbGet(`censuses/${censusId}`);
+    if(!poll){c.innerHTML='<div class="empty-state"><h3>Poll not found</h3></div>';return}
+    const votes=poll.votes||{};
+    const opts=poll.options||[];
+    const total=poll.totalVotes||0;
+    const hasVoted=currentUser&&votes[currentUser.id];
+    const userVote=hasVoted?votes[currentUser.id]:null;
+
+    // Tally
+    const counts={};opts.forEach(o=>{counts[o]=0});
+    Object.values(votes).forEach(v=>{if(counts[v]!==undefined)counts[v]++});
+    const maxCount=Math.max(...Object.values(counts),0);
+    const leadingOpt=opts.find(o=>counts[o]===maxCount&&maxCount>0);
+
+    let selectedOption=userVote||null;
+
+    function renderVoteUI(){
+      c.innerHTML=`
+        <div class="page">
+          <button class="btn btn-ghost" id="back-to-census" style="margin-bottom:16px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7l-7 7 7 7"/></svg>
+            Back to Census
+          </button>
+          <div class="market-detail-grid">
+            <div>
+              <div class="card" style="margin-bottom:20px">
+                <div class="card-body">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                    <span class="badge badge-census">📊 Census</span>
+                    <span style="font-size:.77rem;color:var(--text-muted)">${esc(poll.category||'Misc')}</span>
+                    ${poll.status==='closed'?'<span class="badge badge-resolved">Closed</span>':'<span class="badge badge-active">Active</span>'}
+                  </div>
+                  <h1 style="font-size:1.25rem;font-weight:800;margin-bottom:10px;line-height:1.4">${esc(poll.title)}</h1>
+                  ${poll.description?`<p style="color:var(--text-secondary);font-size:.88rem;line-height:1.6;margin-bottom:12px">${esc(poll.description)}</p>`:''}
+                  <div style="display:flex;gap:16px;font-size:.78rem;color:var(--text-muted)">
+                    <span>By <strong style="color:var(--text)">${esc(poll.creatorName)}</strong></span>
+                    <span>${timeAgo(poll.createdAt)}</span>
+                    <span>${total} vote${total!==1?'s':''}</span>
+                    ${poll.anonymous?'<span>🔒 Anonymous</span>':''}
+                  </div>
+                </div>
+              </div>
+
+              ${hasVoted||poll.status==='closed'?`
+                <!-- Results view -->
+                <div class="card">
+                  <div class="card-header"><strong>📊 Results</strong><span style="font-size:.78rem;color:var(--text-muted)">${total} total votes</span></div>
+                  <div class="card-body">
+                    ${opts.map(opt=>{
+                      const cnt=counts[opt]||0;
+                      const pct=total>0?Math.round(cnt/total*100):0;
+                      const isLeading=opt===leadingOpt;
+                      const isMyVote=opt===userVote;
+                      return`<div class="census-result-option ${isLeading?'leading':''}">
+                        <div class="row">
+                          <span class="name">${esc(opt)} ${isMyVote?'<span style="font-size:.7rem;color:var(--accent);background:var(--accent-dim);padding:1px 6px;border-radius:10px">Your vote</span>':''} ${isLeading&&total>0?'<span style="font-size:.7rem;color:var(--accent)">Leading</span>':''}</span>
+                          <span class="pct">${pct}% <span style="color:var(--text-muted);font-weight:400">(${cnt})</span></span>
+                        </div>
+                        <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+                      </div>`;
+                    }).join('')}
+                    ${!hasVoted&&poll.status==='closed'?'<p style="font-size:.82rem;color:var(--text-muted);margin-top:12px">This poll is closed.</p>':''}
+                  </div>
+                </div>
+              `:`
+                <!-- Voting view -->
+                <div class="card">
+                  <div class="card-header"><strong>Cast Your Vote</strong></div>
+                  <div class="card-body">
+                    <div id="vote-options">
+                      ${opts.map(opt=>`
+                        <div class="census-vote-option ${selectedOption===opt?'selected':''}" data-opt="${esc(opt)}" onclick="selectVoteOption('${esc(opt).replace(/'/g,"\\'")}',this)">
+                          <div class="opt-radio"></div>
+                          <span class="opt-label">${esc(opt)}</span>
+                        </div>
+                      `).join('')}
+                    </div>
+                    <button class="btn btn-purple" id="submit-vote-btn" style="width:100%;margin-top:16px;padding:12px">Submit Vote</button>
+                  </div>
+                </div>
+              `}
+            </div>
+            <div>
+              <div class="trade-panel" style="position:sticky;top:80px">
+                <h3 style="font-size:.95rem;font-weight:800;margin-bottom:12px">📊 Poll Stats</h3>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="background:var(--bg-surface);border-radius:8px;padding:12px">
+                    <div style="font-size:.67rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:4px">Total Votes</div>
+                    <div style="font-size:1.4rem;font-weight:800;font-family:var(--font-mono);color:var(--purple)">${total}</div>
+                  </div>
+                  <div style="background:var(--bg-surface);border-radius:8px;padding:12px">
+                    <div style="font-size:.67rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:4px">Options</div>
+                    <div style="font-size:1.4rem;font-weight:800;font-family:var(--font-mono)">${opts.length}</div>
+                  </div>
+                  ${hasVoted?`<div style="background:var(--accent-dim);border:1px solid var(--accent);border-radius:8px;padding:12px">
+                    <div style="font-size:.67rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:700;margin-bottom:4px">Your Vote</div>
+                    <div style="font-size:.88rem;font-weight:700;color:var(--accent)">${esc(userVote)}</div>
+                  </div>`:''}
+                  ${leadingOpt&&total>0?`<div style="background:var(--bg-surface);border-radius:8px;padding:12px">
+                    <div style="font-size:.67rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);font-weight:700;margin-bottom:4px">Currently Leading</div>
+                    <div style="font-size:.88rem;font-weight:700">${esc(leadingOpt)}</div>
+                    <div style="font-size:.77rem;color:var(--accent);font-weight:700;font-family:var(--font-mono)">${Math.round((counts[leadingOpt]||0)/total*100)}%</div>
+                  </div>`:''}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      document.getElementById('back-to-census').onclick=()=>navigate('census');
+      const submitVoteBtn=document.getElementById('submit-vote-btn');
+      if(submitVoteBtn)submitVoteBtn.onclick=()=>submitVote(censusId,selectedOption);
     }
 
-    if (!title) { showToast('Please enter a market title', 'error'); return; }
+    window.selectVoteOption=function(opt,el){
+      selectedOption=opt;
+      document.querySelectorAll('.census-vote-option').forEach(e=>e.classList.remove('selected'));
+      el.classList.add('selected');
+    };
 
-    try {
-      const market = {
-        title,
-        description: desc,
-        category,
-        closeDate: closeDate || null,
-        creatorId: currentUser.id,
-        creatorName: currentUser.name,
-        status: 'pending', // needs mod approval
-        yesPrice: 0.5,
-        noPrice: 0.5,
-        yesShares: 100,
-        noShares: 100,
-        volume: 0,
-        totalTraders: 0,
-        liquidity: 1000,
-        createdAt: Date.now(),
-        resolution: null
-      };
-
-      await dbPush('markets', market);
-      closeModal();
-      showToast('Market submitted for moderator approval!', 'success');
-      renderMarkets();
-    } catch(err) { showToast('Failed to create market: ' + err.message, 'error'); }
-  };
+    renderVoteUI();
+  }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error loading poll</h3><p>${esc(err.message)}</p></div>`}
 }
 
-// ========== TRADING ==========
-function showTradeModal(marketId, side) {
-  openModal(`Trade: ${side}`, `
-    <div id="trade-modal-content"><div class="spinner" style="margin:20px auto"></div></div>
-  `, '');
-  loadTradeModal(marketId, side);
+async function submitVote(censusId,option){
+  if(!option){showToast('Please select an option first','error');return}
+  if(!currentUser?.verified){showToast('Verify your email to vote','error');return}
+  try{
+    const poll=await dbGet(`censuses/${censusId}`);
+    if(poll.votes&&poll.votes[currentUser.id]){showToast('You have already voted','error');return}
+    await dbUpdate(`censuses/${censusId}/votes`,{[currentUser.id]:option});
+    await dbUpdate(`censuses/${censusId}`,{totalVotes:(poll.totalVotes||0)+1});
+    showToast(`Voted for "${option}"!`,'success');
+    renderCensusDetail(censusId);
+  }catch(err){showToast('Failed to submit vote: '+err.message,'error')}
 }
 
-async function loadTradeModal(marketId, side) {
-  try {
-    const market = await dbGet(`markets/${marketId}`);
-    if (!market) { showToast('Market not found', 'error'); closeModal(); return; }
-    if (market.status !== 'active') { showToast('This market is not active for trading', 'error'); closeModal(); return; }
+// ========== PREDICT (TRADE) MODAL ==========
+function showTradeModal(marketId,side){
+  openModal(`Forecast: ${side}`,`<div id="trade-modal-content"><div class="spinner" style="margin:20px auto"></div></div>`,'');
+  loadTradeModal(marketId,side);
+}
 
-    const price = side === 'YES' ? market.yesPrice : (1 - market.yesPrice);
-    let shares = 10;
+async function loadTradeModal(marketId,side){
+  try{
+    const market=await dbGet(`markets/${marketId}`);
+    if(!market){showToast('Market not found','error');closeModal();return}
+    if(market.status!=='active'){showToast('This forecast is not open for predictions','error');closeModal();return}
+    const price=side==='YES'?market.yesPrice:(1-market.yesPrice);
+    let shares=10;
 
-    function renderTradeContent() {
-      const cost = shares * price;
-      const potentialWin = shares - cost;
-      document.getElementById('trade-modal-content').innerHTML = `
+    function renderTC(){
+      const cost=shares*price;
+      const potentialWin=shares-cost;
+      document.getElementById('trade-modal-content').innerHTML=`
         <div>
-          <h3 style="font-size:.95rem;font-weight:600;margin-bottom:16px;color:var(--text-secondary)">${esc(market.title)}</h3>
+          <h3 style="font-size:.9rem;font-weight:600;margin-bottom:16px;color:var(--text-secondary)">${esc(market.title)}</h3>
           <div class="trade-tabs">
-            <button class="trade-tab ${side === 'YES' ? 'active-yes' : ''}" id="trade-side-yes">YES ${Math.round(market.yesPrice * 100)}%</button>
-            <button class="trade-tab ${side === 'NO' ? 'active-no' : ''}" id="trade-side-no">NO ${Math.round((1 - market.yesPrice) * 100)}%</button>
+            <button class="trade-tab ${side==='YES'?'active-yes':''}" id="trade-side-yes">YES ${Math.round(market.yesPrice*100)}%</button>
+            <button class="trade-tab ${side==='NO'?'active-no':''}" id="trade-side-no">NO ${Math.round((1-market.yesPrice)*100)}%</button>
           </div>
           <div class="trade-input-group">
-            <label>Shares</label>
+            <label>Confidence pts</label>
             <input type="number" id="trade-shares" value="${shares}" min="1" max="500" step="1" style="width:120px">
           </div>
           <div class="trade-summary">
-            <div><span>Price per share</span><span style="font-family:var(--font-mono)">${price.toFixed(2)} HFX</span></div>
-            <div><span>Shares</span><span style="font-family:var(--font-mono)">${shares}</span></div>
-            <div class="total"><span>Total Cost</span><span style="color:var(--accent);font-family:var(--font-mono)">${cost.toFixed(2)} HFX</span></div>
-            <div><span>Potential Win</span><span style="color:var(--accent);font-family:var(--font-mono)">+${potentialWin.toFixed(2)} HFX</span></div>
+            <div><span>Cost per point</span><span style="font-family:var(--font-mono)">${price.toFixed(2)} pts</span></div>
+            <div><span>Confidence points</span><span style="font-family:var(--font-mono)">${shares}</span></div>
+            <div class="total"><span>Total Cost</span><span style="color:var(--accent);font-family:var(--font-mono)">${cost.toFixed(2)} pts</span></div>
+            <div><span>If correct, earn</span><span style="color:var(--accent);font-family:var(--font-mono)">+${potentialWin.toFixed(2)} pts</span></div>
           </div>
-          <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:12px">Your balance: <strong style="color:var(--text)">${currentUser.balance.toLocaleString()} HFX</strong></div>
-          <button class="btn ${side === 'YES' ? 'btn-primary' : 'btn-danger'}" id="trade-confirm" style="width:100%;padding:14px;font-size:.95rem">
-            Buy ${side} for ${cost.toFixed(2)} HFX
+          <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:12px">Your Accuracy Score: <strong style="color:var(--text)">${currentUser.balance.toLocaleString()} pts</strong></div>
+          <button class="btn ${side==='YES'?'btn-primary':'btn-danger'}" id="trade-confirm" style="width:100%;padding:14px">
+            Forecast ${side} — ${cost.toFixed(2)} pts
           </button>
-        </div>
-      `;
-
-      document.getElementById('trade-shares').onchange = e => {
-        shares = Math.max(1, parseInt(e.target.value) || 1);
-        renderTradeContent();
-      };
-      document.getElementById('trade-side-yes').onclick = () => { side = 'YES'; renderTradeContent(); };
-      document.getElementById('trade-side-no').onclick = () => { side = 'NO'; renderTradeContent(); };
-      document.getElementById('trade-confirm').onclick = () => executeTrade(marketId, side, shares, market);
+        </div>`;
+      document.getElementById('trade-shares').onchange=e=>{shares=Math.max(1,parseInt(e.target.value)||1);renderTC()};
+      document.getElementById('trade-side-yes').onclick=()=>{side='YES';renderTC()};
+      document.getElementById('trade-side-no').onclick=()=>{side='NO';renderTC()};
+      document.getElementById('trade-confirm').onclick=()=>executeTrade(marketId,side,shares,market);
     }
-
-    renderTradeContent();
-    document.getElementById('modal-footer').innerHTML = '';
-  } catch(err) { showToast('Failed to load market', 'error'); closeModal(); }
+    renderTC();
+    document.getElementById('modal-footer').innerHTML='';
+  }catch(err){showToast('Failed to load forecast','error');closeModal()}
 }
 
-async function executeTrade(marketId, side, shares, market) {
-  const price = side === 'YES' ? market.yesPrice : (1 - market.yesPrice);
-  const cost = shares * price;
-
-  if (cost > currentUser.balance) { showToast('Insufficient balance', 'error'); return; }
-
-  try {
-    // Update user balance
-    const newBalance = currentUser.balance - cost;
-    await dbUpdate(`users/${currentUser.id}`, { balance: newBalance, trades: (currentUser.trades || 0) + 1 });
-    currentUser.balance = newBalance;
-    currentUser.trades = (currentUser.trades || 0) + 1;
+async function executeTrade(marketId,side,shares,market){
+  const price=side==='YES'?market.yesPrice:(1-market.yesPrice);
+  const cost=shares*price;
+  if(cost>currentUser.balance){showToast('Insufficient Accuracy Score points','error');return}
+  try{
+    const newBalance=currentUser.balance-cost;
+    await dbUpdate(`users/${currentUser.id}`,{balance:newBalance,trades:(currentUser.trades||0)+1,predictions:(currentUser.predictions||0)+1});
+    currentUser.balance=newBalance;currentUser.trades=(currentUser.trades||0)+1;currentUser.predictions=(currentUser.predictions||0)+1;
     saveSession(currentUser);
-    document.getElementById('balance-amount').textContent = Math.round(newBalance).toLocaleString();
-
-    // Update market prices (LMSR-like simplified)
-    const totalShares = (market.yesShares || 100) + (market.noShares || 100);
-    let newYesShares = market.yesShares || 100;
-    let newNoShares = market.noShares || 100;
-
-    if (side === 'YES') {
-      newYesShares += shares;
-    } else {
-      newNoShares += shares;
-    }
-
-    const newYesPrice = Math.min(0.95, Math.max(0.05, newYesShares / (newYesShares + newNoShares)));
-
-    await dbUpdate(`markets/${marketId}`, {
-      yesPrice: newYesPrice,
-      noPrice: 1 - newYesPrice,
-      yesShares: newYesShares,
-      noShares: newNoShares,
-      volume: (market.volume || 0) + cost,
-      totalTraders: (market.totalTraders || 0) + 1
-    });
-
-    // Record the trade
-    await dbPush('trades', {
-      marketId,
-      userId: currentUser.id,
-      userName: currentUser.name,
-      side,
-      shares,
-      price,
-      cost,
-      timestamp: Date.now()
-    });
-
-    // Record price history
-    await dbPush(`priceHistory/${marketId}`, {
-      yesPrice: newYesPrice,
-      timestamp: Date.now()
-    });
-
-    closeModal();
-    showToast(`Bought ${shares} ${side} shares for ${cost.toFixed(2)} HFX!`, 'success');
-    if (currentPage === 'market-detail') renderMarketDetail(marketId);
-    else renderMarkets();
-  } catch(err) { showToast('Trade failed: ' + err.message, 'error'); }
+    document.getElementById('balance-amount').textContent=Math.round(newBalance).toLocaleString();
+    let newYesShares=market.yesShares||100;
+    let newNoShares=market.noShares||100;
+    if(side==='YES')newYesShares+=shares;else newNoShares+=shares;
+    const newYesPrice=Math.min(0.95,Math.max(0.05,newYesShares/(newYesShares+newNoShares)));
+    await dbUpdate(`markets/${marketId}`,{yesPrice:newYesPrice,noPrice:1-newYesPrice,yesShares:newYesShares,noShares:newNoShares,volume:(market.volume||0)+cost,totalTraders:(market.totalTraders||0)+1});
+    await dbPush('trades',{marketId,userId:currentUser.id,userName:currentUser.name,side,shares,price,cost,timestamp:Date.now()});
+    await dbPush(`priceHistory/${marketId}`,{yesPrice:newYesPrice,timestamp:Date.now()});
+    closeModal();showToast(`Forecast: ${shares} pts on ${side}!`,'success');
+    if(currentPage==='market-detail')renderMarketDetail(marketId);else renderMarkets();
+  }catch(err){showToast('Prediction failed: '+err.message,'error')}
 }
 
 // ========== MARKET DETAIL ==========
-async function renderMarketDetail(marketId) {
-  const c = document.getElementById('page-content');
-  try {
-    const [market, trades, comments, priceHistory] = await Promise.all([
-      dbGet(`markets/${marketId}`),
-      dbGet('trades'),
-      dbGet(`comments/${marketId}`),
-      dbGet(`priceHistory/${marketId}`)
+async function renderMarketDetail(marketId){
+  const c=document.getElementById('page-content');
+  try{
+    const[market,trades,comments,priceHistory]=await Promise.all([
+      dbGet(`markets/${marketId}`),dbGet('trades'),dbGet(`comments/${marketId}`),dbGet(`priceHistory/${marketId}`)
     ]);
+    if(!market){c.innerHTML='<div class="empty-state"><h3>Forecast not found</h3></div>';return}
+    const marketTrades=trades?Object.values(trades).filter(t=>t.marketId===marketId).sort((a,b)=>b.timestamp-a.timestamp):[];
+    const commentsList=comments?Object.entries(comments).map(([id,cm])=>({id,...cm})).sort((a,b)=>b.timestamp-a.timestamp):[];
+    const priceData=priceHistory?Object.values(priceHistory).sort((a,b)=>a.timestamp-b.timestamp):[];
 
-    if (!market) { c.innerHTML = '<div class="empty-state"><h3>Market not found</h3></div>'; return; }
-
-    const marketTrades = trades ? Object.values(trades).filter(t => t.marketId === marketId).sort((a, b) => b.timestamp - a.timestamp) : [];
-    const commentsList = comments ? Object.entries(comments).map(([id, cm]) => ({ id, ...cm })).sort((a, b) => b.timestamp - a.timestamp) : [];
-    const priceData = priceHistory ? Object.values(priceHistory).sort((a, b) => a.timestamp - b.timestamp) : [];
-
-    c.innerHTML = `
+    c.innerHTML=`
       <div class="page">
         <button class="btn btn-ghost" id="back-to-markets" style="margin-bottom:16px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7l-7 7 7 7"/></svg>
-          Back to Markets
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7l-7 7 7 7"/></svg> Back to Forecasts
         </button>
-
-        ${market.status === 'resolved' ? `
-          <div class="resolution-banner ${market.resolution === 'YES' ? 'yes-won' : 'no-won'}">
+        ${market.status==='resolved'?`
+          <div class="resolution-banner ${market.resolution==='YES'?'yes-won':'no-won'}">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
-            Resolved: ${market.resolution}
+            Resolved: ${market.resolution} — Correct predictors have been awarded points
           </div>
-        ` : ''}
-
+        `:''}
         <div class="market-detail-grid">
           <div>
             <div class="card" style="margin-bottom:20px">
               <div class="card-body">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-                  <span class="badge badge-${market.status === 'active' ? 'active' : market.status === 'resolved' ? 'resolved' : 'pending'}">${market.status}</span>
-                  <span style="font-size:.78rem;color:var(--text-muted)">${esc(market.category || 'Misc')}</span>
+                  <span class="badge badge-${market.status==='active'?'active':market.status==='resolved'?'resolved':'pending'}">${market.status}</span>
+                  <span style="font-size:.77rem;color:var(--text-muted)">🎯 ${esc(market.category||'Misc')}</span>
                 </div>
-                <h1 style="font-size:1.3rem;font-weight:700;margin-bottom:10px;line-height:1.4">${esc(market.title)}</h1>
-                <p style="color:var(--text-secondary);font-size:.9rem;line-height:1.6;margin-bottom:16px">${esc(market.description || 'No description provided.')}</p>
-                <div style="display:flex;gap:16px;font-size:.8rem;color:var(--text-muted)">
-                  <span>Created by <strong style="color:var(--text)">${esc(market.creatorName || 'Unknown')}</strong></span>
+                <h1 style="font-size:1.25rem;font-weight:800;margin-bottom:10px;line-height:1.4">${esc(market.title)}</h1>
+                <p style="color:var(--text-secondary);font-size:.88rem;line-height:1.6;margin-bottom:16px">${esc(market.description||'No description.')}</p>
+                <div style="display:flex;gap:16px;font-size:.78rem;color:var(--text-muted)">
+                  <span>By <strong style="color:var(--text)">${esc(market.creatorName||'Unknown')}</strong></span>
                   <span>${timeAgo(market.createdAt)}</span>
-                  ${market.closeDate ? `<span>Closes: ${new Date(market.closeDate).toLocaleDateString()}</span>` : ''}
+                  ${market.closeDate?`<span>Closes: ${new Date(market.closeDate).toLocaleDateString()}</span>`:''}
                 </div>
               </div>
             </div>
-
             <div class="market-stats">
-              <div class="stat-card">
-                <div class="stat-label">Yes Price</div>
-                <div class="stat-value green">${Math.round((market.yesPrice || 0.5) * 100)}%</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-label">No Price</div>
-                <div class="stat-value red">${Math.round((1 - (market.yesPrice || 0.5)) * 100)}%</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-label">Volume</div>
-                <div class="stat-value">${(market.volume || 0).toLocaleString()}</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-label">Traders</div>
-                <div class="stat-value">${market.totalTraders || 0}</div>
-              </div>
+              <div class="stat-card"><div class="stat-label">Yes Probability</div><div class="stat-value green">${Math.round((market.yesPrice||0.5)*100)}%</div></div>
+              <div class="stat-card"><div class="stat-label">No Probability</div><div class="stat-value red">${Math.round((1-(market.yesPrice||0.5))*100)}%</div></div>
+              <div class="stat-card"><div class="stat-label">Participation</div><div class="stat-value">${(market.volume||0).toLocaleString()}</div></div>
+              <div class="stat-card"><div class="stat-label">Predictors</div><div class="stat-value">${market.totalTraders||0}</div></div>
             </div>
-
             <div class="card" style="margin-bottom:20px">
-              <div class="card-header"><strong>Price History</strong></div>
+              <div class="card-header"><strong>Probability History</strong></div>
               <div class="card-body">
-                <div class="price-chart" id="price-chart-container">
-                  <canvas id="price-chart"></canvas>
-                </div>
+                <div class="price-chart" id="price-chart-container"><canvas id="price-chart"></canvas></div>
               </div>
             </div>
-
             <div class="card" style="margin-bottom:20px">
-              <div class="card-header"><strong>Recent Trades</strong></div>
+              <div class="card-header"><strong>Recent Predictions</strong></div>
               <div class="card-body" style="padding:0">
-                ${marketTrades.length === 0 ? '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.85rem">No trades yet</div>' :
-                  marketTrades.slice(0, 20).map(t => `
+                ${marketTrades.length===0?'<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.83rem">No predictions yet</div>':
+                  marketTrades.slice(0,20).map(t=>`
                     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border)">
                       <div style="display:flex;align-items:center;gap:10px">
-                        <span class="badge ${t.side === 'YES' ? 'badge-active' : 'badge-rejected'}">${t.side}</span>
-                        <span style="font-size:.85rem;font-weight:500">${esc(t.userName)}</span>
+                        <span class="badge ${t.side==='YES'?'badge-active':'badge-rejected'}">${t.side}</span>
+                        <span style="font-size:.83rem;font-weight:600">${esc(t.userName)}</span>
                       </div>
                       <div style="text-align:right">
-                        <div style="font-size:.85rem;font-weight:600;font-family:var(--font-mono)">${t.shares} shares</div>
-                        <div style="font-size:.72rem;color:var(--text-muted)">${timeAgo(t.timestamp)}</div>
+                        <div style="font-size:.83rem;font-weight:700;font-family:var(--font-mono)">${t.shares} pts</div>
+                        <div style="font-size:.7rem;color:var(--text-muted)">${timeAgo(t.timestamp)}</div>
                       </div>
                     </div>
-                  `).join('')
-                }
+                  `).join('')}
               </div>
             </div>
-
             <div class="card">
-              <div class="card-header"><strong>Comments</strong></div>
+              <div class="card-header"><strong>Discussion</strong></div>
               <div class="card-body">
-                ${currentUser?.verified ? `
+                ${currentUser?.verified?`
                   <div style="display:flex;gap:10px;margin-bottom:16px">
                     <div class="comment-avatar">${initials(currentUser.name)}</div>
                     <div style="flex:1">
@@ -1119,372 +1227,224 @@ async function renderMarketDetail(marketId) {
                       <button class="btn btn-primary btn-sm" id="comment-submit">Post</button>
                     </div>
                   </div>
-                ` : '<p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px">Verify your email to comment</p>'}
-                ${commentsList.length === 0 ? '<p style="color:var(--text-muted);font-size:.85rem">No comments yet. Be the first!</p>' :
-                  commentsList.filter(cm => cm.status !== 'hidden').map(cm => `
+                `:'<p style="font-size:.8rem;color:var(--text-muted);margin-bottom:16px">Verify your email to comment</p>'}
+                ${commentsList.length===0?'<p style="color:var(--text-muted);font-size:.83rem">No comments yet.</p>':
+                  commentsList.filter(cm=>cm.status!=='hidden').map(cm=>`
                     <div class="comment">
                       <div class="comment-header">
                         <div class="comment-avatar">${initials(cm.userName)}</div>
                         <span class="comment-name">${esc(cm.userName)}</span>
                         <span class="comment-time">${timeAgo(cm.timestamp)}</span>
-                        ${currentUser && cm.userId !== currentUser.id ? `
-                          <button onclick="reportComment('${marketId}','${cm.id}',${JSON.stringify(cm.text)},${JSON.stringify(cm.userName)})" 
-                            style="margin-left:auto;background:transparent;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .2s"
-                            onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'"
-                            title="Report comment">⚑ Report</button>
-                        ` : ''}
-                        ${(currentUser?.role === 'admin' || currentUser?.role === 'moderator') ? `
-                          <button onclick="deleteComment('${marketId}','${cm.id}')"
-                            style="margin-left:${cm.userId === currentUser.id ? 'auto' : '4px'};background:transparent;border:none;color:var(--text-muted);font-size:.72rem;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .2s"
-                            onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'"
-                            title="Delete comment">✕ Delete</button>
-                        ` : ''}
+                        ${currentUser&&cm.userId!==currentUser.id?`<button onclick="reportComment('${marketId}','${cm.id}',${JSON.stringify(cm.text)},${JSON.stringify(cm.userName)})" style="margin-left:auto;background:transparent;border:none;color:var(--text-muted);font-size:.7rem;cursor:pointer;padding:2px 6px;border-radius:4px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'">⚑ Report</button>`:''}
+                        ${(currentUser?.role==='admin'||currentUser?.role==='moderator')?`<button onclick="deleteComment('${marketId}','${cm.id}')" style="margin-left:${cm.userId===currentUser.id?'auto':'4px'};background:transparent;border:none;color:var(--text-muted);font-size:.7rem;cursor:pointer;padding:2px 6px;border-radius:4px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'">✕ Delete</button>`:''}
                       </div>
                       <div class="comment-text">${esc(cm.text)}</div>
                     </div>
-                  `).join('')
-                }
+                  `).join('')}
               </div>
             </div>
           </div>
-
-          <!-- Sidebar: Trade Panel -->
           <div>
             <div class="trade-panel" style="position:sticky;top:80px">
-              <h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">Trade</h3>
-              ${market.status !== 'active' ?
-                `<p style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:20px 0">Trading is closed for this market</p>` :
+              <h3 style="font-size:.95rem;font-weight:800;margin-bottom:16px">Make a Prediction</h3>
+              ${market.status!=='active'?
+                `<p style="color:var(--text-muted);font-size:.83rem;text-align:center;padding:20px 0">Predictions closed for this forecast</p>`:
                 `<div style="display:flex;gap:8px">
-                  <button class="trade-btn yes" style="flex:1;padding:14px;font-size:1rem" id="detail-buy-yes">
-                    Yes ${Math.round((market.yesPrice || 0.5) * 100)}%
-                  </button>
-                  <button class="trade-btn no" style="flex:1;padding:14px;font-size:1rem" id="detail-buy-no">
-                    No ${Math.round((1 - (market.yesPrice || 0.5)) * 100)}%
-                  </button>
+                  <button class="pred-btn yes" style="flex:1;padding:14px;font-size:.95rem" id="detail-buy-yes">Forecast YES ${Math.round((market.yesPrice||0.5)*100)}%</button>
+                  <button class="pred-btn no" style="flex:1;padding:14px;font-size:.95rem" id="detail-buy-no">Forecast NO ${Math.round((1-(market.yesPrice||0.5))*100)}%</button>
                 </div>
                 <div style="margin-top:16px;padding:12px;background:var(--bg-surface);border-radius:8px">
-                  <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px">
-                    <span style="color:var(--text-muted)">Liquidity</span>
-                    <span style="font-family:var(--font-mono)">${(market.liquidity || 0).toLocaleString()}</span>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px">
+                    <span style="color:var(--text-muted)">Participation pool</span>
+                    <span style="font-family:var(--font-mono)">${(market.liquidity||0).toLocaleString()} pts</span>
                   </div>
-                  <div style="display:flex;justify-content:space-between;font-size:.82rem">
-                    <span style="color:var(--text-muted)">Volume</span>
-                    <span style="font-family:var(--font-mono)">${(market.volume || 0).toLocaleString()}</span>
+                  <div style="display:flex;justify-content:space-between;font-size:.8rem">
+                    <span style="color:var(--text-muted)">Total participation</span>
+                    <span style="font-family:var(--font-mono)">${(market.volume||0).toLocaleString()} pts</span>
                   </div>
                 </div>`
               }
             </div>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
 
-    // Event rs
-    document.getElementById('back-to-markets').onclick = () => navigate('markets');
-
-    const buyYes = document.getElementById('detail-buy-yes');
-    const buyNo = document.getElementById('detail-buy-no');
-    if (buyYes) buyYes.onclick = () => {
-      if (!currentUser?.verified) { showToast('Verify your email first', 'error'); return; }
-      showTradeModal(marketId, 'YES');
+    document.getElementById('back-to-markets').onclick=()=>navigate('markets');
+    const byy=document.getElementById('detail-buy-yes');
+    const byn=document.getElementById('detail-buy-no');
+    if(byy)byy.onclick=()=>{if(!currentUser?.verified){showToast('Verify your email first','error');return}showTradeModal(marketId,'YES')};
+    if(byn)byn.onclick=()=>{if(!currentUser?.verified){showToast('Verify your email first','error');return}showTradeModal(marketId,'NO')};
+    const cs=document.getElementById('comment-submit');
+    if(cs)cs.onclick=async()=>{
+      const input=document.getElementById('comment-input');
+      const text=input.value.trim();if(!text)return;
+      try{await dbPush(`comments/${marketId}`,{userId:currentUser.id,userName:currentUser.name,text,timestamp:Date.now()});input.value='';showToast('Comment posted!','success');renderMarketDetail(marketId)}
+      catch(err){showToast('Failed to post comment','error')}
     };
-    if (buyNo) buyNo.onclick = () => {
-      if (!currentUser?.verified) { showToast('Verify your email first', 'error'); return; }
-      showTradeModal(marketId, 'NO');
-    };
-
-    const commentSubmit = document.getElementById('comment-submit');
-    if (commentSubmit) {
-      commentSubmit.onclick = async () => {
-        const input = document.getElementById('comment-input');
-        const text = input.value.trim();
-        if (!text) return;
-        try {
-          await dbPush(`comments/${marketId}`, {
-            userId: currentUser.id,
-            userName: currentUser.name,
-            text,
-            timestamp: Date.now()
-          });
-          input.value = '';
-          showToast('Comment posted!', 'success');
-          renderMarketDetail(marketId);
-        } catch(err) { showToast('Failed to post comment', 'error'); }
-      };
-    }
-
-    // Draw price chart
-    drawPriceChart(priceData, market.yesPrice || 0.5);
-  } catch(err) {
-    c.innerHTML = `<div class="empty-state"><h3>Error loading market</h3><p>${esc(err.message)}</p></div>`;
-  }
+    drawPriceChart(priceData,market.yesPrice||0.5);
+  }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
 
-function drawPriceChart(data, currentPrice) {
-  const canvas = document.getElementById('price-chart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const container = canvas.parentElement;
-  canvas.width = container.offsetWidth;
-  canvas.height = 200;
-
-  if (data.length < 2) {
-    // Draw a flat line at current price
-    data = [{ yesPrice: 0.5, timestamp: Date.now() - 86400000 }, { yesPrice: currentPrice, timestamp: Date.now() }];
-  }
-
-  const w = canvas.width;
-  const h = canvas.height;
-  const padding = { top: 20, right: 20, bottom: 30, left: 50 };
-  const chartW = w - padding.left - padding.right;
-  const chartH = h - padding.top - padding.bottom;
-
-  ctx.clearRect(0, 0, w, h);
-
-  // Grid
-  ctx.strokeStyle = '#2a2a3a';
-  ctx.lineWidth = 0.5;
-  for (let i = 0; i <= 4; i++) {
-    const y = padding.top + (chartH / 4) * i;
-    ctx.beginPath();
-    ctx.moveTo(padding.left, y);
-    ctx.lineTo(w - padding.right, y);
-    ctx.stroke();
-
-    ctx.fillStyle = '#55556a';
-    ctx.font = '11px JetBrains Mono, monospace';
-    ctx.textAlign = 'right';
-    ctx.fillText(Math.round((1 - i / 4) * 100) + '%', padding.left - 8, y + 4);
-  }
-
-  // Price line
-  const minT = data[0].timestamp;
-  const maxT = data[data.length - 1].timestamp;
-  const timeRange = maxT - minT || 1;
-
-  ctx.beginPath();
-  ctx.strokeStyle = '#00e5a0';
-  ctx.lineWidth = 2;
-  ctx.lineJoin = 'round';
-
-  data.forEach((d, i) => {
-    const x = padding.left + ((d.timestamp - minT) / timeRange) * chartW;
-    const y = padding.top + (1 - d.yesPrice) * chartH;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  });
+function drawPriceChart(data,currentPrice){
+  const canvas=document.getElementById('price-chart');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const container=canvas.parentElement;
+  canvas.width=container.offsetWidth;canvas.height=200;
+  if(data.length<2)data=[{yesPrice:0.5,timestamp:Date.now()-86400000},{yesPrice:currentPrice,timestamp:Date.now()}];
+  const w=canvas.width,h=canvas.height,pad={top:20,right:20,bottom:30,left:50};
+  const cw=w-pad.left-pad.right,ch=h-pad.top-pad.bottom;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='#2a2a3a';ctx.lineWidth=0.5;
+  for(let i=0;i<=4;i++){const y=pad.top+(ch/4)*i;ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(w-pad.right,y);ctx.stroke();ctx.fillStyle='#55556a';ctx.font='11px JetBrains Mono,monospace';ctx.textAlign='right';ctx.fillText(Math.round((1-i/4)*100)+'%',pad.left-8,y+4)}
+  const minT=data[0].timestamp,maxT=data[data.length-1].timestamp,tr=maxT-minT||1;
+  ctx.beginPath();ctx.strokeStyle='#00e5a0';ctx.lineWidth=2;ctx.lineJoin='round';
+  data.forEach((d,i)=>{const x=pad.left+((d.timestamp-minT)/tr)*cw,y=pad.top+(1-d.yesPrice)*ch;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});
   ctx.stroke();
-
-  // Gradient fill
-  const lastX = padding.left + chartW;
-  const gradient = ctx.createLinearGradient(0, padding.top, 0, h - padding.bottom);
-  gradient.addColorStop(0, 'rgba(0, 229, 160, 0.15)');
-  gradient.addColorStop(1, 'rgba(0, 229, 160, 0)');
-
-  ctx.lineTo(lastX, h - padding.bottom);
-  ctx.lineTo(padding.left, h - padding.bottom);
-  ctx.closePath();
-  ctx.fillStyle = gradient;
-  ctx.fill();
-
-  // Current price dot
-  if (data.length > 0) {
-    const last = data[data.length - 1];
-    const x = padding.left + ((last.timestamp - minT) / timeRange) * chartW;
-    const y = padding.top + (1 - last.yesPrice) * chartH;
-    ctx.beginPath();
-    ctx.arc(x, y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#00e5a0';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(0,229,160,0.3)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-  }
+  const lx=pad.left+cw,grad=ctx.createLinearGradient(0,pad.top,0,h-pad.bottom);
+  grad.addColorStop(0,'rgba(0,229,160,0.15)');grad.addColorStop(1,'rgba(0,229,160,0)');
+  ctx.lineTo(lx,h-pad.bottom);ctx.lineTo(pad.left,h-pad.bottom);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+  if(data.length>0){const last=data[data.length-1];const x=pad.left+((last.timestamp-minT)/tr)*cw,y=pad.top+(1-last.yesPrice)*ch;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='#00e5a0';ctx.fill();ctx.beginPath();ctx.arc(x,y,8,0,Math.PI*2);ctx.strokeStyle='rgba(0,229,160,0.3)';ctx.lineWidth=2;ctx.stroke()}
 }
 
 // ========== LEADERBOARD ==========
-async function renderLeaderboard() {
-  const c = document.getElementById('page-content');
-  try {
-    const users = await dbGet('users');
-    if (!users) { c.innerHTML = '<div class="empty-state"><h3>No users yet</h3></div>'; return; }
+async function renderLeaderboard(){
+  const c=document.getElementById('page-content');
+  try{
+    const users=await dbGet('users');
+    if(!users){c.innerHTML='<div class="empty-state"><h3>No users yet</h3></div>';return}
+    let list=Object.entries(users).map(([id,u])=>({id,...u}));
+    list=list.filter(u=>u.role!=='banned');
+    let sortBy='balance';
 
-    let list = Object.entries(users).map(([id, u]) => ({ id, ...u }));
-    list = list.filter(u => u.role !== 'banned');
-    let sortBy = 'balance';
-
-    function render(sort) {
-      sortBy = sort;
-      const sorted = [...list].sort((a, b) => (b[sortBy] || 0) - (a[sortBy] || 0));
-
-      c.innerHTML = `
+    function render(sort){
+      sortBy=sort;
+      const sorted=[...list].sort((a,b)=>(b[sortBy]||0)-(a[sortBy]||0));
+      c.innerHTML=`
         <div class="page">
           <h1 class="page-title">Leaderboard</h1>
           <div class="tab-bar">
-            <button class="${sortBy === 'balance' ? 'active' : ''}" data-sort="balance">Top Balance</button>
-            <button class="${sortBy === 'trades' ? 'active' : ''}" data-sort="trades">Most Trades</button>
-            <button class="${sortBy === 'profit' ? 'active' : ''}" data-sort="profit">Top Profit</button>
+            <button class="${sortBy==='balance'?'active':''}" data-sort="balance">Highest Score</button>
+            <button class="${sortBy==='predictions'?'active':''}" data-sort="predictions">Most Predictions</button>
+            <button class="${sortBy==='profit'?'active':''}" data-sort="profit">Most Accurate</button>
           </div>
           <div class="card" style="overflow:hidden">
-            ${sorted.map((u, i) => `
+            ${sorted.map((u,i)=>`
               <div class="lb-row">
-                <div class="lb-rank ${i < 3 ? 'top' : ''}">${i < 3 ? ['1st','2nd','3rd'][i] : (i + 1)}</div>
+                <div class="lb-rank ${i<3?'top':''}">${i<3?['1st','2nd','3rd'][i]:i+1}</div>
                 <div class="lb-avatar">${initials(u.name)}</div>
                 <div class="lb-info">
-                  <div class="lb-name">${esc(u.name)} ${u.verified ? '<span class="verified-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>' : ''}</div>
-                  <div class="lb-email">${u.trades || 0} trades</div>
+                  <div class="lb-name">${esc(u.name)} ${u.verified?'<span class="verified-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>':''}</div>
+                  <div class="lb-email">${u.predictions||u.trades||0} predictions made</div>
                 </div>
-                <div class="lb-value">${sortBy === 'balance' ? (u.balance || 0).toLocaleString() : sortBy === 'trades' ? (u.trades || 0) : (u.profit || 0).toLocaleString()} ${sortBy === 'balance' || sortBy === 'profit' ? 'HFX' : ''}</div>
+                <div class="lb-value">${sortBy==='balance'?(u.balance||0).toLocaleString()+' pts':sortBy==='predictions'?(u.predictions||u.trades||0):(u.profit||0).toLocaleString()+' pts'}</div>
               </div>
             `).join('')}
           </div>
-        </div>
-      `;
-
-      c.querySelectorAll('.tab-bar button').forEach(btn => {
-        btn.onclick = () => render(btn.dataset.sort);
-      });
+        </div>`;
+      c.querySelectorAll('.tab-bar button').forEach(btn=>{btn.onclick=()=>render(btn.dataset.sort)});
     }
-
     render('balance');
-  } catch(err) { c.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`; }
+  }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
 
 // ========== PROFILE ==========
-// ========== PROFILE ==========
-async function renderProfile() {
-  const c = document.getElementById('page-content');
-  if (!currentUser) { renderAuth(); return; }
+async function renderProfile(){
+  const c=document.getElementById('page-content');
+  if(!currentUser){renderAuth();return}
+  try{
+    const[trades,user,marketsData]=await Promise.all([dbGet('trades'),dbGet(`users/${currentUser.id}`),dbGet('markets')]);
+    const markets=marketsData||{};
+    if(user){currentUser={...currentUser,...user};saveSession(currentUser)}
+    const myTrades=trades?Object.values(trades).filter(t=>t.userId===currentUser.id).sort((a,b)=>b.timestamp-a.timestamp):[];
+    const totalInvested=myTrades.reduce((s,t)=>s+(t.cost||0),0);
 
-  try {
-    // ADDED: Fetch markets as well so we can find the names
-    const [trades, user, marketsData] = await Promise.all([
-      dbGet('trades'),
-      dbGet(`users/${currentUser.id}`),
-      dbGet('markets')
-    ]);
-
-    const markets = marketsData || {};
-
-    if (user) {
-      currentUser = { ...currentUser, ...user };
-      saveSession(currentUser);
-    }
-
-    const myTrades = trades ? Object.values(trades).filter(t => t.userId === currentUser.id).sort((a, b) => b.timestamp - a.timestamp) : [];
-    const totalInvested = myTrades.reduce((s, t) => s + (t.cost || 0), 0);
-
-    c.innerHTML = `
+    c.innerHTML=`
       <div class="page">
         <div class="profile-header">
           <div class="profile-avatar">${initials(currentUser.name)}</div>
           <div class="profile-info">
-            <h2>${esc(currentUser.name)} ${currentUser.verified ? '<span class="verified-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>' : '<span class="badge badge-pending" style="margin-left:8px">Unverified</span>'}</h2>
+            <h2>${esc(currentUser.name)} ${currentUser.verified?'<span class="verified-check"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>':'<span class="badge badge-pending" style="margin-left:8px">Unverified</span>'}</h2>
             <p>${esc(currentUser.email)}</p>
-            <p style="font-size:.78rem;color:var(--text-muted)">Joined ${new Date(currentUser.createdAt).toLocaleDateString()} | Role: ${currentUser.role || 'user'}</p>
+            <p style="font-size:.75rem;color:var(--text-muted)">Joined ${new Date(currentUser.createdAt).toLocaleDateString()} · ${currentUser.role||'user'}</p>
           </div>
-          ${!currentUser.verified ? `<button class="btn btn-primary btn-sm" id="verify-again-btn">Verify Email</button>` : ''}
+          ${!currentUser.verified?'<button class="btn btn-primary btn-sm" id="verify-again-btn">Verify Email</button>':''}
         </div>
-
         <div class="portfolio-grid">
-          <div class="stat-card">
-            <div class="stat-label">Balance</div>
-            <div class="stat-value green">${(currentUser.balance || 0).toLocaleString()}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total Trades</div>
-            <div class="stat-value">${currentUser.trades || 0}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Total Invested</div>
-            <div class="stat-value">${totalInvested.toFixed(0)}</div>
-          </div>
+          <div class="stat-card"><div class="stat-label">Accuracy Score</div><div class="stat-value green">${(currentUser.balance||0).toLocaleString()} pts</div></div>
+          <div class="stat-card"><div class="stat-label">Predictions Made</div><div class="stat-value">${currentUser.predictions||currentUser.trades||0}</div></div>
+          <div class="stat-card"><div class="stat-label">Points Staked</div><div class="stat-value">${totalInvested.toFixed(0)} pts</div></div>
         </div>
-
         <div class="card">
-          <div class="card-header"><strong>Trade History</strong></div>
+          <div class="card-header"><strong>Prediction History</strong></div>
           <div class="card-body" style="padding:0">
-            ${myTrades.length === 0 ? '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.85rem">No trades yet. Start trading to see your history!</div>' :
+            ${myTrades.length===0?'<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.83rem">No predictions yet — start forecasting!</div>':
               `<table class="admin-table">
-                <thead><tr><th>Market</th><th>Side</th><th>Shares</th><th>Cost</th><th>Time</th></tr></thead>
+                <thead><tr><th>Forecast</th><th>Position</th><th>Confidence Pts</th><th>Cost</th><th>Time</th></tr></thead>
                 <tbody>
-                  ${myTrades.slice(0, 50).map(t => {
-                    // Look up the market name using the ID
-                    const marketInfo = markets[t.marketId];
-                    const marketName = marketInfo ? marketInfo.title : t.marketId; // Fallback to ID if market deleted
-                    return `
-                      <tr>
-                        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(marketName)}</td>
-                        <td><span class="badge ${t.side === 'YES' ? 'badge-active' : 'badge-rejected'}">${t.side}</span></td>
-                        <td style="font-family:var(--font-mono)">${t.shares}</td>
-                        <td style="font-family:var(--font-mono)">${(t.cost || 0).toFixed(2)}</td>
-                        <td style="color:var(--text-muted)">${timeAgo(t.timestamp)}</td>
-                      </tr>
-                    `;
+                  ${myTrades.slice(0,50).map(t=>{
+                    const mInfo=markets[t.marketId];
+                    const mName=mInfo?mInfo.title:t.marketId;
+                    return`<tr>
+                      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(mName)}</td>
+                      <td><span class="badge ${t.side==='YES'?'badge-active':'badge-rejected'}">${t.side}</span></td>
+                      <td style="font-family:var(--font-mono)">${t.shares}</td>
+                      <td style="font-family:var(--font-mono)">${(t.cost||0).toFixed(2)} pts</td>
+                      <td style="color:var(--text-muted)">${timeAgo(t.timestamp)}</td>
+                    </tr>`;
                   }).join('')}
                 </tbody>
-              </table>`
-            }
+              </table>`}
           </div>
         </div>
-      </div>
-    `;
-
-    const verifyBtn = document.getElementById('verify-again-btn');
-    if (verifyBtn) {
-      verifyBtn.onclick = () => showVerifyModal();
-    }
-  } catch(err) { c.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`; }
+      </div>`;
+    const vb=document.getElementById('verify-again-btn');
+    if(vb)vb.onclick=()=>showVerifyModal();
+  }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
-// ========== ADMIN / MODERATOR ==========
-async function renderAdmin() {
-  const c = document.getElementById('page-content');
-  if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'moderator')) {
-    c.innerHTML = '<div class="empty-state"><h3>Access Denied</h3><p>You need moderator or admin privileges.</p></div>';
-    return;
+
+// ========== ADMIN ==========
+async function renderAdmin(){
+  const c=document.getElementById('page-content');
+  if(!currentUser||(currentUser.role!=='admin'&&currentUser.role!=='moderator')){
+    c.innerHTML='<div class="empty-state"><h3>Access Denied</h3></div>';return;
   }
+  try{
+    const[marketsData,usersData,censusData]=await Promise.all([dbGet('markets'),dbGet('users'),dbGet('censuses')]);
+    const markets=marketsData?Object.entries(marketsData).map(([id,m])=>({id,...m})):[];
+    const users=usersData?Object.entries(usersData).map(([id,u])=>({id,...u})):[];
+    const censuses=censusData?Object.entries(censusData).map(([id,p])=>({id,...p})):[];
+    const pendingMarkets=markets.filter(m=>m.status==='pending');
+    const activeMarkets=markets.filter(m=>m.status==='active');
+    const pendingCensuses=censuses.filter(p=>p.status==='pending');
+    const activeCensuses=censuses.filter(p=>p.status==='active');
+    const reportedData=await dbGet('reportedComments');
+    const pendingReports=reportedData?Object.entries(reportedData).map(([id,r])=>({id,...r})).filter(r=>r.status==='pending'):[];
+    let activeTab='pending';
 
-  try {
-    const [marketsData, usersData] = await Promise.all([
-      dbGet('markets'),
-      dbGet('users')
-    ]);
-
-    const markets = marketsData ? Object.entries(marketsData).map(([id, m]) => ({ id, ...m })) : [];
-    const users = usersData ? Object.entries(usersData).map(([id, u]) => ({ id, ...u })) : [];
-    const pendingMarkets = markets.filter(m => m.status === 'pending');
-    const activeMarkets = markets.filter(m => m.status === 'active');
-    let activeTab = 'pending';
-    const reportedCommentsData = await dbGet('reportedComments');
-    const pendingReports = reportedCommentsData 
-      ? Object.entries(reportedCommentsData).map(([id,r])=>({id,...r})).filter(r=>r.status==='pending')
-      : [];
-
-    function render(tab) {
-      activeTab = tab;
-      c.innerHTML = `
+    function render(tab){
+      activeTab=tab;
+      c.innerHTML=`
         <div class="page">
           <h1 class="page-title">Admin Panel</h1>
           <div class="tab-bar">
-            <button class="${tab === 'pending' ? 'active' : ''}" data-tab="pending">Pending (${pendingMarkets.length})</button>
-            <button class="${tab === 'active' ? 'active' : ''}" data-tab="active">Active Markets</button>
-            <button class="${tab === 'users' ? 'active' : ''}" data-tab="users">Users (${users.length})</button>
-            <button class="${tab === 'comments' ? 'active' : ''}" data-tab="comments">Reports ${pendingReports.length > 0 ? `<span style="background:var(--red);color:#fff;padding:1px 6px;border-radius:10px;font-size:.7rem;margin-left:4px">${pendingReports.length}</span>` : ''}</button>
+            <button class="${tab==='pending'?'active':''}" data-tab="pending">Pending (${pendingMarkets.length+pendingCensuses.length})</button>
+            <button class="${tab==='active'?'active':''}" data-tab="active">Active Forecasts</button>
+            <button class="${tab==='census-active'?'active':''}" data-tab="census-active">Active Polls</button>
+            <button class="${tab==='users'?'active':''}" data-tab="users">Users (${users.length})</button>
+            <button class="${tab==='reports'?'active':''}" data-tab="reports">Reports${pendingReports.length>0?` <span style="background:var(--red);color:#fff;padding:1px 6px;border-radius:10px;font-size:.7rem;margin-left:4px">${pendingReports.length}</span>`:''}</button>
           </div>
 
-          ${tab === 'pending' ? `
-            ${pendingMarkets.length === 0 ? '<div class="empty-state"><h3>No pending markets</h3><p>All caught up!</p></div>' :
-              pendingMarkets.map(m => `
-                <div class="card" style="margin-bottom:12px">
+          ${tab==='pending'?`
+            <h3 style="font-size:.85rem;color:var(--text-muted);margin-bottom:12px;font-weight:600">🎯 Forecast Questions (${pendingMarkets.length})</h3>
+            ${pendingMarkets.length===0?'<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:.83rem;margin-bottom:20px">No pending forecasts</div>':
+              pendingMarkets.map(m=>`
+                <div class="card" style="margin-bottom:10px">
                   <div class="card-body">
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
-                      <div style="flex:1;min-width:200px">
-                        <span class="badge badge-pending" style="margin-bottom:8px">Pending Review</span>
-                        <h3 style="font-size:1rem;font-weight:600;margin:8px 0 4px">${esc(m.title)}</h3>
-                        <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:8px">${esc(m.description || 'No description')}</p>
-                        <p style="font-size:.75rem;color:var(--text-muted)">By ${esc(m.creatorName)} | ${esc(m.category)} | ${timeAgo(m.createdAt)}</p>
+                      <div style="flex:1">
+                        <span class="badge badge-pending" style="margin-bottom:6px">Pending</span>
+                        <h3 style="font-size:.95rem;font-weight:700;margin:6px 0 4px">${esc(m.title)}</h3>
+                        <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:6px">${esc(m.description||'No description')}</p>
+                        <p style="font-size:.73rem;color:var(--text-muted)">By ${esc(m.creatorName)} · ${esc(m.category)} · ${timeAgo(m.createdAt)}</p>
                       </div>
                       <div style="display:flex;gap:8px">
                         <button class="btn btn-primary btn-sm" data-approve="${m.id}">Approve</button>
@@ -1493,171 +1453,157 @@ async function renderAdmin() {
                     </div>
                   </div>
                 </div>
-              `).join('')
-            }
-          ` : tab === 'active' ? `
-            ${activeMarkets.length === 0 ? '<div class="empty-state"><h3>No active markets</h3></div>' :
+              `).join('')}
+            <h3 style="font-size:.85rem;color:var(--text-muted);margin:20px 0 12px;font-weight:600">📊 Census Polls (${pendingCensuses.length})</h3>
+            ${pendingCensuses.length===0?'<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:.83rem">No pending polls</div>':
+              pendingCensuses.map(p=>`
+                <div class="card" style="margin-bottom:10px;border-left:3px solid var(--purple)">
+                  <div class="card-body">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+                      <div style="flex:1">
+                        <span class="badge badge-census" style="margin-bottom:6px">📊 Census Poll</span>
+                        <h3 style="font-size:.95rem;font-weight:700;margin:6px 0 4px">${esc(p.title)}</h3>
+                        <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:4px">Options: ${(p.options||[]).map(o=>`<em>${esc(o)}</em>`).join(', ')}</p>
+                        <p style="font-size:.73rem;color:var(--text-muted)">By ${esc(p.creatorName)} · ${esc(p.category)} · ${timeAgo(p.createdAt)}</p>
+                      </div>
+                      <div style="display:flex;gap:8px">
+                        <button class="btn btn-purple btn-sm" data-approve-census="${p.id}">Approve</button>
+                        <button class="btn btn-danger btn-sm" data-reject-census="${p.id}">Reject</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+          `:''}
+
+          ${tab==='active'?`
+            ${activeMarkets.length===0?'<div class="empty-state"><h3>No active forecasts</h3></div>':
               `<table class="admin-table">
-                <thead><tr><th>Market</th><th>Category</th><th>Yes Price</th><th>Volume</th><th>Action</th></tr></thead>
+                <thead><tr><th>Forecast</th><th>Category</th><th>Yes Prob</th><th>Participation</th><th>Resolve</th></tr></thead>
                 <tbody>
-                  ${activeMarkets.map(m => `
-                    <tr>
-                      <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">${esc(m.title)}</td>
-                      <td><span class="badge badge-active">${esc(m.category)}</span></td>
-                      <td style="font-family:var(--font-mono)">${Math.round((m.yesPrice || 0.5) * 100)}%</td>
-                      <td style="font-family:var(--font-mono)">${(m.volume || 0).toLocaleString()}</td>
-                      <td>
-                        <div style="display:flex;gap:6px">
-                          <button class="btn btn-primary btn-sm" data-resolve-yes="${m.id}">Resolve YES</button>
-                          <button class="btn btn-danger btn-sm" data-resolve-no="${m.id}">Resolve NO</button>
-                        </div>
-                      </td>
-                    </tr>
-                  `).join('')}
+                  ${activeMarkets.map(m=>`<tr>
+                    <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">${esc(m.title)}</td>
+                    <td><span class="badge badge-active">${esc(m.category)}</span></td>
+                    <td style="font-family:var(--font-mono)">${Math.round((m.yesPrice||0.5)*100)}%</td>
+                    <td style="font-family:var(--font-mono)">${(m.volume||0).toLocaleString()}</td>
+                    <td><div style="display:flex;gap:6px">
+                      <button class="btn btn-primary btn-sm" data-resolve-yes="${m.id}">Resolve YES</button>
+                      <button class="btn btn-danger btn-sm" data-resolve-no="${m.id}">Resolve NO</button>
+                    </div></td>
+                  </tr>`).join('')}
                 </tbody>
-              </table>`
-            }
-          ` : `
+              </table>`}
+          `:''}
+
+          ${tab==='census-active'?`
+            ${activeCensuses.length===0?'<div class="empty-state"><h3>No active polls</h3></div>':
+              `<table class="admin-table">
+                <thead><tr><th>Poll</th><th>Category</th><th>Votes</th><th>Leading</th><th>Action</th></tr></thead>
+                <tbody>
+                  ${activeCensuses.map(p=>{
+                    const counts={};(p.options||[]).forEach(o=>{counts[o]=0});
+                    Object.values(p.votes||{}).forEach(v=>{if(counts[v]!==undefined)counts[v]++});
+                    const leading=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+                    return`<tr>
+                      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">${esc(p.title)}</td>
+                      <td><span class="badge badge-census">${esc(p.category)}</span></td>
+                      <td style="font-family:var(--font-mono)">${p.totalVotes||0}</td>
+                      <td style="font-size:.8rem">${leading?esc(leading[0])+' ('+leading[1]+')':'-'}</td>
+                      <td><button class="btn btn-danger btn-sm" data-close-census="${p.id}">Close Poll</button></td>
+                    </tr>`;
+                  }).join('')}
+                </tbody>
+              </table>`}
+          `:''}
+
+          ${tab==='users'?`
             <table class="admin-table">
-              <thead><tr><th>Name</th><th>Email</th><th>Balance</th><th>Verified</th><th>Role</th><th>Action</th></tr></thead>
+              <thead><tr><th>Name</th><th>Email</th><th>Score</th><th>Verified</th><th>Role</th><th>Action</th></tr></thead>
               <tbody>
-                ${users.map(u => `
-                  <tr>
-                    <td style="font-weight:500">${esc(u.name)}</td>
-                    <td style="color:var(--text-muted);font-size:.8rem">${esc(u.email)}</td>
-                    <td style="font-family:var(--font-mono)">${(u.balance || 0).toLocaleString()}</td>
-                    <td>${u.verified ? '<span class="badge badge-active">Yes</span>' : '<span class="badge badge-pending">No</span>'}</td>
-                    <td><span class="badge ${u.role === 'admin' ? 'badge-active' : u.role === 'moderator' ? 'badge-pending' : u.role === 'banned' ? 'badge-rejected' : 'badge-resolved'}">${u.role || 'user'}</span></td>
-                    <td>
-                      ${currentUser.role === 'admin' && u.id !== currentUser.id ? `
-                        <select class="role-select" data-user-id="${u.id}" style="padding:4px 8px;font-size:.78rem;width:auto">
-                          <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
-                          <option value="moderator" ${u.role === 'moderator' ? 'selected' : ''}>Mod</option>
-                          <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-                          <option value="banned" ${u.role === 'banned' ? 'selected' : ''}>Banned</option>
-                        </select>
-                      ` : '-'}
-                    </td>
-                  </tr>
-                `).join('')}
+                ${users.map(u=>`<tr>
+                  <td style="font-weight:600">${esc(u.name)}</td>
+                  <td style="color:var(--text-muted);font-size:.78rem">${esc(u.email)}</td>
+                  <td style="font-family:var(--font-mono)">${(u.balance||0).toLocaleString()} pts</td>
+                  <td>${u.verified?'<span class="badge badge-active">Yes</span>':'<span class="badge badge-pending">No</span>'}</td>
+                  <td><span class="badge ${u.role==='admin'?'badge-active':u.role==='moderator'?'badge-pending':u.role==='banned'?'badge-rejected':'badge-resolved'}">${u.role||'user'}</span></td>
+                  <td>${currentUser.role==='admin'&&u.id!==currentUser.id?`<select class="role-select" data-user-id="${u.id}" style="padding:4px 8px;font-size:.75rem;width:auto"><option value="user" ${u.role==='user'?'selected':''}>User</option><option value="moderator" ${u.role==='moderator'?'selected':''}>Mod</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option><option value="banned" ${u.role==='banned'?'selected':''}>Banned</option></select>`:'-'}</td>
+                </tr>`).join('')}
               </tbody>
             </table>
-          `}
-        </div>
-      `;
+          `:''}
 
-      // Tab navigation
-      c.querySelectorAll('.tab-bar button').forEach(btn => {
-        btn.onclick = () => render(btn.dataset.tab);
-      });
+          ${tab==='reports'?`
+            ${pendingReports.length===0?'<div class="empty-state"><h3>No pending reports</h3></div>':
+              pendingReports.map(r=>`
+                <div class="card" style="margin-bottom:10px">
+                  <div class="card-body">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+                      <div style="flex:1">
+                        <p style="font-size:.77rem;color:var(--text-muted);margin-bottom:4px">Reported by ${esc(r.reportedByName)} · ${timeAgo(r.timestamp)}</p>
+                        <p style="font-size:.88rem;background:var(--bg-surface);padding:8px 12px;border-radius:6px;color:var(--text-secondary)">"${esc(r.commentText)}"</p>
+                        <p style="font-size:.75rem;color:var(--text-muted);margin-top:4px">By: ${esc(r.commentUser)}</p>
+                      </div>
+                      <div style="display:flex;gap:8px">
+                        <button class="btn btn-danger btn-sm" data-delete-report="${r.id}" data-market="${r.marketId}" data-comment="${r.commentId}">Delete Comment</button>
+                        <button class="btn btn-secondary btn-sm" data-dismiss-report="${r.id}">Dismiss</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+          `:''}
+        </div>`;
 
-      // Approve / Reject
-      c.querySelectorAll('[data-approve]').forEach(btn => {
-        btn.onclick = async () => {
-          try {
-            await dbUpdate(`markets/${btn.dataset.approve}`, { status: 'active' });
-            showToast('Market approved!', 'success');
-            renderAdmin();
-          } catch(err) { showToast('Failed', 'error'); }
-        };
-      });
-      c.querySelectorAll('[data-reject]').forEach(btn => {
-        btn.onclick = async () => {
-          try {
-            await dbUpdate(`markets/${btn.dataset.reject}`, { status: 'rejected' });
-            showToast('Market rejected', 'info');
-            renderAdmin();
-          } catch(err) { showToast('Failed', 'error'); }
-        };
-      });
-
-      // Resolve markets
-      c.querySelectorAll('[data-resolve-yes]').forEach(btn => {
-        btn.onclick = async () => {
-          if (!confirm('Are you sure you want to resolve this market as YES?')) return;
-          try {
-            await resolveMarket(btn.dataset.resolveYes, 'YES');
-            showToast('Market resolved as YES', 'success');
-            renderAdmin();
-          } catch(err) { showToast('Failed: ' + err.message, 'error'); }
-        };
-      });
-      c.querySelectorAll('[data-resolve-no]').forEach(btn => {
-        btn.onclick = async () => {
-          if (!confirm('Are you sure you want to resolve this market as NO?')) return;
-          try {
-            await resolveMarket(btn.dataset.resolveNo, 'NO');
-            showToast('Market resolved as NO', 'success');
-            renderAdmin();
-          } catch(err) { showToast('Failed: ' + err.message, 'error'); }
-        };
-      });
-
-      // Role changes
-      c.querySelectorAll('.role-select').forEach(sel => {
-        sel.onchange = async () => {
-          try {
-            await dbUpdate(`users/${sel.dataset.userId}`, { role: sel.value });
-            showToast(`Role updated to ${sel.value}`, 'success');
-          } catch(err) { showToast('Failed', 'error'); }
-        };
-      });
+      c.querySelectorAll('.tab-bar button').forEach(btn=>{btn.onclick=()=>render(btn.dataset.tab)});
+      c.querySelectorAll('[data-approve]').forEach(btn=>{btn.onclick=async()=>{try{await dbUpdate(`markets/${btn.dataset.approve}`,{status:'active'});showToast('Forecast approved!','success');renderAdmin()}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-reject]').forEach(btn=>{btn.onclick=async()=>{try{await dbUpdate(`markets/${btn.dataset.reject}`,{status:'rejected'});showToast('Forecast rejected','info');renderAdmin()}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-approve-census]').forEach(btn=>{btn.onclick=async()=>{try{await dbUpdate(`censuses/${btn.dataset.approveCensus}`,{status:'active'});showToast('Poll approved!','success');renderAdmin()}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-reject-census]').forEach(btn=>{btn.onclick=async()=>{try{await dbUpdate(`censuses/${btn.dataset.rejectCensus}`,{status:'rejected'});showToast('Poll rejected','info');renderAdmin()}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-close-census]').forEach(btn=>{btn.onclick=async()=>{if(!confirm('Close this poll?'))return;try{await dbUpdate(`censuses/${btn.dataset.closeCensus}`,{status:'closed'});showToast('Poll closed','success');renderAdmin()}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-resolve-yes]').forEach(btn=>{btn.onclick=async()=>{if(!confirm('Resolve as YES?'))return;try{await resolveMarket(btn.dataset.resolveYes,'YES');showToast('Resolved YES','success');renderAdmin()}catch(e){showToast('Failed: '+e.message,'error')}}});
+      c.querySelectorAll('[data-resolve-no]').forEach(btn=>{btn.onclick=async()=>{if(!confirm('Resolve as NO?'))return;try{await resolveMarket(btn.dataset.resolveNo,'NO');showToast('Resolved NO','success');renderAdmin()}catch(e){showToast('Failed: '+e.message,'error')}}});
+      c.querySelectorAll('.role-select').forEach(sel=>{sel.onchange=async()=>{try{await dbUpdate(`users/${sel.dataset.userId}`,{role:sel.value});showToast(`Role updated to ${sel.value}`,'success')}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-delete-report]').forEach(btn=>{btn.onclick=async()=>{try{await dbUpdate(`comments/${btn.dataset.market}/${btn.dataset.comment}`,{status:'hidden'});await dbUpdate(`reportedComments/${btn.dataset.deleteReport}`,{status:'deleted'});showToast('Comment removed','success');renderAdmin()}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-dismiss-report]').forEach(btn=>{btn.onclick=async()=>{try{await dbUpdate(`reportedComments/${btn.dataset.dismissReport}`,{status:'dismissed'});showToast('Report dismissed','info');renderAdmin()}catch(e){showToast('Failed','error')}}});
     }
-
     render('pending');
-  } catch(err) { c.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`; }
+  }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
 
-async function deleteComment(marketId, commentId) {
-  if (!confirm('Delete this comment?')) return;
-  try {
-    await dbUpdate(`comments/${marketId}/${commentId}`, { status: 'hidden' });
-    // Also mark any reports for this comment as resolved
-    const reports = await dbGet('reportedComments');
-    if (reports) {
-      const matching = Object.entries(reports).filter(([_, r]) => r.commentId === commentId);
-      for (const [rid] of matching) {
-        await dbUpdate(`reportedComments/${rid}`, { status: 'deleted' });
-      }
-    }
-    showToast('Comment removed', 'success');
-    if (currentPage === 'market-detail') renderMarketDetail(marketId);
-    else renderAdmin();
-  } catch(err) { showToast('Failed to delete comment', 'error'); }
+// ========== SHARED HELPERS ==========
+async function reportComment(marketId,commentId,commentText,commentUser){
+  try{await dbPush('reportedComments',{marketId,commentId,commentText,commentUser,reportedBy:currentUser.id,reportedByName:currentUser.name,timestamp:Date.now(),status:'pending'});showToast('Comment reported to moderators','success')}
+  catch(err){showToast('Failed to report comment','error')}
 }
 
-async function resolveMarket(marketId, resolution) {
-  // Update market status
-  await dbUpdate(`markets/${marketId}`, { status: 'resolved', resolution, resolvedAt: Date.now() });
+async function deleteComment(marketId,commentId){
+  if(!confirm('Delete this comment?'))return;
+  try{
+    await dbUpdate(`comments/${marketId}/${commentId}`,{status:'hidden'});
+    const reports=await dbGet('reportedComments');
+    if(reports){const matching=Object.entries(reports).filter(([_,r])=>r.commentId===commentId);for(const[rid]of matching)await dbUpdate(`reportedComments/${rid}`,{status:'deleted'})}
+    showToast('Comment removed','success');
+    if(currentPage==='market-detail')renderMarketDetail(currentMarketId);else renderAdmin();
+  }catch(err){showToast('Failed to delete comment','error')}
+}
 
-  // Payout winners
-  const trades = await dbGet('trades');
-  if (!trades) return;
-
-  const marketTrades = Object.values(trades).filter(t => t.marketId === marketId);
-  const winnerTrades = marketTrades.filter(t => t.side === resolution);
-
-  for (const trade of winnerTrades) {
-    try {
-      const user = await dbGet(`users/${trade.userId}`);
-      if (user) {
-        const payout = trade.shares; // Each share pays out 1 HFX if correct
-        const newBalance = (user.balance || 0) + payout;
-        const newProfit = (user.profit || 0) + (payout - trade.cost);
-        await dbUpdate(`users/${trade.userId}`, { balance: newBalance, profit: newProfit });
+async function resolveMarket(marketId,resolution){
+  await dbUpdate(`markets/${marketId}`,{status:'resolved',resolution,resolvedAt:Date.now()});
+  const trades=await dbGet('trades');if(!trades)return;
+  const winnerTrades=Object.values(trades).filter(t=>t.marketId===marketId&&t.side===resolution);
+  for(const trade of winnerTrades){
+    try{
+      const user=await dbGet(`users/${trade.userId}`);
+      if(user){
+        const payout=trade.shares;
+        const newBalance=(user.balance||0)+payout;
+        const newProfit=(user.profit||0)+(payout-trade.cost);
+        const newCorrect=(user.correct||0)+1;
+        await dbUpdate(`users/${trade.userId}`,{balance:newBalance,profit:newProfit,correct:newCorrect});
       }
-    } catch(e) { /* skip failed payouts */ }
+    }catch(e){}
   }
-
-  // Update current user balance display if they won
-  if (currentUser) {
-    const u = await dbGet(`users/${currentUser.id}`);
-    if (u) {
-      currentUser = { ...currentUser, ...u };
-      saveSession(currentUser);
-      document.getElementById('balance-amount').textContent = Math.round(currentUser.balance).toLocaleString();
-    }
-  }
+  if(currentUser){const u=await dbGet(`users/${currentUser.id}`);if(u){currentUser={...currentUser,...u};saveSession(currentUser);document.getElementById('balance-amount').textContent=Math.round(currentUser.balance).toLocaleString()}}
 }
 
 // ========== START ==========
