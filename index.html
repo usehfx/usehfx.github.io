@@ -787,7 +787,23 @@ async function renderMarkets(searchQuery = '') {
   }
 }
 
-// ========== CREATE MARKET ==========
+// ========== COMMENT REPORTING ==========
+async function reportComment(marketId, commentId, commentText, commentUser) {
+  try {
+    await dbPush('reportedComments', {
+      marketId,
+      commentId,
+      commentText,
+      commentUser,
+      reportedBy: currentUser.id,
+      reportedByName: currentUser.name,
+      timestamp: Date.now(),
+      status: 'pending' // pending | dismissed | deleted
+    });
+    showToast('Comment reported to moderators', 'success');
+  } catch(err) { showToast('Failed to report comment', 'error'); }
+}
+
 // ========== CREATE MARKET ==========
 function showCreateMarketModal() {
   if (!currentUser?.verified) { showToast('Verify your email to create markets', 'error'); return; }
