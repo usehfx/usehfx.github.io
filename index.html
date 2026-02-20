@@ -1588,7 +1588,7 @@ async function resolveMarket(marketId,resolution){
     try{
       const user=await dbGet(`users/${trade.userId}`);
       if(user){
-        const payout=trade.shares;
+        const payout=trade.cost*2;
         const newBalance=(user.balance||0)+payout;
         const newProfit=(user.profit||0)+(payout-trade.cost);
         const newCorrect=(user.correct||0)+1;
