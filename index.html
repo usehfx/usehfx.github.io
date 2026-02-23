@@ -2546,14 +2546,13 @@ async function renderAdmin(){
 async function adminResolve(marketId,resolution){
   openModal(`Resolve as ${resolution}`,`
     <p style="font-size:.84rem;color:var(--text-secondary);margin-bottom:12px">Please provide a source URL to confirm this resolution and prevent disputes.</p>
-    <div class="form-group"><label>Resolution Source URL (required)</label><input type="url" id="res-source" placeholder="https://hackleysports.com/results…" required></div>
+    <div class="form-group"><label>Resolution Source URL (optional)</label><input type="url" id="res-source" placeholder="https://hackleysports.com/results…"></div>
   `,`
     <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
     <button class="btn ${resolution==='YES'?'btn-primary':'btn-danger'}" id="res-confirm">Confirm Resolve ${resolution}</button>
   `);
   document.getElementById('res-confirm').onclick=async()=>{
     const source=document.getElementById('res-source').value.trim();
-    if(!source){showToast('Source URL required','error');return}
     try{
       await resolveMarket(marketId,resolution,source);
       closeModal();showToast(`Resolved ${resolution}!`,'success');renderAdmin();
