@@ -2069,48 +2069,78 @@ async function renderLeaderboard(){
   try{
     const usersData=await dbGet('users');
     if(!usersData){c.innerHTML='<div class="empty-state"><h3>No users yet</h3></div>';return}
+    
+    // Prepare lists for sorting
     let list=Object.entries(usersData).map(([id,u])=>({id,...u})).filter(u=>u.role!=='banned');
-    let sortBy='balance';
-    function render(sort){
-      sortBy=sort;
-      const sorted=[...list].sort((a,b)=>(b[sort]||0)-(a[sort]||0));
-      c.innerHTML=`
-        <div class="page">
-          <h1 class="page-title">🏆 Leaderboard</h1>
-          <div class="tab-bar">
-            <button class="${sort==='balance'?'active':''}" data-sort="balance">Highest Score</button>
-            <button class="${sort==='predictions'?'active':''}" data-sort="predictions">Most Active</button>
-            <button class="${sort==='profit'?'active':''}" data-sort="profit">Most Accurate</button>
-          </div>
-          <div class="card" style="overflow:hidden">
-            ${sorted.map((u,i)=>{
-              const rankPos=i+1;
-              const rankClass=rankPos<=3?['gold','silver','bronze'][rankPos-1]:'';
-              return`<div class="lb-row" data-user-id="${u.id}">
-                <div class="lb-rank ${rankClass}">${rankPos<=3?['🥇','🥈','🥉'][rankPos-1]:rankPos}</div>
-                <div class="lb-avatar" style="background:${avatarColor(u.name)}22;color:${avatarColor(u.name)}">${initials(u.name)}</div>
-                <div class="lb-info">
-                  <div class="lb-name">
-                    ${esc(u.name)}
-                    ${u.verified?`<svg width="11" height="11" viewBox="0 0 24 24" fill="var(--accent)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`:''}
-                    <span class="rank-badge ${getRankClass(rankPos)}">${getRankForPosition(rankPos)}</span>
-                  </div>
-                  <div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap">
-                    ${renderAchievementBadges(u,3)}
-                    ${renderWinRate(u)}
-                  </div>
+    
+    // Sort by individual metrics
+    const sortByBalance = [...list].sort((a,b)=>(b.balance||0)-(a.balance||0));
+    const sortByPredictions = [...list].sort((a,b)=>(b.predictions||b.trades||0)-(a.predictions||a.trades||0));
+    const sortByProfit = [...list].sort((a,b)=>(b.profit||0)-(a.profit||0));
+
+    // Calculate Average Rank for each user
+    list = list.map(user => {
+      // Find rank in each category (index + 1)
+      const rBalance = sortByBalance.findIndex(u => u.id === user.id) + 1;
+      const rActivity = sortByPredictions.findIndex(u => u.id === user.id) + 1;
+      const rProfit = sortByProfit.findIndex(u => u.id === user.id) + 1;
+
+      // Calculate average (Activity doesn't factor heavily, but ensures tie-breaking)
+      // Formula: Average of (Balance Rank + Profit Rank)
+      const avgRank = (rBalance + rProfit) / 2;
+      
+      return { ...user, avgRank, rBalance, rActivity, rProfit };
+    });
+
+    // Sort final list by Average Rank
+    const sorted = [...list].sort((a, b) => a.avgRank - b.avgRank);
+
+    c.innerHTML=`
+      <div class="page">
+        <h1 class="page-title">🏆 Leaderboard</h1>
+        <div style="margin-bottom:18px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--text-secondary)">
+          Ranking is calculated based on average position across <strong style="color:var(--text)">Accuracy Score</strong> and <strong style="color:var(--text)">Profit</strong>.
+        </div>
+        <div class="card" style="overflow:hidden">
+          ${sorted.map((u,i)=>{
+            const rankPos=i+1;
+            
+            // Assign Tier Classes
+            let rankClass = '';
+            let rankIcon = rankPos;
+            
+            if(rankPos <= 3) {
+              rankClass = 'gold'; // Top 3 uses existing gold styling
+              rankIcon = ['🥇','🥈','🥉'][rankPos-1];
+            } else if(rankPos <= 6) {
+              rankClass = 'silver'; // 4-6
+            } else if(rankPos <= 9) {
+              rankClass = 'bronze'; // 7-9
+            }
+            // 10+ has no special class/icon formatting
+
+            return`<div class="lb-row" data-user-id="${u.id}">
+              <div class="lb-rank ${rankClass}">${rankIcon}</div>
+              <div class="lb-avatar" style="background:${avatarColor(u.name)}22;color:${avatarColor(u.name)}">${initials(u.name)}</div>
+              <div class="lb-info">
+                <div class="lb-name">
+                  ${esc(u.name)}
+                  ${u.verified?`<svg width="11" height="11" viewBox="0 0 24 24" fill="var(--accent)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`:''}
                 </div>
-                <div class="lb-value">${sort==='balance'?fmtPts(u.balance)+' pts':sort==='predictions'?(u.predictions||u.trades||0)+' forecasts':fmtPts(u.profit)+' pts profit'}</div>
-              </div>`;
-            }).join('')}
-          </div>
-        </div>`;
-      c.querySelectorAll('.tab-bar button').forEach(btn=>{btn.onclick=()=>render(btn.dataset.sort)});
-    }
-    render('balance');
+                <div class="lb-sub">
+                  Score: ${fmtPts(u.balance)} · Profit: ${fmtPts(u.profit||0)}
+                </div>
+              </div>
+              <div class="lb-value" style="font-size:.8rem; text-align:right">
+                <div style="font-weight:800;color:var(--accent)">${fmtPts(u.balance)} pts</div>
+                <div style="font-size:.7rem;color:var(--text-muted)">#${u.rBalance} Acc · #${u.rProfit} Profit</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
   }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
-
 // ===================== PROFILE =====================
 async function renderProfile(){
   const c=document.getElementById('page-content');
@@ -2121,7 +2151,6 @@ async function renderProfile(){
     ]);
     if(user){currentUser={...currentUser,...user,id:currentUser.id};saveSession(currentUser)}
     
-    // FIX: Define markets immediately after fetching data
     const markets=marketsData||{};
     
     const allTrades=tradesData?Object.entries(tradesData).map(([id,t])=>({id,...t})).filter(t=>t.userId===currentUser.id):[];
@@ -2135,7 +2164,6 @@ async function renderProfile(){
     const myLimitOrders=limitOrdersData?Object.entries(limitOrdersData).map(([id,o])=>({id,...o})).filter(o=>o.status==='pending'):[];
     const earned=currentUser.achievements||{};
     const allAchKeys=Object.keys(ACHIEVEMENTS);
-    const displayBadges=currentUser.badgeDisplay||Object.keys(earned).slice(0,3);
     let activeTab='history';
 
     function render(tab){
@@ -2156,7 +2184,6 @@ async function renderProfile(){
             </div>
             <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
               ${!currentUser.verified?'<button class="btn btn-primary btn-sm" id="verify-btn">Verify Email</button>':''}
-              <button class="btn btn-secondary btn-sm" id="settings-btn">⚙ Settings</button>
             </div>
           </div>
 
@@ -2255,13 +2282,7 @@ async function renderProfile(){
                       <div style="font-size:.75rem;color:var(--text-muted)">${a.desc}</div>
                     </div>
                   </div>
-                  ${has?`<div style="font-size:.7rem;color:var(--accent)">Earned ${timeAgo(earnedAt)}</div>
-                    <div style="margin-top:6px">
-                      <label style="font-size:.73rem;display:flex;align-items:center;gap:6px;cursor:pointer">
-                        <input type="checkbox" data-badge="${k}" style="width:auto;accent-color:var(--accent)" ${displayBadges.includes(k)?'checked':''}> Display on profile
-                      </label>
-                    </div>`:
-                    `<div style="font-size:.7rem;color:var(--text-muted)">Not yet earned</div>`}
+                  ${has?`<div style="font-size:.7rem;color:var(--accent)">Earned ${timeAgo(earnedAt)}</div>`:`<div style="font-size:.7rem;color:var(--text-muted)">Not yet earned</div>`}
                 </div>`;
               }).join('')}
             </div>
@@ -2270,18 +2291,6 @@ async function renderProfile(){
 
       c.querySelectorAll('.tab-bar button').forEach(btn=>{if(btn.dataset.tab)btn.onclick=()=>render(btn.dataset.tab)});
       document.getElementById('verify-btn')?.addEventListener('click',showVerifyModal);
-      document.getElementById('settings-btn')?.addEventListener('click',showSettingsModal);
-      if(tab==='achievements'){
-        c.querySelectorAll('[data-badge]').forEach(chk=>{
-          chk.onchange=async()=>{
-            const k=chk.dataset.badge;
-            const disp=currentUser.badgeDisplay||[];
-            if(chk.checked){if(!disp.includes(k))disp.push(k)}else{const idx=disp.indexOf(k);if(idx>-1)disp.splice(idx,1)}
-            currentUser.badgeDisplay=disp;saveSession(currentUser);
-            await dbUpdate(`users/${currentUser.id}`,{badgeDisplay:disp});
-          };
-        });
-      }
     }
     render(activeTab);
   }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
@@ -2294,29 +2303,6 @@ async function cancelLimitOrder(orderId){
   }catch(err){showToast('Failed','error')}
 }
 
-function showSettingsModal(){
-  openModal('⚙ Profile Settings',`
-    <div class="form-group">
-      <label>Anonymous Mode</label>
-      <p class="hint" style="margin-bottom:8px">When on, your name is hidden from poll vote lists (admins can still see).</p>
-      <select id="settings-anon">
-        <option value="false" ${!currentUser.anonymous?'selected':''}>Off — show my name</option>
-        <option value="true" ${currentUser.anonymous?'selected':''}>On — hide my bet history from others</option>
-      </select>
-    </div>
-  `,`
-    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-primary" id="save-settings">Save</button>
-  `);
-  document.getElementById('save-settings').onclick=async()=>{
-    const anon=document.getElementById('settings-anon').value==='true';
-    try{
-      await dbUpdate(`users/${currentUser.id}`,{anonymous:anon});
-      currentUser.anonymous=anon;saveSession(currentUser);
-      closeModal();showToast('Settings saved','success');
-    }catch(e){showToast('Failed','error')}
-  };
-}
 
 // ===================== REPORT & DELETE COMMENTS =====================
 async function reportComment(marketId,commentId,commentText,commentUser){
