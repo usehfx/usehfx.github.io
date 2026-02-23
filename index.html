@@ -13,11 +13,11 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#06060f;
-  --bg-card:#0c0c18;
-  --bg-card-hover:#131322;
-  --bg-input:#10101b;
-  --bg-surface:#0a0a16;
+  --bg:#080810;
+  --bg-card:#0f0f1a;
+  --bg-card-hover:#161625;
+  --bg-input:#12121e;
+  --bg-surface:#0d0d18;
   --border:#1e1e32;
   --border-light:#252540;
   --border-focus:#00e5a0;
@@ -225,22 +225,49 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 .lb-value{font-size:.88rem;font-weight:800;font-family:var(--mono);color:var(--accent);text-align:right}
 
 /* ===== RANK BADGE ===== */
-.rank-badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:12px;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
-.rank-1{background:rgba(245,158,11,0.2);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);box-shadow:0 0 8px rgba(245,158,11,0.15)}
-.rank-2{background:rgba(148,163,184,0.15);color:#94a3b8;border:1px solid rgba(148,163,184,0.2)}
-.rank-3{background:rgba(205,127,50,0.15);color:#cd7f32;border:1px solid rgba(205,127,50,0.2)}
-.rank-4,.rank-5{background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.15)}
-.rank-6,.rank-7{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.15)}
-.rank-8,.rank-9,.rank-10{background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid var(--border)}
+.rank-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;gap:3px}
+/* Top 3 — special glow */
+.rank-1{background:linear-gradient(135deg,rgba(255,215,0,0.22),rgba(255,180,0,0.12));color:#ffd700;border:1px solid rgba(255,215,0,0.38);box-shadow:0 0 10px rgba(255,215,0,0.12),inset 0 0 10px rgba(255,215,0,0.04)}
+.rank-2{background:linear-gradient(135deg,rgba(192,192,192,0.18),rgba(150,150,150,0.08));color:#c8c8c8;border:1px solid rgba(192,192,192,0.3);box-shadow:0 0 7px rgba(192,192,192,0.08)}
+.rank-3{background:linear-gradient(135deg,rgba(205,127,50,0.2),rgba(180,100,30,0.1));color:#cd7f32;border:1px solid rgba(205,127,50,0.28);box-shadow:0 0 6px rgba(205,127,50,0.08)}
+/* Top 5 — advanced / emerald */
+.rank-4{background:linear-gradient(135deg,rgba(0,229,160,0.16),rgba(0,200,140,0.07));color:#00e5a0;border:1px solid rgba(0,229,160,0.22)}
+.rank-5{background:linear-gradient(135deg,rgba(0,229,160,0.11),rgba(0,180,120,0.05));color:#00cc8f;border:1px solid rgba(0,229,160,0.16)}
+/* 6-10 — blue */
+.rank-6{background:linear-gradient(135deg,rgba(59,130,246,0.16),rgba(37,99,235,0.07));color:#60a5fa;border:1px solid rgba(59,130,246,0.2)}
+.rank-7{background:rgba(59,130,246,0.1);color:#93c5fd;border:1px solid rgba(59,130,246,0.14)}
+.rank-8{background:rgba(59,130,246,0.07);color:#bfdbfe;border:1px solid rgba(59,130,246,0.1)}
+.rank-9{background:rgba(100,116,139,0.1);color:#94a3b8;border:1px solid rgba(100,116,139,0.16)}
+.rank-10{background:rgba(100,116,139,0.07);color:#94a3b8;border:1px solid rgba(100,116,139,0.1)}
+/* 11-15 — purple */
+.rank-11{background:rgba(168,85,247,0.1);color:#c084fc;border:1px solid rgba(168,85,247,0.14)}
+.rank-12{background:rgba(168,85,247,0.07);color:#d8b4fe;border:1px solid rgba(168,85,247,0.1)}
+.rank-13{background:rgba(168,85,247,0.05);color:#e9d5ff;border:1px solid rgba(168,85,247,0.07)}
+.rank-14{background:rgba(100,116,139,0.06);color:#7070a0;border:1px solid rgba(100,116,139,0.08)}
+.rank-15{background:rgba(100,116,139,0.05);color:#7070a0;border:1px solid rgba(100,116,139,0.07)}
+/* 16-20 */
+.rank-16,.rank-17,.rank-18,.rank-19,.rank-20{background:rgba(255,255,255,0.025);color:var(--text-muted);border:1px solid var(--border)}
+/* Advanced crown */
+.advanced-crown{font-size:.8rem;display:inline;filter:drop-shadow(0 0 4px rgba(255,215,0,0.7))}
 
 /* ===== ACHIEVEMENT BADGES ===== */
-.achievement-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;font-size:.65rem;font-weight:800;cursor:pointer;transition:all .18s;position:relative}
-.ach-first-blood{background:rgba(255,61,90,0.15);color:var(--red);border:1px solid rgba(255,61,90,0.25)}
-.ach-bullseye{background:rgba(0,229,160,0.15);color:var(--accent);border:1px solid rgba(0,229,160,0.25)}
-.ach-oracle{background:rgba(245,158,11,0.15);color:var(--gold);border:1px solid rgba(245,158,11,0.25)}
-.ach-sports-savant{background:rgba(59,130,246,0.15);color:var(--blue);border:1px solid rgba(59,130,246,0.25)}
-.ach-skeptic{background:rgba(168,85,247,0.15);color:var(--purple);border:1px solid rgba(168,85,247,0.25)}
-.ach-comeback{background:rgba(249,115,22,0.15);color:var(--orange);border:1px solid rgba(249,115,22,0.25)}
+.achievement-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;font-size:.62rem;font-weight:800;cursor:pointer;transition:transform .15s;position:relative}
+.achievement-badge:hover{transform:scale(1.07)}
+.ach-first-blood{background:rgba(255,61,90,0.15);color:#ff6b85;border:1px solid rgba(255,61,90,0.22)}
+.ach-bullseye{background:rgba(0,229,160,0.15);color:#00e5a0;border:1px solid rgba(0,229,160,0.22)}
+.ach-oracle{background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.22)}
+.ach-sports-savant{background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.22)}
+.ach-skeptic{background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.22)}
+.ach-comeback{background:rgba(249,115,22,0.15);color:#fb923c;border:1px solid rgba(249,115,22,0.22)}
+.ach-early-bird{background:rgba(6,182,212,0.15);color:#22d3ee;border:1px solid rgba(6,182,212,0.22)}
+.ach-big-brain{background:rgba(236,72,153,0.15);color:#f472b6;border:1px solid rgba(236,72,153,0.22)}
+.ach-hot-streak{background:rgba(255,193,7,0.15);color:#fcd34d;border:1px solid rgba(255,193,7,0.22)}
+.ach-contrarian{background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.22)}
+.ach-centurion{background:rgba(245,158,11,0.2);color:#fbbf24;border:1px solid rgba(245,158,11,0.3);box-shadow:0 0 8px rgba(245,158,11,0.1)}
+.ach-perfect-week{background:rgba(0,229,160,0.2);color:#34d399;border:1px solid rgba(0,229,160,0.3)}
+.ach-poll-master{background:rgba(168,85,247,0.18);color:#a78bfa;border:1px solid rgba(168,85,247,0.25)}
+.ach-sharp-eye{background:rgba(59,130,246,0.18);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)}
+.ach-veteran{background:rgba(245,158,11,0.15);color:#fde68a;border:1px solid rgba(245,158,11,0.2)}
 
 /* ===== PROFILE ===== */
 .profile-header{display:flex;align-items:flex-start;gap:20px;margin-bottom:24px;padding:22px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)}
@@ -361,12 +388,7 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 .high-disagree-section{margin-bottom:24px}
 .high-disagree-section .market-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
 
-/* ===== PARLAY ===== */
-.parlay-leg{padding:10px 12px;background:var(--bg-surface);border-radius:8px;border:1px solid var(--border);margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.parlay-leg .leg-title{font-size:.78rem;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.parlay-leg .leg-side{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:10px}
-.parlay-leg .leg-remove{background:transparent;border:none;color:var(--text-muted);font-size:.9rem;cursor:pointer;padding:2px 6px;border-radius:4px;flex-shrink:0}
-.parlay-leg .leg-remove:hover{color:var(--red)}
+
 
 /* Positions tab */
 .position-row{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;transition:background .15s}
@@ -381,13 +403,7 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 /* Limit order indicator */
 .limit-order-badge{font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:10px;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,130,246,0.2)}
 
-/* ===== CHALLENGE ===== */
-.challenge-card{border-left:3px solid var(--orange)}
-.challenge-vs{display:flex;align-items:center;justify-content:center;gap:16px;padding:14px 0}
-.challenge-side{text-align:center;flex:1}
-.challenge-side .name{font-weight:700;font-size:.88rem}
-.challenge-side .position{font-size:.75rem;margin-top:2px}
-.challenge-divider{font-size:1.3rem;font-weight:900;color:var(--text-muted)}
+
 
 /* ===== RESOLUTION BANNER ===== */
 .resolution-banner{padding:14px 18px;border-radius:8px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:.88rem}
@@ -432,39 +448,24 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 </style>
 </head>
 <body>
-
-<!-- INTRO ANIMATION -->
-<div id="intro-overlay" style="position:fixed;inset:0;z-index:9999;background:#06060f;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .65s ease">
-  <div style="display:flex;flex-direction:column;align-items:center;gap:18px">
-    <div id="intro-mark" style="width:72px;height:72px;background:#00e5a0;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#06060f;opacity:0;transform:scale(.45) rotate(-18deg);transition:all .7s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 70px rgba(0,229,160,0.55)">H</div>
-    <div id="intro-title" style="font-size:2.2rem;font-weight:900;letter-spacing:-.06em;opacity:0;transition:opacity .45s ease;display:flex;align-items:baseline;gap:10px">HFX <span style="color:#44445a;font-size:1rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Forecasts</span></div>
-    <div id="intro-sub" style="font-size:.74rem;color:#44445a;opacity:0;transition:opacity .4s ease;letter-spacing:.14em;text-transform:uppercase">Hackley &middot; Predict &middot; Compete</div>
-    <div id="intro-bar-wrap" style="width:180px;height:2px;background:#1a1a2e;border-radius:1px;margin-top:16px;overflow:hidden;opacity:0;transition:opacity .3s ease">
-      <div id="intro-bar" style="height:100%;width:0%;background:#00e5a0;border-radius:1px;transition:width 1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 9px #00e5a0"></div>
-    </div>
-  </div>
+<div id="intro-overlay" style="position:fixed;inset:0;z-index:9999;background:#06060f;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;transition:opacity .6s ease">
+  <style>
+    .intro-mark{width:72px;height:72px;background:#00e5a0;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#06060f;opacity:0;transform:scale(.5) rotate(-15deg);animation:iMark .65s cubic-bezier(.34,1.56,.64,1) .15s forwards;box-shadow:0 0 60px rgba(0,229,160,0.6),0 0 0 0 rgba(0,229,160,0.4);font-family:'Outfit',sans-serif}
+    @keyframes iMark{to{opacity:1;transform:scale(1) rotate(0deg)}}
+    .intro-title{font-size:2.5rem;font-weight:900;letter-spacing:-.06em;opacity:0;animation:iFade .5s ease .75s forwards;display:flex;align-items:baseline;gap:11px;color:#ededf5;font-family:'Outfit',sans-serif;margin-top:16px}
+    .intro-title span{color:#404058;font-size:1rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .intro-sub{font-size:.8rem;color:#404058;opacity:0;animation:iFade .5s ease 1.05s forwards;letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif}
+    .intro-bar{width:160px;height:2px;background:#1a1a2e;border-radius:1px;margin-top:26px;overflow:hidden;opacity:0;animation:iFade .3s ease 1.25s forwards}
+    .intro-bar-fill{height:100%;width:0%;background:#00e5a0;border-radius:1px;animation:iBar .75s ease 1.3s forwards;box-shadow:0 0 10px #00e5a0}
+    @keyframes iFade{to{opacity:1}}
+    @keyframes iBar{to{width:100%}}
+    #intro-overlay.out{opacity:0;pointer-events:none}
+  </style>
+  <div class="intro-mark">H</div>
+  <div class="intro-title">HFX <span>Forecasts</span></div>
+  <div class="intro-sub">Hackley · Predict · Compete</div>
+  <div class="intro-bar"><div class="intro-bar-fill"></div></div>
 </div>
-<script>
-(function(){
-  var ov=document.getElementById('intro-overlay');
-  var mk=document.getElementById('intro-mark');
-  if(!ov||!mk)return;
-  function delay(fn,ms){setTimeout(fn,ms)}
-  delay(function(){mk.style.opacity='1';mk.style.transform='scale(1) rotate(0deg)'},60);
-  delay(function(){var t=document.getElementById('intro-title');if(t)t.style.opacity='1'},700);
-  delay(function(){var s=document.getElementById('intro-sub');if(s)s.style.opacity='1'},940);
-  delay(function(){
-    var bw=document.getElementById('intro-bar-wrap');
-    if(bw){bw.style.opacity='1';delay(function(){var b=document.getElementById('intro-bar');if(b)b.style.width='100%'},60)}
-  },1160);
-  delay(function(){
-    ov.style.opacity='0';
-    ov.style.pointerEvents='none';
-    delay(function(){ov.style.display='none'},700);
-  },2400);
-})();
-</script>
-
 <div id="app">
   <header id="main-header" style="display:none">
     <div class="header-inner">
@@ -666,49 +667,48 @@ document.getElementById('notif-clear-all').onclick=async()=>{
 
 // ===================== RANKS (20 tiers) =====================
 const RANK_TIERS=[
-  {min:1,  max:1,   title:'Grand Oracle',        emoji:'\u{1F52E}', cls:'rank-1'},
-  {min:2,  max:2,   title:'Master Forecaster',   emoji:'\u{1F451}', cls:'rank-2'},
-  {min:3,  max:3,   title:'Elite Predictor',     emoji:'\u{1F949}', cls:'rank-3'},
-  {min:4,  max:5,   title:'Senior Analyst',      emoji:'\u{1F48E}', cls:'rank-4'},
-  {min:6,  max:8,   title:'Advanced Forecaster', emoji:'\u2605',    cls:'rank-5'},
-  {min:9,  max:12,  title:'Sharp Predictor',     emoji:'\u{1F3AF}', cls:'rank-6'},
-  {min:13, max:17,  title:'Skilled Analyst',     emoji:'\u{1F4CA}', cls:'rank-7'},
-  {min:18, max:24,  title:'Rising Forecaster',   emoji:'\u{1F4C8}', cls:'rank-8'},
-  {min:25, max:34,  title:'Competent Predictor', emoji:'\u{1F50D}', cls:'rank-9'},
-  {min:35, max:49,  title:'Junior Analyst',      emoji:'\u{1F4DD}', cls:'rank-10'},
-  {min:50, max:74,  title:'Apprentice',          emoji:'\u{1F331}', cls:'rank-11'},
-  {min:75, max:99,  title:'Aspiring Forecaster', emoji:'\u270F',    cls:'rank-12'},
-  {min:100,max:149, title:'Rising Star',         emoji:'\u{1F680}', cls:'rank-13'},
-  {min:150,max:199, title:'New Forecaster',      emoji:'\u{1F195}', cls:'rank-14'},
-  {min:200,max:299, title:'Beginner Analyst',    emoji:'\u{1F33F}', cls:'rank-15'},
-  {min:300,max:499, title:'Curious Predictor',   emoji:'?',         cls:'rank-16'},
-  {min:500,max:749, title:'Novice Analyst',      emoji:'\u{1F4CC}', cls:'rank-17'},
-  {min:750,max:999, title:'Newcomer',            emoji:'\u{1F530}', cls:'rank-18'},
-  {min:1000,max:1999,title:'First Steps',        emoji:'\u{1F464}', cls:'rank-19'},
-  {min:2000,max:1e9, title:'Unranked',           emoji:'-',         cls:'rank-20'},
+  {min:1,max:1,title:'Grand Oracle',emoji:'🔮'},
+  {min:2,max:2,title:'Master Forecaster',emoji:'👑'},
+  {min:3,max:3,title:'Elite Predictor',emoji:'🎖️'},
+  {min:4,max:5,title:'Senior Analyst',emoji:'💎'},
+  {min:6,max:8,title:'Advanced Forecaster',emoji:'⭐'},
+  {min:9,max:12,title:'Sharp Predictor',emoji:'🎯'},
+  {min:13,max:17,title:'Skilled Analyst',emoji:'📊'},
+  {min:18,max:24,title:'Competent Forecaster',emoji:'📈'},
+  {min:25,max:34,title:'Developing Analyst',emoji:'🔍'},
+  {min:35,max:49,title:'Junior Predictor',emoji:'📝'},
+  {min:50,max:74,title:'Apprentice Forecaster',emoji:'🌱'},
+  {min:75,max:99,title:'Aspiring Analyst',emoji:'✏️'},
+  {min:100,max:149,title:'Rising Predictor',emoji:'🚀'},
+  {min:150,max:199,title:'New Forecaster',emoji:'🆕'},
+  {min:200,max:299,title:'Budding Analyst',emoji:'🌿'},
+  {min:300,max:499,title:'Curious Predictor',emoji:'❓'},
+  {min:500,max:749,title:'Novice Analyst',emoji:'📌'},
+  {min:750,max:999,title:'Beginner Forecaster',emoji:'🔰'},
+  {min:1000,max:1999,title:'Newcomer',emoji:'👤'},
+  {min:2000,max:Infinity,title:'Unranked',emoji:'—'},
 ];
-function getRankTier(pos){return RANK_TIERS.find(r=>pos>=r.min&&pos<=r.max)||RANK_TIERS[RANK_TIERS.length-1]}
-function getRankForPosition(pos){const r=getRankTier(pos);return r.emoji+' '+r.title}
-function getRankClass(pos){return getRankTier(pos).cls}
-function rankPillHTML(pos){const r=getRankTier(pos);return`<span class="rank-badge ${r.cls}" title="Rank #${pos}">${r.emoji} ${r.title}</span>`}
+function getRankData(pos){return RANK_TIERS.find(r=>pos>=r.min&&pos<=r.max)||RANK_TIERS[RANK_TIERS.length-1]}
+function getRankForPosition(pos){const r=getRankData(pos);return r.emoji+' '+r.title}
+function getRankClass(pos){const r=RANK_TIERS.findIndex(t=>pos>=t.min&&pos<=t.max)+1;return`rank-${Math.min(r||20,20)}`}
 
 // ===================== ACHIEVEMENTS =====================
 const ACHIEVEMENTS={
-  first_blood:{id:'first_blood',icon:'🩸',name:'First Blood',desc:'Made your first forecast',cls:'ach-first-blood',check:u=>((u.predictions||u.trades||0)>=1)},
-  bullseye:{id:'bullseye',icon:'🎯',name:'Bullseye',desc:'Nailed 10 correct forecasts',cls:'ach-bullseye',check:u=>((u.correct||0)>=10)},
-  oracle:{id:'oracle',icon:'🔮',name:'Oracle',desc:'90%+ accuracy over 20 forecasts',cls:'ach-oracle',check:u=>((u.predictions||0)>=20&&((u.correct||0)/(u.predictions||1))>=0.9)},
-  sports_savant:{id:'sports_savant',icon:'🏆',name:'Sports Savant',desc:'5 Sports forecasts correct in a row',cls:'ach-sports-savant',check:u=>((u.sportStreak||0)>=5)},
-  skeptic:{id:'skeptic',icon:'🙅',name:'The Skeptic',desc:'Forecasted NO 10 times',cls:'ach-skeptic',check:u=>((u.noCount||0)>=10)},
-  comeback:{id:'comeback',icon:'🔥',name:'Comeback Kid',desc:'Climbed back from -500 pts',cls:'ach-comeback',check:u=>(u.hadComeback===true)},
-  hot_streak:{id:'hot_streak',icon:'⚡',name:'Hot Streak',desc:'5 correct forecasts in a row',cls:'ach-hot-streak',check:u=>((u.streak||0)>=5)},
-  early_bird:{id:'early_bird',icon:'🌅',name:'Early Bird',desc:'Among the first to forecast on a market',cls:'ach-early-bird',check:u=>(u.earlyBirdCount||0)>=1},
-  big_brain:{id:'big_brain',icon:'🧠',name:'Big Brain',desc:'Bet the underdog (<30%) and won',cls:'ach-big-brain',check:u=>(u.bigBrainWins||0)>=1},
-  contrarian:{id:'contrarian',icon:'🔄',name:'Contrarian',desc:'Won forecasting NO 5 times',cls:'ach-contrarian',check:u=>((u.noWins||0)>=5)},
-  centurion:{id:'centurion',icon:'⚔️',name:'Centurion',desc:'Made 100 total forecasts',cls:'ach-centurion',check:u=>((u.predictions||u.trades||0)>=100)},
-  perfect_week:{id:'perfect_week',icon:'💯',name:'Perfect Week',desc:'7 correct forecasts in a row',cls:'ach-perfect-week',check:u=>((u.streak||0)>=7)},
-  poll_master:{id:'poll_master',icon:'🗳️',name:'Poll Master',desc:'Voted on 10 different polls',cls:'ach-poll-master',check:u=>((u.pollVotes||0)>=10)},
-  sharp_eye:{id:'sharp_eye',icon:'👁️',name:'Sharp Eye',desc:'Won 3 markets where you were the underdog',cls:'ach-sharp-eye',check:u=>(u.sharpEyeCount||0)>=3},
-  veteran:{id:'veteran',icon:'🎖️',name:'Veteran',desc:'Active member for 30+ days',cls:'ach-veteran',check:u=>(u.createdAt&&(Date.now()-u.createdAt)>=30*86400000)},
+  first_blood:{id:'first_blood',icon:'🩸',name:'First Blood',desc:'Made your first forecast',class:'ach-first-blood',check:u=>((u.predictions||u.trades||0)>=1)},
+  bullseye:{id:'bullseye',icon:'🎯',name:'Bullseye',desc:'10 correct forecasts',class:'ach-bullseye',check:u=>((u.correct||0)>=10)},
+  oracle:{id:'oracle',icon:'🔮',name:'Oracle',desc:'90%+ accuracy over 20 forecasts',class:'ach-oracle',check:u=>((u.predictions||0)>=20&&((u.correct||0)/(u.predictions||1))>=0.9)},
+  sports_savant:{id:'sports_savant',icon:'🏆',name:'Sports Savant',desc:'5 Sports forecasts correct in a row',class:'ach-sports-savant',check:u=>((u.sportStreak||0)>=5)},
+  skeptic:{id:'skeptic',icon:'🙅',name:'The Skeptic',desc:'Forecasted NO 10 times',class:'ach-skeptic',check:u=>((u.noCount||0)>=10)},
+  comeback:{id:'comeback',icon:'🔥',name:'Comeback Kid',desc:'Climbed back from -500 pts',class:'ach-comeback',check:u=>(u.hadComeback===true)},
+  early_bird:{id:'early_bird',icon:'🌅',name:'Early Bird',desc:'Forecasted within 1h of a market opening',class:'ach-early-bird',check:u=>(u.earlyBird===true)},
+  big_brain:{id:'big_brain',icon:'🧠',name:'Big Brain',desc:'Won a forecast where the odds were below 30%',class:'ach-big-brain',check:u=>(u.bigBrain===true)},
+  hot_streak:{id:'hot_streak',icon:'⚡',name:'Hot Streak',desc:'5 correct forecasts in a row',class:'ach-hot-streak',check:u=>((u.streak||0)>=5)},
+  contrarian:{id:'contrarian',icon:'🔄',name:'Contrarian',desc:'Won 5 NO forecasts',class:'ach-contrarian',check:u=>((u.noWins||0)>=5)},
+  centurion:{id:'centurion',icon:'⚔️',name:'Centurion',desc:'100 total forecasts made',class:'ach-centurion',check:u=>((u.predictions||u.trades||0)>=100)},
+  perfect_week:{id:'perfect_week',icon:'💯',name:'Perfect Week',desc:'7 correct forecasts in a row',class:'ach-perfect-week',check:u=>((u.streak||0)>=7)},
+  poll_master:{id:'poll_master',icon:'🗳️',name:'Poll Master',desc:'Voted on 10 polls',class:'ach-poll-master',check:u=>((u.pollVotes||0)>=10)},
+  sharp_eye:{id:'sharp_eye',icon:'👁️',name:'Sharp Eye',desc:'First to forecast on 5 different markets',class:'ach-sharp-eye',check:u=>((u.firstForecasts||0)>=5)},
+  veteran:{id:'veteran',icon:'🎖️',name:'Veteran',desc:'Active for 30+ days',class:'ach-veteran',check:u=>((u.createdAt&&(Date.now()-u.createdAt)>=30*86400000))},
 };
 async function checkAndAwardAchievements(user){
   const earned=user.achievements||{};
@@ -730,7 +730,7 @@ function renderAchievementBadges(user,max=3){
   if(keys.length===0)return'';
   return keys.slice(0,max).map(k=>{
     const a=ACHIEVEMENTS[k];if(!a)return'';
-    return`<span class="achievement-badge ${a.cls||''}" title="${esc(a.desc)}">${a.icon} ${a.name}</span>`;
+    return`<span class="achievement-badge ${a.class}" title="${esc(a.desc)}">${a.icon} ${a.name}</span>`;
   }).join('');
 }
 function renderWinRate(user){
@@ -836,6 +836,7 @@ async function checkDuplicate(title){
 
 // ===================== LIVE FEED =====================
 let liveFeedItems=[];
+let liveFeedInterval=null;
 function addLiveFeedItem(text){
   liveFeedItems.unshift({text,time:Date.now()});
   if(liveFeedItems.length>20)liveFeedItems.pop();
@@ -877,6 +878,11 @@ function liveFeedWidget(){
 // ===================== INIT =====================
 async function init(){
   loadSession();
+  // Dismiss intro after 2.2s
+  setTimeout(()=>{
+    const ov=document.getElementById('intro-overlay');
+    if(ov){ov.style.transition='opacity .6s ease';ov.style.opacity='0';setTimeout(()=>{if(ov)ov.style.display='none'},640);}
+  },2100);
   if(currentUser){
     try{
       const u=await dbGet(`users/${currentUser.id}`);
@@ -896,8 +902,10 @@ async function init(){
     document.getElementById('admin-nav-btn').style.display=(currentUser.role==='admin'||currentUser.role==='moderator')?'':'none';
     loadNotifications();
     navigate('markets');
-    // Load live feed once on init
+    // Poll for live feed
     loadLiveFeed();
+    if(liveFeedInterval)clearInterval(liveFeedInterval);
+    liveFeedInterval=setInterval(loadLiveFeed,120000); // 2 minutes
     // Check limit orders periodically
     checkLimitOrders();
   }else{
@@ -1269,9 +1277,6 @@ async function renderMarkets(searchQuery=''){
       let filtered=cat==='All'?markets:markets.filter(m=>m.category===cat);
       const displayed=applySort(filtered,sort);
 
-      // High disagreement markets (price near 50% with actual participants)
-      const highDisagree=markets.filter(m=>m.status==='active'&&(m.totalTraders||0)>0&&Math.abs((m.yesPrice||0.5)-0.5)<0.06);
-
       c.innerHTML=`
         <div class="page">
           <div class="main-with-feed">
@@ -1279,7 +1284,7 @@ async function renderMarkets(searchQuery=''){
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
                 <h1 class="page-title" style="margin:0">🎯 Forecast Markets</h1>
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  ${currentUser?.verified?`<button class="btn btn-secondary btn-sm" id="parlay-btn">🔀 Parlay</button><button class="btn btn-primary" id="create-market-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg> New Forecast</button>`:'<span class="badge badge-pending" style="padding:6px 10px">Verify email to create</span>'}
+                  ${currentUser?.verified?`<button class="btn btn-primary" id="create-market-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14m-7-7h14"/></svg> New Forecast</button>`:'<span class="badge badge-pending" style="padding:6px 10px">Verify email to create</span>'}
                 </div>
               </div>
               <div class="filter-bar">
@@ -1294,18 +1299,6 @@ async function renderMarkets(searchQuery=''){
                 </select>
               </div>
 
-              ${highDisagree.length>0&&sort==='trending'?`
-                <div class="high-disagree-section">
-                  <div class="section-header">
-                    <h2><span style="font-size:1rem">⚖️</span> High Disagreement</h2>
-                    <span style="font-size:.75rem;color:var(--text-muted)">Markets near 50/50 — most contested</span>
-                  </div>
-                  <div class="market-grid">
-                    ${highDisagree.slice(0,2).map(m=>renderMarketCard(m,priceHistoryData)).join('')}
-                  </div>
-                </div>
-                <div class="section-header"><h2>${sort==='trending'?'🔥 Trending':'📋 All Forecasts'}</h2></div>
-              `:''}
 
               ${displayed.length===0?`<div class="empty-state"><div class="emoji">🎯</div><h3>No forecasts yet</h3><p>Be the first to create a prediction question!</p></div>`:`
                 <div class="market-grid">
@@ -1334,8 +1327,6 @@ async function renderMarkets(searchQuery=''){
       });
       const cb=document.getElementById('create-market-btn');
       if(cb)cb.onclick=()=>{showCreateAnyModal();selectCreateType('forecast')};
-      const pb=document.getElementById('parlay-btn');
-      if(pb)pb.onclick=showParlayModal;
 
       // Draw sparklines
       c.querySelectorAll('[data-sparkline]').forEach(canvas=>{
@@ -1376,6 +1367,8 @@ function renderMarketCard(m,priceHistoryData){
           <span>${m.totalTraders||0} participants</span>
           ${isMulti?`<span>${(m.options||[]).length} options</span>`:`<span>Vol: ${fmtPts(m.volume)}</span>`}
           ${cd?`<span class="countdown-badge ${cd.urgent?'urgent':''}">⏱ ${cd.text}</span>`:''}
+          ${m.commentCount>0?`<span style="color:var(--text-muted)">💬 ${m.commentCount}</span>`:''}
+          ${(m.reactionTotal||0)>0?`<span style="color:var(--text-muted)">❤️ ${m.reactionTotal}</span>`:''}
         </div>
       </div>
       <div class="mc-bottom">
@@ -1395,72 +1388,6 @@ function renderMarketCard(m,priceHistoryData){
         `:''}
       </div>
     </div>`;
-}
-
-// ===================== PARLAY =====================
-let parlayLegs=[];
-function showParlayModal(){
-  renderParlayModal();
-}
-function renderParlayModal(){
-  openModal('🔀 Parlay Forecast',`
-    <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:14px">Combine 2–3 forecasts. All must be correct for a larger reward. Risk: points are lost if any leg is wrong.</p>
-    <div id="parlay-legs-list">
-      ${parlayLegs.length===0?'<div style="color:var(--text-muted);font-size:.82rem;text-align:center;padding:16px">No legs added yet. Browse markets and add legs.</div>':
-        parlayLegs.map((leg,i)=>`
-          <div class="parlay-leg">
-            <div class="leg-title">${esc(leg.title)}</div>
-            <span class="leg-side badge ${leg.side==='YES'?'badge-active':'badge-rejected'}">${leg.side}</span>
-            <span style="font-size:.72rem;color:var(--text-muted);font-family:var(--mono)">${Math.round(leg.price*100)}%</span>
-            <button class="leg-remove" onclick="removeParlayLeg(${i})">×</button>
-          </div>`).join('')}
-    </div>
-    ${parlayLegs.length>=2?`
-      <div class="trade-summary" style="margin-top:12px">
-        <div><span>Legs</span><span style="font-family:var(--mono)">${parlayLegs.length}</span></div>
-        <div><span>Combined odds</span><span style="font-family:var(--mono)">${(parlayLegs.reduce((acc,l)=>acc*(1/l.price),1)).toFixed(2)}×</span></div>
-        <div class="total"><span>Estimated multiplier</span><span style="color:var(--accent);font-family:var(--mono)">${(parlayLegs.reduce((acc,l)=>acc*(1/l.price),1)*0.9).toFixed(2)}×</span></div>
-      </div>
-      <div class="form-group" style="margin-top:12px">
-        <label>Points to stake (per parlay)</label>
-        <input type="number" id="parlay-stake" value="50" min="10" max="${currentUser?.balance||1000}" step="10">
-      </div>
-    `:''}
-    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-secondary btn-sm" onclick="closeModal();navigate('markets')">Browse Markets to Add</button>
-      ${parlayLegs.length>0?`<button class="btn btn-danger btn-sm" onclick="parlayLegs=[];renderParlayModal()">Clear All</button>`:''}
-    </div>
-  `,parlayLegs.length>=2?`
-    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-primary" id="parlay-submit">Submit Parlay</button>
-  `:`<button class="btn btn-secondary" onclick="closeModal()">Close</button>`);
-  if(parlayLegs.length>=2){
-    document.getElementById('parlay-submit').onclick=submitParlay;
-  }
-}
-function addParlayLeg(marketId,side,title,price){
-  if(parlayLegs.length>=3){showToast('Max 3 legs in a parlay','error');return}
-  if(parlayLegs.find(l=>l.marketId===marketId)){showToast('Already added this market','error');return}
-  parlayLegs.push({marketId,side,title,price});
-  showToast(`Added to parlay: ${side}`,'success');
-}
-function removeParlayLeg(i){parlayLegs.splice(i,1);renderParlayModal()}
-async function submitParlay(){
-  const stake=parseInt(document.getElementById('parlay-stake')?.value)||50;
-  if(stake>currentUser.balance){showToast('Not enough points','error');return}
-  if(parlayLegs.length<2){showToast('Need at least 2 legs','error');return}
-  try{
-    const multiplier=parlayLegs.reduce((acc,l)=>acc*(1/l.price),1)*0.9;
-    const parlay={userId:currentUser.id,userName:currentUser.name,legs:parlayLegs,stake,multiplier,potentialPayout:stake*multiplier,status:'pending',createdAt:Date.now()};
-    await dbPush('parlays',parlay);
-    const newBal=currentUser.balance-stake;
-    await dbUpdate(`users/${currentUser.id}`,{balance:newBal});
-    currentUser.balance=newBal;saveSession(currentUser);
-    document.getElementById('balance-amount').textContent=fmtPts(newBal);
-    parlayLegs=[];
-    closeModal();
-    showToast(`Parlay submitted! Potential: ${fmtPts(stake*multiplier)} pts`,'success');
-  }catch(err){showToast('Failed: '+err.message,'error')}
 }
 
 // ===================== PREDICT MODAL =====================
@@ -1524,7 +1451,7 @@ async function loadTradeModal(marketId,side){
           `<button class="btn btn-secondary" id="trade-confirm" style="width:100%;padding:12px">Set Limit Order</button>`:
           `<button class="btn ${side==='YES'?'btn-primary':'btn-danger'}" id="trade-confirm" style="width:100%;padding:12px">Forecast ${side} — ${cost.toFixed(2)} pts</button>`
         }
-        <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px" onclick="addParlayLeg('${market.id||marketId}','${side}',${JSON.stringify(market.title)},${price});closeModal()">+ Add to Parlay</button>
+
         `;
       document.getElementById('trade-shares').oninput=e=>{shares=Math.max(1,Math.min(500,parseInt(e.target.value)||1));renderTC()};
       document.getElementById('tt-yes').onclick=()=>{side='YES';renderTC()};
@@ -1649,38 +1576,6 @@ async function sellPosition(tradeId,tradeData){
   };
 }
 
-// ===================== CHALLENGE =====================
-async function showChallengeModal(marketId,marketTitle){
-  openModal('⚔️ Issue a Challenge',`
-    <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:14px">Challenge a classmate to a head-to-head forecast duel on this market. If you win, you take their stake.</p>
-    <div style="font-size:.85rem;font-weight:700;padding:10px 12px;background:var(--bg-surface);border-radius:8px;margin-bottom:14px">${esc(marketTitle)}</div>
-    <div class="form-group"><label>Opponent Username</label><input type="text" id="ch-opponent" placeholder="Enter their name (exact)"></div>
-    <div class="form-row">
-      <div class="form-group"><label>Your Position</label><select id="ch-side"><option value="YES">YES</option><option value="NO">NO</option></select></div>
-      <div class="form-group"><label>Stakes (pts)</label><input type="number" id="ch-stake" value="50" min="10" max="${Math.floor(currentUser.balance/2)}" step="10"></div>
-    </div>
-  `,`
-    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-primary" id="ch-submit">Send Challenge</button>
-  `);
-  document.getElementById('ch-submit').onclick=async()=>{
-    const oppName=document.getElementById('ch-opponent').value.trim();
-    const side=document.getElementById('ch-side').value;
-    const stake=parseInt(document.getElementById('ch-stake').value)||50;
-    if(!oppName){showToast('Enter opponent name','error');return}
-    if(stake>currentUser.balance){showToast('Not enough points','error');return}
-    try{
-      const users=await dbGet('users');
-      const oppEntry=users?Object.entries(users).find(([_,u])=>u.name.toLowerCase()===oppName.toLowerCase()):null;
-      if(!oppEntry){showToast('User not found','error');return}
-      const[oppId,opp]=oppEntry;
-      const ch={marketId,marketTitle,challengerId:currentUser.id,challengerName:currentUser.name,challengerSide:side,opponentId:oppId,opponentName:opp.name,stake,status:'pending',createdAt:Date.now()};
-      await dbPush('challenges',ch);
-      await pushNotif(oppId,{text:`${currentUser.name} challenged you to a duel on "${marketTitle}"! ${stake} pts at stake.`,icon:'⚔️',color:'#f97316'});
-      closeModal();showToast('Challenge sent!','success');
-    }catch(err){showToast('Failed: '+err.message,'error')}
-  };
-}
 
 // ===================== MARKET DETAIL =====================
 async function renderMarketDetail(marketId){
@@ -1706,7 +1601,6 @@ async function renderMarketDetail(marketId){
       <div class="page">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
           <button class="btn btn-ghost" id="back-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7l-7 7 7 7"/></svg> Back</button>
-
         </div>
         ${market.status==='resolved'?`
           <div class="resolution-banner ${market.resolution==='YES'?'yes-won':'no-won'}">
@@ -1736,18 +1630,12 @@ async function renderMarketDetail(marketId){
                   ${market.closeDate?`<span>Closes: ${new Date(market.closeDate).toLocaleDateString()}</span>`:''}
                   ${market.resolutionSource?`<a href="${esc(market.resolutionSource)}" target="_blank" style="color:var(--accent)">Resolution source ↗</a>`:''}
                 </div>
-              </div>
-            </div>
-
-            <!-- Market Reactions -->
-            <div class="card" style="margin-bottom:14px">
-              <div class="card-body" style="padding:11px 16px">
-                <div style="font-size:.67rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px">Reactions</div>
-                <div style="display:flex;gap:7px;flex-wrap:wrap">
-                  ${[{e:'👍',k:'insightful',l:'Insightful'},{e:'🔥',k:'hot_take',l:'Hot Take'},{e:'📈',k:'bullish',l:'Bullish'},{e:'📉',k:'bearish',l:'Bearish'},{e:'🤔',k:'uncertain',l:'Hmm'}].map(r=>{
-                    const cnt=(market.reactions&&market.reactions[r.k])||0;
-                    const reacted=market.reactions&&market.reactions[`_${currentUser?.id}_${r.k}`];
-                    return`<button onclick="reactToMarket('${marketId}','${r.k}')" style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:.75rem;background:${reacted?'var(--accent-dim)':'var(--bg-surface)'};border:1px solid ${reacted?'rgba(0,229,160,.22)':'var(--border)'};color:${reacted?'var(--accent)':'var(--text-secondary)'};cursor:pointer;transition:all .15s">${r.e} <span style="font-weight:700">${r.l}</span>${cnt>0?` <span style="background:rgba(255,255,255,.06);border-radius:7px;padding:1px 5px;font-size:.67rem;font-family:var(--mono)">${cnt}</span>`:''}</button>`;
+                <!-- Market Reactions -->
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+                  <span style="font-size:.68rem;color:var(--text-muted);align-self:center;font-weight:700">React:</span>
+                  ${[{k:'insightful',e:'👍',l:'Insightful'},{k:'hot_take',e:'🔥',l:'Hot Take'},{k:'bearish',e:'📉',l:'Bearish'},{k:'bullish',e:'📈',l:'Bullish'},{k:'hmm',e:'🤔',l:'Hmm'}].map(r=>{
+                    const mr=market.reactions||{};const cnt=mr[r.k]||0;const reacted=currentUser&&mr[`_${currentUser.id}_${r.k}`];
+                    return`<button class="reaction-btn ${reacted?'reacted':''}" onclick="reactToMarket('${marketId}','${r.k}')" title="${r.l}" style="display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:18px;font-size:.74rem;background:${reacted?'var(--accent-dim)':'var(--bg-surface)'};border:1px solid ${reacted?'rgba(0,229,160,.22)':'var(--border)'};color:${reacted?'var(--accent)':'var(--text-secondary)'};cursor:pointer;transition:all .15s">${r.e}${cnt>0?` <strong>${cnt}</strong>`:''}</button>`;
                   }).join('')}
                 </div>
               </div>
@@ -1859,13 +1747,7 @@ async function renderMarketDetail(marketId){
                           }
                         </div>
                         <div class="comment-text">${esc(cm.text)}</div>
-                        <div class="comment-reactions">
-                          ${[{k:'insightful',e:'👍'},{k:'hot_take',e:'🔥'},{k:'bearish',e:'📉'},{k:'bullish',e:'📈'}].map(r=>{
-                            const cnt=(cm.reactions&&cm.reactions[r.k])||0;
-                            const reacted=cm.reactions&&cm.reactions[`_${currentUser?.id}_${r.k}`];
-                            return`<button class="reaction-btn ${reacted?'reacted':''}" onclick="reactToComment('${marketId}','${cm.id}','${r.k}')">${r.e} ${cnt>0?cnt:''}</button>`;
-                          }).join('')}
-                        </div>
+
                       </div>
                     `;
                   }).join('')}
@@ -1899,7 +1781,6 @@ async function renderMarketDetail(marketId){
                 `
               }
 
-
             </div>
           </div>
         </div>
@@ -1910,7 +1791,6 @@ async function renderMarketDetail(marketId){
     const ny=document.getElementById('detail-no');
     if(yy)yy.onclick=()=>{if(!currentUser?.verified){showToast('Verify email first','error');return}showTradeModal(marketId,'YES')};
     if(ny)ny.onclick=()=>{if(!currentUser?.verified){showToast('Verify email first','error');return}showTradeModal(marketId,'NO')};
-
     const cs=document.getElementById('comment-submit');
     if(cs)cs.onclick=async()=>{
       const inp=document.getElementById('comment-input');
@@ -1933,25 +1813,6 @@ async function pinComment(marketId,commentId,pinned){
   try{await dbUpdate(`comments/${marketId}/${commentId}`,{pinned});showToast(pinned?'Comment pinned':'Comment unpinned','success');renderMarketDetail(marketId)}
   catch(err){showToast('Failed','error')}
 }
-async function reactToMarket(marketId,reaction){
-  if(!currentUser?.verified){showToast('Verify email first','error');return}
-  try{
-    const market=await dbGet(`markets/${marketId}`);
-    const reactions=market.reactions||{};
-    const uKey=`_${currentUser.id}_${reaction}`;
-    if(reactions[uKey]){
-      reactions[reaction]=Math.max(0,(reactions[reaction]||1)-1);
-      delete reactions[uKey];
-    }else{
-      reactions[reaction]=(reactions[reaction]||0)+1;
-      reactions[uKey]=true;
-    }
-    const total=Object.entries(reactions).filter(([k])=>!k.startsWith('_')).reduce((s,[_,v])=>s+(typeof v==='number'?v:0),0);
-    await dbUpdate(`markets/${marketId}`,{reactions,reactionTotal:total});
-    renderMarketDetail(marketId);
-  }catch(err){showToast('Failed','error')}
-}
-
 async function reactToComment(marketId,commentId,reaction){
   if(!currentUser?.verified){showToast('Verify email first','error');return}
   try{
@@ -1966,6 +1827,25 @@ async function reactToComment(marketId,commentId,reaction){
       reactions[userKey]=true;
     }
     await dbUpdate(`comments/${marketId}/${commentId}`,{reactions});
+    renderMarketDetail(marketId);
+  }catch(err){showToast('Failed','error')}
+}
+
+async function reactToMarket(marketId,reaction){
+  if(!currentUser?.verified){showToast('Verify email first','error');return}
+  try{
+    const m=await dbGet(`markets/${marketId}`);
+    const reactions=m.reactions||{};
+    const userKey=`_${currentUser.id}_${reaction}`;
+    if(reactions[userKey]){
+      reactions[reaction]=Math.max(0,(reactions[reaction]||1)-1);
+      delete reactions[userKey];
+    }else{
+      reactions[reaction]=(reactions[reaction]||0)+1;
+      reactions[userKey]=true;
+    }
+    const total=Object.entries(reactions).filter(([k,v])=>!k.startsWith('_')&&typeof v==='number').reduce((s,[_,v])=>s+v,0);
+    await dbUpdate(`markets/${marketId}`,{reactions,reactionTotal:total});
     renderMarketDetail(marketId);
   }catch(err){showToast('Failed','error')}
 }
@@ -2191,21 +2071,6 @@ async function renderLeaderboard(){
     if(!usersData){c.innerHTML='<div class="empty-state"><h3>No users yet</h3></div>';return}
     let list=Object.entries(usersData).map(([id,u])=>({id,...u})).filter(u=>u.role!=='banned');
     let sortBy='balance';
-    async function syncAdvancedTags(){
-      const byBal=[...list].sort((a,b)=>(b.balance||0)-(a.balance||0));
-      for(let i=0;i<byBal.length;i++){
-        const u=byBal[i];const want=i<5;
-        if(want!==!!u.advanced){
-          try{
-            await dbUpdate(`users/${u.id}`,{advanced:want});
-            u.advanced=want;
-            if(want)await pushNotif(u.id,{text:`🏆 You reached Top 5! You are now Advanced.`,icon:'👑',color:'#f59e0b'});
-          }catch(e){}
-        }
-      }
-    }
-    syncAdvancedTags();
-
     function render(sort){
       sortBy=sort;
       const sorted=[...list].sort((a,b)=>(b[sort]||0)-(a[sort]||0));
@@ -2226,10 +2091,9 @@ async function renderLeaderboard(){
                 <div class="lb-avatar" style="background:${avatarColor(u.name)}22;color:${avatarColor(u.name)}">${initials(u.name)}</div>
                 <div class="lb-info">
                   <div class="lb-name">
-                    ${u.advanced?'<span title="Advanced — Top 5" style="font-size:.88rem;filter:drop-shadow(0 0 5px rgba(255,215,0,.65))">👑</span> ':''}
                     ${esc(u.name)}
                     ${u.verified?`<svg width="11" height="11" viewBox="0 0 24 24" fill="var(--accent)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`:''}
-                    ${rankPillHTML(rankPos)}
+                    <span class="rank-badge ${getRankClass(rankPos)}">${getRankForPosition(rankPos)}</span>
                   </div>
                   <div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap">
                     ${renderAchievementBadges(u,3)}
@@ -2247,7 +2111,6 @@ async function renderLeaderboard(){
   }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
 
-// ===================== PROFILE =====================
 // ===================== PROFILE =====================
 async function renderProfile(){
   const c=document.getElementById('page-content');
@@ -2424,6 +2287,37 @@ async function renderProfile(){
   }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
 
+async function cancelLimitOrder(orderId){
+  try{
+    await dbUpdate(`limitOrders/${currentUser.id}/${orderId}`,{status:'cancelled'});
+    showToast('Limit order cancelled','info');renderProfile();
+  }catch(err){showToast('Failed','error')}
+}
+
+function showSettingsModal(){
+  openModal('⚙ Profile Settings',`
+    <div class="form-group">
+      <label>Anonymous Mode</label>
+      <p class="hint" style="margin-bottom:8px">When on, your name is hidden from poll vote lists (admins can still see).</p>
+      <select id="settings-anon">
+        <option value="false" ${!currentUser.anonymous?'selected':''}>Off — show my name</option>
+        <option value="true" ${currentUser.anonymous?'selected':''}>On — hide my bet history from others</option>
+      </select>
+    </div>
+  `,`
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" id="save-settings">Save</button>
+  `);
+  document.getElementById('save-settings').onclick=async()=>{
+    const anon=document.getElementById('settings-anon').value==='true';
+    try{
+      await dbUpdate(`users/${currentUser.id}`,{anonymous:anon});
+      currentUser.anonymous=anon;saveSession(currentUser);
+      closeModal();showToast('Settings saved','success');
+    }catch(e){showToast('Failed','error')}
+  };
+}
+
 // ===================== REPORT & DELETE COMMENTS =====================
 async function reportComment(marketId,commentId,commentText,commentUser){
   try{
@@ -2468,7 +2362,7 @@ async function renderAdmin(){
         <div class="page">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
             <h1 class="page-title" style="margin:0">⚙ Admin Panel</h1>
-            ${currentUser.role==='admin'?`<div style="display:flex;gap:7px"><button class="btn btn-secondary btn-sm" id="clear-feed-btn">🗑 Clear Feed</button><button class="btn btn-danger btn-sm" id="panic-btn">🚨 Panic</button></div>`:''}
+            ${currentUser.role==='admin'?`<button class="btn btn-danger btn-sm" id="panic-btn">🚨 Panic Button</button>`:''}
           </div>
           <div class="tab-bar">
             <button class="${tab==='pending'?'active':''}" data-tab="pending">Pending ${pendingM.length+pendingC.length>0?`<span style="background:var(--yellow);color:var(--bg);padding:1px 5px;border-radius:8px;font-size:.65rem;margin-left:4px">${pendingM.length+pendingC.length}</span>`:''}</button>
@@ -2714,33 +2608,7 @@ async function resolveMarket(marketId,resolution,resolutionSource=''){
       if(user){const s=trade.category==='Sports'?{sportStreak:0}:{};if(Object.keys(s).length>0)await dbUpdate(`users/${trade.userId}`,s)}
     }catch(e){}
   }
-  // Resolve parlays
-  try{
-    const parlays=await dbGet('parlays');
-    if(parlays){
-      for(const[pid,parlay]of Object.entries(parlays)){
-        if(parlay.status!=='pending')continue;
-        const updatedLegs=parlay.legs.map(l=>l.marketId===marketId?{...l,resolved:true,won:(l.side===resolution)}:l);
-        const allResolved=updatedLegs.every(l=>l.resolved);
-        const allWon=updatedLegs.every(l=>l.won);
-        const anyLost=updatedLegs.some(l=>l.resolved&&!l.won);
-        let status='pending';
-        if(anyLost)status='lost';
-        else if(allResolved&&allWon)status='won';
-        await dbUpdate(`parlays/${pid}`,{legs:updatedLegs,status});
-        if(status==='won'){
-          const payout=parlay.stake*parlay.multiplier;
-          const user=await dbGet(`users/${parlay.userId}`);
-          if(user){
-            await dbUpdate(`users/${parlay.userId}`,{balance:(user.balance||0)+payout});
-            await pushNotif(parlay.userId,{text:`🎯 Parlay won! You earned ${fmtPts(payout)} pts!`,icon:'🎯',color:'#00e5a0',page:'profile'});
-          }
-        }else if(status==='lost'){
-          await pushNotif(parlay.userId,{text:`Your parlay lost. One or more legs went wrong.`,icon:'😔',color:'#ff3d5a'});
-        }
-      }
-    }
-  }catch(e){}
+
   if(currentUser){const u=await dbGet(`users/${currentUser.id}`);if(u){currentUser={...currentUser,...u};saveSession(currentUser);document.getElementById('balance-amount').textContent=fmtPts(currentUser.balance)}}
 }
 
