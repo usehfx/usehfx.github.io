@@ -1402,73 +1402,122 @@ async function loadTradeModal(marketId,side){
     const market=await dbGet(`markets/${marketId}`);
     if(!market){showToast('Market not found','error');closeModal();return}
     if(market.status!=='active'){showToast('This forecast is not open','error');closeModal();return}
-    const price=side==='YES'?market.yesPrice:(1-market.yesPrice);
+    let price=side==='YES'?market.yesPrice:(1-market.yesPrice); // Changed to let so we can update it
     let shares=10;
     let limitEnabled=false;
     let limitTarget=price;
 
-    function renderTC(){
-      const cost=shares*price;
+    // Helper to update numbers without re-rendering the whole modal
+    function updateSummary(){
       const actualPrice=limitEnabled?limitTarget:price;
-      const actualCost=shares*actualPrice;
-      // FIXED: correct payout = shares (1 share = 1 pt), profit = shares - cost
-      const profit=shares-actualCost;
-      const boostNote=market.boosted?`<div style="font-size:.72rem;color:var(--gold);margin-top:4px">⚡ Boosted market — 2× point reward on win!</div>`:'';
-      document.getElementById('trade-modal-content').innerHTML=`
-        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:14px;color:var(--text-secondary);line-height:1.4">${esc(market.title)}</h3>
-        <div class="trade-tabs">
-          <button class="trade-tab ${side==='YES'?'active-yes':''}" id="tt-yes">YES ${Math.round(market.yesPrice*100)}%</button>
-          <button class="trade-tab ${side==='NO'?'active-no':''}" id="tt-no">NO ${Math.round((1-market.yesPrice)*100)}%</button>
-        </div>
-        <div class="trade-input-group">
-          <label>Shares</label>
-          <input type="number" id="trade-shares" value="${shares}" min="1" step="1">
-        </div>
-        <div style="margin-bottom:10px">
-          <label style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--text-secondary);cursor:pointer">
-            <input type="checkbox" id="limit-toggle" style="width:auto;accent-color:var(--accent)"> Set limit order (only execute at target price)
-          </label>
-          <div id="limit-fields" style="display:${limitEnabled?'block':'none'};margin-top:8px">
-            <label style="font-size:.72rem;color:var(--text-muted)">Execute only if price drops to:</label>
-            <div style="display:flex;align-items:center;gap:8px">
-              <input type="range" id="limit-price" min="5" max="95" value="${Math.round(limitTarget*100)}" step="1" style="flex:1">
-              <span id="limit-price-display" style="font-family:var(--mono);font-size:.85rem;font-weight:700;width:40px;text-align:right">${Math.round(limitTarget*100)}%</span>
-            </div>
-          </div>
-        </div>
-        <div class="trade-summary">
-          <div><span>Price per share</span><span style="font-family:var(--mono)">${(limitEnabled?limitTarget:price).toFixed(3)}</span></div>
-          <div><span>Shares</span><span style="font-family:var(--mono)">${shares}</span></div>
-          <div><span>Cost</span><span style="font-family:var(--mono)">${(limitEnabled?actualCost:cost).toFixed(2)} pts</span></div>
-          <div class="total">
-            <span>If correct: profit</span>
-            <span style="color:var(--accent);font-family:var(--mono)">+${(limitEnabled?shares-actualCost:shares-cost).toFixed(2)} pts</span>
-          </div>
-        </div>
-        ${boostNote}
-        <div style="font-size:.73rem;color:var(--text-muted);margin:8px 0">Your score: <strong style="color:var(--text)">${fmtPts(currentUser.balance)} pts</strong></div>
-        ${limitEnabled?
-          `<button class="btn btn-secondary" id="trade-confirm" style="width:100%;padding:12px">Set Limit Order</button>`:
-          `<button class="btn ${side==='YES'?'btn-primary':'btn-danger'}" id="trade-confirm" style="width:100%;padding:12px">Forecast ${side} — ${cost.toFixed(2)} pts</button>`
-        }
-
-        `;
-      document.getElementById('trade-shares').oninput=e=>{shares=Math.max(1,Math.min(500,parseInt(e.target.value)||1));renderTC()};
-      document.getElementById('tt-yes').onclick=()=>{side='YES';renderTC()};
-      document.getElementById('tt-no').onclick=()=>{side='NO';renderTC()};
-      document.getElementById('limit-toggle').onchange=e=>{limitEnabled=e.target.checked;renderTC()};
-      const lp=document.getElementById('limit-price');
-      if(lp){lp.oninput=e=>{limitTarget=e.target.value/100;document.getElementById('limit-price-display').textContent=e.target.value+'%';renderTC()}}
-      document.getElementById('trade-confirm').onclick=()=>{
-        if(limitEnabled)executeLimitOrder(marketId,side,shares,limitTarget,market);
-        else executeTrade(marketId,side,shares,market);
-      };
+      const cost=shares*actualPrice;
+      const profit=shares-cost;
+      
+      const costEl=document.getElementById('calc-cost');
+      const profitEl=document.getElementById('calc-profit');
+      const sharesEl=document.getElementById('calc-shares');
+      const priceEl=document.getElementById('calc-price');
+      const btnEl=document.getElementById('trade-confirm');
+      
+      if(costEl) costEl.textContent=cost.toFixed(2)+' pts';
+      if(profitEl) profitEl.textContent='+'+profit.toFixed(2)+' pts';
+      if(sharesEl) sharesEl.textContent=shares;
+      if(priceEl) priceEl.textContent=actualPrice.toFixed(3);
+      
+      if(btnEl && !limitEnabled){
+        btnEl.textContent=`Forecast ${side} — ${cost.toFixed(2)} pts`;
+        btnEl.className = side==='YES' ? 'btn btn-primary' : 'btn btn-danger';
+      } else if (btnEl && limitEnabled) {
+        btnEl.className = 'btn btn-secondary';
+        btnEl.textContent = 'Set Limit Order';
+      }
     }
-    renderTC();
+
+    const boostNote=market.boosted?`<div style="font-size:.72rem;color:var(--gold);margin-top:4px">⚡ Boosted market — 2× point reward on win!</div>`:'';
+    
+    // Initial Render
+    document.getElementById('trade-modal-content').innerHTML=`
+      <h3 style="font-size:.85rem;font-weight:600;margin-bottom:14px;color:var(--text-secondary);line-height:1.4">${esc(market.title)}</h3>
+      <div class="trade-tabs">
+        <button class="trade-tab ${side==='YES'?'active-yes':''}" id="tt-yes">YES ${Math.round(market.yesPrice*100)}%</button>
+        <button class="trade-tab ${side==='NO'?'active-no':''}" id="tt-no">NO ${Math.round((1-market.yesPrice)*100)}%</button>
+      </div>
+      <div class="trade-input-group">
+        <label>Shares</label>
+        <!-- Removed max="500" and added IDs for updates -->
+        <input type="number" id="trade-shares" value="${shares}" min="1" step="1">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--text-secondary);cursor:pointer">
+          <input type="checkbox" id="limit-toggle" style="width:auto;accent-color:var(--accent)"> Set limit order (only execute at target price)
+        </label>
+        <div id="limit-fields" style="display:${limitEnabled?'block':'none'};margin-top:8px">
+          <label style="font-size:.72rem;color:var(--text-muted)">Execute only if price drops to:</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="range" id="limit-price" min="5" max="95" value="${Math.round(limitTarget*100)}" step="1" style="flex:1">
+            <span id="limit-price-display" style="font-family:var(--mono);font-size:.85rem;font-weight:700;width:40px;text-align:right">${Math.round(limitTarget*100)}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="trade-summary">
+        <div><span>Price per share</span><span id="calc-price" style="font-family:var(--mono)">${price.toFixed(3)}</span></div>
+        <div><span>Shares</span><span id="calc-shares" style="font-family:var(--mono)">${shares}</span></div>
+        <div><span>Cost</span><span id="calc-cost" style="font-family:var(--mono)">${(shares*price).toFixed(2)} pts</span></div>
+        <div class="total">
+          <span>If correct: profit</span>
+          <span id="calc-profit" style="color:var(--accent);font-family:var(--mono)">+${(shares-(shares*price)).toFixed(2)} pts</span>
+        </div>
+      </div>
+      ${boostNote}
+      <div style="font-size:.73rem;color:var(--text-muted);margin:8px 0">Your score: <strong style="color:var(--text)">${fmtPts(currentUser.balance)} pts</strong></div>
+      <button class="btn ${side==='YES'?'btn-primary':'btn-danger'}" id="trade-confirm" style="width:100%;padding:12px">Forecast ${side} — ${(shares*price).toFixed(2)} pts</button>
+    `;
+
+    // Event Listeners
+    document.getElementById('trade-shares').oninput=e=>{
+      // Removed Math.min(500, ...) cap. Users can type freely.
+      shares=Math.max(1,parseInt(e.target.value)||1);
+      updateSummary();
+    };
+    
+    document.getElementById('tt-yes').onclick=()=>{
+      side='YES';
+      price=market.yesPrice;
+      document.getElementById('tt-yes').className='trade-tab active-yes';
+      document.getElementById('tt-no').className='trade-tab';
+      updateSummary();
+    };
+    
+    document.getElementById('tt-no').onclick=()=>{
+      side='NO';
+      price=1-market.yesPrice;
+      document.getElementById('tt-yes').className='trade-tab';
+      document.getElementById('tt-no').className='trade-tab active-no';
+      updateSummary();
+    };
+    
+    document.getElementById('limit-toggle').onchange=e=>{
+      limitEnabled=e.target.checked;
+      document.getElementById('limit-fields').style.display=limitEnabled?'block':'none';
+      updateSummary();
+    };
+    
+    const lp=document.getElementById('limit-price');
+    if(lp){lp.oninput=e=>{
+      limitTarget=e.target.value/100;
+      document.getElementById('limit-price-display').textContent=e.target.value+'%';
+      updateSummary();
+    }}
+
+    document.getElementById('trade-confirm').onclick=()=>{
+      if(limitEnabled)executeLimitOrder(marketId,side,shares,limitTarget,market);
+      else executeTrade(marketId,side,shares,market);
+    };
+    
     document.getElementById('modal-footer').innerHTML='';
   }catch(err){showToast('Failed to load','error');closeModal()}
 }
-
+  
 async function executeLimitOrder(marketId,side,shares,targetPrice,market){
   const cost=shares*targetPrice;
   if(cost>currentUser.balance){showToast('Not enough points for limit order','error');return}
