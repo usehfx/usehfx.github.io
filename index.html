@@ -1422,7 +1422,7 @@ async function loadTradeModal(marketId,side){
         </div>
         <div class="trade-input-group">
           <label>Shares</label>
-          <input type="number" id="trade-shares" value="${shares}" min="1" max="500" step="1">
+          <input type="number" id="trade-shares" value="${shares}" min="1" step="1">
         </div>
         <div style="margin-bottom:10px">
           <label style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--text-secondary);cursor:pointer">
@@ -1859,7 +1859,7 @@ async function showMultiTradeModal(marketId,option,market){
       <div><span>Option</span><span style="font-weight:700">${esc(option)}</span></div>
       <div><span>Current probability</span><span style="font-family:var(--mono)">${Math.round(price*100)}%</span></div>
     </div>
-    <div class="trade-input-group" style="margin-top:12px"><label>Shares</label><input type="number" id="mt-shares" value="10" min="1" max="500"></div>
+    <div class="trade-input-group" style="margin-top:12px"><label>Shares</label><input type="number" id="mt-shares" value="10" min="1"></div>
     <button class="btn btn-primary" id="mt-confirm" style="width:100%;margin-top:12px">Forecast ${option}</button>
   `,'');
   document.getElementById('mt-confirm').onclick=async()=>{
