@@ -7,6 +7,7 @@
 <meta name="description" content="HFX: Hackley's forecasting and polling platform. Predict outcomes, track your accuracy, climb the ranks.">
 <meta name="theme-color" content="#080810">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>(function(){ emailjs.init("gWgHwkPBzHaIeiuRW"); })();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -76,6 +77,15 @@ nav button.active{color:var(--accent);background:var(--accent-dim);border-color:
 .search-box input{padding-left:34px;font-size:.8rem;height:34px;background:var(--bg-surface);border-radius:7px}
 .search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted)}
 .score-badge{display:flex;align-items:center;gap:5px;padding:5px 12px;background:var(--accent-dim);border:1px solid rgba(0,229,160,0.2);border-radius:7px;font-size:.8rem;font-weight:800;color:var(--accent);font-family:var(--mono)}
+
+/* ===== LIVE TICKER ===== */
+.ticker-wrap{width:100%;overflow:hidden;background:var(--bg-surface);border-bottom:1px solid var(--border);height:28px;display:flex;align-items:center}
+.ticker{display:inline-flex;white-space:nowrap;animation:ticker 40s linear infinite}
+.ticker:hover{animation-play-state:paused}
+.ticker__item{display:inline-block;padding:0 2rem;font-size:.7rem;font-weight:700;font-family:var(--mono);color:var(--text-secondary)}
+.ticker__item .up{color:var(--accent)}
+.ticker__item .down{color:var(--red)}
+@keyframes ticker{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-50%,0,0)}}
 
 /* ===== BUTTONS ===== */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:700;transition:all .18s;white-space:nowrap;border:1px solid transparent;font-family:var(--font)}
@@ -200,7 +210,7 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 .comment.yes-position{background:linear-gradient(90deg,rgba(0,229,160,0.04) 0%,transparent 100%);padding-left:10px;margin-left:-10px;border-radius:6px}
 .comment.no-position{background:linear-gradient(90deg,rgba(255,61,90,0.04) 0%,transparent 100%);padding-left:10px;margin-left:-10px;border-radius:6px}
 .comment.pinned{background:linear-gradient(90deg,rgba(245,158,11,0.06) 0%,transparent 100%);border:1px solid rgba(245,158,11,0.15);padding:10px 14px;border-radius:8px;margin-bottom:12px}
-.comment.smart-money{background:linear-gradient(90deg,rgba(59,130,246,0.07) 0%,transparent 100%);border-left:3px solid var(--blue);padding-left:14px}
+.comment.smart-money{background:linear-gradient(90deg,rgba(59,130,246,0.07) 0%,transparent 100%);border-left:3px solid var(--blue);padding-left:14px;border:1px solid rgba(59,130,246,0.2);border-radius:8px;margin-bottom:8px;padding:10px 14px}
 .comment-header{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap}
 .comment-avatar{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.63rem;font-weight:900;flex-shrink:0}
 .comment-name{font-size:.8rem;font-weight:700}
@@ -209,6 +219,11 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 .comment-reactions{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
 .reaction-btn{padding:3px 8px;border-radius:20px;font-size:.7rem;font-weight:600;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:3px}
 .reaction-btn:hover,.reaction-btn.reacted{background:var(--accent-dim);border-color:rgba(0,229,160,0.2);color:var(--accent)}
+
+/* Smart Money badge */
+.smart-money-badge{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;color:var(--blue);font-weight:800;margin-bottom:4px;background:var(--blue-dim);padding:2px 8px;border-radius:10px;border:1px solid rgba(59,130,246,0.2)}
+/* Smart Money glow effect */
+.smart-money{box-shadow:0 0 15px rgba(59,130,246,0.12)!important}
 
 /* ===== LEADERBOARD ===== */
 .lb-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .15s}
@@ -226,28 +241,22 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 
 /* ===== RANK BADGE ===== */
 .rank-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;gap:3px}
-/* Top 3 — special glow */
 .rank-1{background:linear-gradient(135deg,rgba(255,215,0,0.22),rgba(255,180,0,0.12));color:#ffd700;border:1px solid rgba(255,215,0,0.38);box-shadow:0 0 10px rgba(255,215,0,0.12),inset 0 0 10px rgba(255,215,0,0.04)}
 .rank-2{background:linear-gradient(135deg,rgba(192,192,192,0.18),rgba(150,150,150,0.08));color:#c8c8c8;border:1px solid rgba(192,192,192,0.3);box-shadow:0 0 7px rgba(192,192,192,0.08)}
 .rank-3{background:linear-gradient(135deg,rgba(205,127,50,0.2),rgba(180,100,30,0.1));color:#cd7f32;border:1px solid rgba(205,127,50,0.28);box-shadow:0 0 6px rgba(205,127,50,0.08)}
-/* Top 5 — advanced / emerald */
 .rank-4{background:linear-gradient(135deg,rgba(0,229,160,0.16),rgba(0,200,140,0.07));color:#00e5a0;border:1px solid rgba(0,229,160,0.22)}
 .rank-5{background:linear-gradient(135deg,rgba(0,229,160,0.11),rgba(0,180,120,0.05));color:#00cc8f;border:1px solid rgba(0,229,160,0.16)}
-/* 6-10 — blue */
 .rank-6{background:linear-gradient(135deg,rgba(59,130,246,0.16),rgba(37,99,235,0.07));color:#60a5fa;border:1px solid rgba(59,130,246,0.2)}
 .rank-7{background:rgba(59,130,246,0.1);color:#93c5fd;border:1px solid rgba(59,130,246,0.14)}
 .rank-8{background:rgba(59,130,246,0.07);color:#bfdbfe;border:1px solid rgba(59,130,246,0.1)}
 .rank-9{background:rgba(100,116,139,0.1);color:#94a3b8;border:1px solid rgba(100,116,139,0.16)}
 .rank-10{background:rgba(100,116,139,0.07);color:#94a3b8;border:1px solid rgba(100,116,139,0.1)}
-/* 11-15 — purple */
 .rank-11{background:rgba(168,85,247,0.1);color:#c084fc;border:1px solid rgba(168,85,247,0.14)}
 .rank-12{background:rgba(168,85,247,0.07);color:#d8b4fe;border:1px solid rgba(168,85,247,0.1)}
 .rank-13{background:rgba(168,85,247,0.05);color:#e9d5ff;border:1px solid rgba(168,85,247,0.07)}
 .rank-14{background:rgba(100,116,139,0.06);color:#7070a0;border:1px solid rgba(100,116,139,0.08)}
 .rank-15{background:rgba(100,116,139,0.05);color:#7070a0;border:1px solid rgba(100,116,139,0.07)}
-/* 16-20 */
 .rank-16,.rank-17,.rank-18,.rank-19,.rank-20{background:rgba(255,255,255,0.025);color:var(--text-muted);border:1px solid var(--border)}
-/* Advanced crown */
 .advanced-crown{font-size:.8rem;display:inline;filter:drop-shadow(0 0 4px rgba(255,215,0,0.7))}
 
 /* ===== ACHIEVEMENT BADGES ===== */
@@ -314,10 +323,14 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 .empty-state h3{font-size:1rem;font-weight:700;color:var(--text-secondary);margin-bottom:5px}
 .empty-state p{font-size:.82rem}
 
-/* ===== SPINNER ===== */
+/* ===== SPINNER / SKELETON ===== */
 .spinner{width:20px;height:20px;border:2px solid var(--border-light);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-page{display:flex;align-items:center;justify-content:center;height:300px;flex-direction:column;gap:12px;color:var(--text-muted);font-size:.85rem}
+/* Skeleton loader */
+.skeleton{background:linear-gradient(90deg,var(--bg-card) 25%,var(--bg-card-hover) 50%,var(--bg-card) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 
 /* ===== NOTIFICATION BELL ===== */
 .notif-btn{position:relative}
@@ -369,7 +382,7 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 
 /* ===== LIVE FEED SIDEBAR ===== */
 .live-feed{width:240px;flex-shrink:0}
-.live-feed-inner{position:sticky;top:calc(var(--header-h) + 16px);max-height:calc(100vh - var(--header-h) - 32px);overflow:hidden}
+.live-feed-inner{position:sticky;top:calc(var(--header-h) + 44px);max-height:calc(100vh - var(--header-h) - 60px);overflow:hidden}
 .live-feed-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:live-blink 1.4s ease-in-out infinite}
 @keyframes live-blink{0%,100%{opacity:1;box-shadow:0 0 4px var(--accent)}50%{opacity:.3;box-shadow:none}}
@@ -385,10 +398,6 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 /* ===== TRENDING SECTION ===== */
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .section-header h2{font-size:1rem;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
-.high-disagree-section{margin-bottom:24px}
-.high-disagree-section .market-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
-
-
 
 /* Positions tab */
 .position-row{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;transition:background .15s}
@@ -403,8 +412,6 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 /* Limit order indicator */
 .limit-order-badge{font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:10px;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,130,246,0.2)}
 
-
-
 /* ===== RESOLUTION BANNER ===== */
 .resolution-banner{padding:14px 18px;border-radius:8px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:.88rem}
 .resolution-banner.yes-won{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(0,229,160,0.25)}
@@ -415,11 +422,23 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 .influencer-gold .comment-avatar{box-shadow:0 0 0 2px var(--gold),0 0 8px rgba(245,158,11,0.3)}
 .influencer-comment{border:1px solid rgba(245,158,11,0.2);padding:10px;border-radius:8px;margin-bottom:1px;background:rgba(245,158,11,0.03)}
 
+/* ===== COPY TRADE BUTTON ===== */
+.copy-trade-btn{padding:2px 8px;font-size:.65rem;font-weight:800;border-radius:8px;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(245,158,11,0.3);cursor:pointer;transition:all .15s}
+.copy-trade-btn:hover{background:var(--gold);color:var(--bg)}
+
+/* ===== SELL WARNING ===== */
+.sell-warning{background:var(--red-dim);border:1px solid rgba(255,61,90,0.25);border-radius:8px;padding:10px 12px;font-size:.78rem;color:var(--red);margin-bottom:12px;display:flex;gap:8px;align-items:flex-start}
+
+/* ===== PORTFOLIO HEATMAP ===== */
+.heatmap-grid{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.heatmap-cell{border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;cursor:pointer;transition:transform .15s}
+.heatmap-cell:hover{transform:scale(1.1)}
+
 /* ===== PAGE ANIMATION ===== */
 .page{animation:pageIn .2s ease}
 @keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* ===== MOBILE ===== */
+/* ===== MOBILE NAV ===== */
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,16,.95);border-top:1px solid var(--border);backdrop-filter:blur(16px);padding:8px 0 12px;z-index:200}
 .mobile-nav-inner{display:flex;justify-content:space-around}
 .mobile-nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 10px;background:transparent;color:var(--text-muted);font-size:.6rem;font-weight:700;border-radius:8px}
@@ -430,6 +449,7 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
 .resolution-source-display{font-size:.73rem;padding:7px 10px;background:var(--bg-surface);border-radius:6px;margin-top:8px;display:flex;gap:6px;align-items:center;color:var(--text-secondary)}
 .resolution-source-display a{color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px;display:inline-block}
 
+/* Mobile CSS fixes — FIX A: Fat Finger buttons */
 @media(max-width:1100px){.live-feed{display:none}.main-with-feed{display:block}}
 @media(max-width:900px){.market-detail-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}.portfolio-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){
@@ -444,6 +464,9 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
   main{padding:14px 12px;padding-bottom:80px}
   .mobile-nav{display:block}
   .logo-sub{display:none}
+  /* FIX A: Fat Finger — make YES/NO buttons full width on mobile */
+  .mc-bottom{flex-direction:column;gap:8px}
+  .pred-btn{width:100%;padding:14px;font-size:.9rem}
 }
 </style>
 </head>
@@ -503,6 +526,15 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
         <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
       </div>
     </div>
+    <!-- FIX: Live Ticker moved inside header area -->
+    <div class="ticker-wrap" id="ticker-wrap">
+      <div class="ticker" id="ticker-inner">
+        <div class="ticker__item">HFX · Hackley Forecasting Exchange</div>
+        <div class="ticker__item">Loading market data…</div>
+        <div class="ticker__item">HFX · Hackley Forecasting Exchange</div>
+        <div class="ticker__item">Loading market data…</div>
+      </div>
+    </div>
   </header>
 
   <div class="mobile-nav" id="mobile-nav" style="display:none">
@@ -516,7 +548,6 @@ main{flex:1;max-width:1400px;margin:0 auto;padding:24px 20px;width:100%}
   </div>
 
   <div class="toast-container" id="toast-container"></div>
-
   <main id="page-content"></main>
 </div>
 
@@ -625,7 +656,7 @@ async function loadNotifications(){
     if(!listEl)return;
     if(list.length===0){listEl.innerHTML='<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:.82rem">No notifications yet</div>';return}
     listEl.innerHTML=list.slice(0,30).map(n=>`
-      <div class="notif-item ${n.read?'':'unread'}" data-notif-id="${n.id}">
+      <div class="notif-item ${n.read?'':'unread'}" data-notif-id="${n.id}" data-page="${n.page||''}" data-target="${n.target||''}">
         <div class="notif-icon" style="background:${n.color||'var(--bg-surface)'}22">${n.icon||'🔔'}</div>
         <div style="flex:1">
           <div class="notif-text">${esc(n.text)}</div>
@@ -636,14 +667,28 @@ async function loadNotifications(){
     listEl.querySelectorAll('.notif-item').forEach(el=>{
       el.onclick=async()=>{
         await dbUpdate(`notifications/${currentUser.id}/${el.dataset.notifId}`,{read:true});
-        if(el.dataset.page)navigate(el.dataset.page,el.dataset.target);
+        // FIX C: Proper notification navigation using saved page/target
+        const pg=el.dataset.page;
+        const tgt=el.dataset.target;
+        if(pg&&tgt){navigate(pg,tgt);}
+        else if(pg){navigate(pg);}
         closeNotif();loadNotifications();
       };
     });
   }catch(e){}
 }
+
+// FIX C: pushNotif now always saves page and target properly
 async function pushNotif(userId,{text,icon='🔔',color='',page='',target=''}){
-  try{await dbPush(`notifications/${userId}`,{text,icon,color,page,target,read:false,timestamp:Date.now()})}catch(e){}
+  try{
+    await dbPush(`notifications/${userId}`,{
+      text,icon,color,
+      page:page||'',
+      target:target||'',
+      read:false,
+      timestamp:Date.now()
+    });
+  }catch(e){}
 }
 function closeNotif(){document.getElementById('notif-dropdown').classList.remove('open')}
 document.getElementById('notif-btn').onclick=e=>{
@@ -716,7 +761,7 @@ async function checkAndAwardAchievements(user){
   for(const[k,ach]of Object.entries(ACHIEVEMENTS)){
     if(!earned[k]&&ach.check(user)){
       updates[`achievements/${k}`]={earnedAt:Date.now()};
-      await pushNotif(user.id||currentUser.id,{text:`You earned the "${ach.name}" badge! ${ach.icon}`,icon:ach.icon,color:'#00e5a0'});
+      await pushNotif(user.id||currentUser.id,{text:`You earned the "${ach.name}" badge! ${ach.icon}`,icon:ach.icon,color:'#00e5a0',page:'profile'});
     }
   }
   if(Object.keys(updates).length>0){
@@ -787,7 +832,6 @@ function drawPriceChart(data,currentPrice){
   ctx.beginPath();ctx.strokeStyle='#00e5a0';ctx.lineWidth=2;ctx.lineJoin='round';
   arr.forEach((d,i)=>{const x=pad.left+((d.timestamp-minT)/tr)*cw,y=pad.top+(1-d.yesPrice)*ch;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
   ctx.stroke();
-  const lx=pad.left+cw;
   const grad=ctx.createLinearGradient(0,pad.top,0,h-pad.bottom);
   grad.addColorStop(0,'rgba(0,229,160,0.12)');grad.addColorStop(1,'rgba(0,229,160,0)');
   const lastD=arr[arr.length-1];const lxp=pad.left+((lastD.timestamp-minT)/tr)*cw;
@@ -818,7 +862,7 @@ function trendingScore(m,trades){
   return recentTrades*3+vol*100+(m.commentCount||0)*2;
 }
 
-// ===================== DUPLICATE DETECTOR =====================
+// FIX B: Duplicate detector — threshold raised to 5 words to avoid false positives
 async function checkDuplicate(title){
   try{
     const mData=await dbGet('markets');
@@ -828,7 +872,7 @@ async function checkDuplicate(title){
       if(m.status==='rejected')continue;
       const mWords=m.title.toLowerCase().split(/\s+/);
       const overlap=words.filter(w=>mWords.includes(w)).length;
-      if(overlap>=3)return m;
+      if(overlap>=5)return m; // FIX: raised from 3 to 5
     }
   }catch(e){}
   return null;
@@ -854,16 +898,16 @@ function updateLiveFeedUI(){
 }
 async function loadLiveFeed(){
   try{
-    const trades=await dbGet('trades');
+    const[trades,mData]=await Promise.all([dbGet('trades'),dbGet('markets')]);
     if(!trades)return;
-    const mData=await dbGet('markets');
     const arr=Object.values(trades).sort((a,b)=>b.timestamp-a.timestamp).slice(0,15);
     liveFeedItems=arr.map(t=>{
       const m=mData&&mData[t.marketId];
       const mTitle=m?m.title:'a market';
-      return{text:`${t.userName} forecasted ${t.side} on "${mTitle.slice(0,40)}${mTitle.length>40?'…':''}"`,time:t.timestamp};
+      return{text:`${t.userName} forecasted ${t.side} on "${mTitle.slice(0,35)}${mTitle.length>35?'…':''}"`,time:t.timestamp};
     });
     updateLiveFeedUI();
+    updateTicker(mData);
   }catch(e){}
 }
 function liveFeedWidget(){
@@ -875,10 +919,25 @@ function liveFeedWidget(){
   </div>`;
 }
 
+// ===================== TICKER UPDATE =====================
+function updateTicker(marketsData){
+  if(!marketsData)return;
+  const ticker=document.getElementById('ticker-inner');
+  if(!ticker)return;
+  const activeMarkets=Object.values(marketsData).filter(m=>m.status==='active').slice(0,8);
+  if(activeMarkets.length===0)return;
+  const items=activeMarkets.map(m=>{
+    const pct=Math.round((m.yesPrice||0.5)*100);
+    const arrow=pct>50?'📈':'📉';
+    return`<div class="ticker__item">${arrow} ${esc(m.title.slice(0,40))} — YES <span class="${pct>50?'up':'down'}">${pct}%</span></div>`;
+  });
+  // Duplicate for seamless loop
+  ticker.innerHTML=[...items,...items].join('');
+}
+
 // ===================== INIT =====================
 async function init(){
   loadSession();
-  // Dismiss intro after 2.2s
   setTimeout(()=>{
     const ov=document.getElementById('intro-overlay');
     if(ov){ov.style.transition='opacity .6s ease';ov.style.opacity='0';setTimeout(()=>{if(ov)ov.style.display='none'},640);}
@@ -902,11 +961,9 @@ async function init(){
     document.getElementById('admin-nav-btn').style.display=(currentUser.role==='admin'||currentUser.role==='moderator')?'':'none';
     loadNotifications();
     navigate('markets');
-    // Poll for live feed
     loadLiveFeed();
     if(liveFeedInterval)clearInterval(liveFeedInterval);
-    liveFeedInterval=setInterval(loadLiveFeed,120000); // 2 minutes
-    // Check limit orders periodically
+    liveFeedInterval=setInterval(loadLiveFeed,120000);
     checkLimitOrders();
   }else{
     document.getElementById('main-header').style.display='none';
@@ -918,7 +975,20 @@ async function init(){
 // ===================== ROUTER =====================
 function renderPage(){
   const c=document.getElementById('page-content');
-  c.innerHTML='<div class="loading-page"><div class="spinner"></div></div>';
+  // FIX: Show skeleton while loading instead of generic spinner flash
+  c.innerHTML=`<div style="padding:20px">
+    ${[1,2,3].map(()=>`<div class="skeleton-card" style="margin-bottom:14px">
+      <div style="padding:16px">
+        <div class="skeleton" style="height:12px;width:60%;margin-bottom:10px"></div>
+        <div class="skeleton" style="height:20px;width:90%;margin-bottom:8px"></div>
+        <div class="skeleton" style="height:12px;width:40%"></div>
+      </div>
+      <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px">
+        <div class="skeleton" style="height:36px;flex:1;border-radius:8px"></div>
+        <div class="skeleton" style="height:36px;flex:1;border-radius:8px"></div>
+      </div>
+    </div>`).join('')}
+  </div>`;
   switch(currentPage){
     case'markets':renderMarkets();break;
     case'market-detail':renderMarketDetail(currentMarketId);break;
@@ -1182,7 +1252,6 @@ async function submitMultiForecast(){
   if(!title){showToast('Enter a question','error');return}
   if(opts.length<2){showToast('Need at least 2 options','error');return}
   try{
-    // Multi-forecast: each option gets shares
     const shares={};opts.forEach(o=>{shares[o]=100});
     const market={title,description:desc,category,closeDate,creatorId:currentUser.id,creatorName:currentUser.name,status:'pending',type:'multi',options:opts,shares,volume:0,totalTraders:0,liquidity:1000,createdAt:Date.now(),resolution:null,commentCount:0,boosted:false,boostMultiplier:1};
     await dbPush('markets',market);
@@ -1217,16 +1286,15 @@ async function checkLimitOrders(){
       if(!market||market.status!=='active')continue;
       const currentP=order.side==='YES'?market.yesPrice:(1-market.yesPrice);
       if(currentP<=order.targetPrice){
-        // Execute the order
         const cost=order.shares*currentP;
         if(cost>currentUser.balance){
           await dbUpdate(`limitOrders/${currentUser.id}/${oid}`,{status:'cancelled',reason:'insufficient_points'});
-          await pushNotif(currentUser.id,{text:`Limit order on "${market.title}" cancelled — not enough points`,icon:'⚠️',color:'#f59e0b'});
+          await pushNotif(currentUser.id,{text:`Limit order on "${market.title}" cancelled — not enough points`,icon:'⚠️',color:'#f59e0b',page:'profile'});
           continue;
         }
         await executeTradeRaw(order.marketId,order.side,order.shares,market);
         await dbUpdate(`limitOrders/${currentUser.id}/${oid}`,{status:'executed',executedAt:Date.now()});
-        await pushNotif(currentUser.id,{text:`Limit order executed! Forecasted ${order.side} on "${market.title}"`,icon:'✅',color:'#00e5a0'});
+        await pushNotif(currentUser.id,{text:`Limit order executed! Forecasted ${order.side} on "${market.title}"`,icon:'✅',color:'#00e5a0',page:'market-detail',target:order.marketId});
         document.getElementById('balance-amount').textContent=fmtPts(currentUser.balance);
       }
     }
@@ -1239,10 +1307,22 @@ async function renderMarkets(searchQuery=''){
   try{
     const[marketsData,tradesData,priceHistoryData]=await Promise.all([dbGet('markets'),dbGet('trades'),dbGet('priceHistory')]);
     let markets=marketsData?Object.entries(marketsData).map(([id,m])=>({id,...m})):[];
-    markets=markets.filter(m=>m.status==='active'||m.status==='resolved'||m.status==='locked'||(m.creatorId===currentUser?.id&&m.status!=='rejected'));
-    if(searchQuery){const q=searchQuery.toLowerCase();markets=markets.filter(m=>m.title.toLowerCase().includes(q)||(m.description||'').toLowerCase().includes(q)||(m.category||'').toLowerCase().includes(q))}
+
+    // FIX: Search now includes resolved markets (so users can find past results)
+    markets=markets.filter(m=>{
+      // Always show active/locked/resolved
+      if(m.status==='active'||m.status==='resolved'||m.status==='locked')return true;
+      // Show creator's own pending markets
+      if(m.creatorId===currentUser?.id&&m.status!=='rejected')return true;
+      return false;
+    });
+
+    if(searchQuery){
+      const q=searchQuery.toLowerCase();
+      markets=markets.filter(m=>m.title.toLowerCase().includes(q)||(m.description||'').toLowerCase().includes(q)||(m.category||'').toLowerCase().includes(q));
+    }
     
-    // Check close dates — auto-lock
+    // Auto-lock expired markets
     const now=Date.now();
     for(const m of markets){
       if(m.status==='active'&&m.closeDate&&new Date(m.closeDate).getTime()<=now){
@@ -1251,7 +1331,6 @@ async function renderMarkets(searchQuery=''){
       }
     }
 
-    // Compute trending scores
     markets.forEach(m=>{m._trendScore=trendingScore(m,tradesData)});
 
     const categories=['All','Sports','Events','Academics','School Life','Misc'];
@@ -1265,7 +1344,6 @@ async function renderMarkets(searchQuery=''){
       if(sort==='trending')active.sort((a,b)=>b._trendScore-a._trendScore);
       else if(sort==='newest')active.sort((a,b)=>b.createdAt-a.createdAt);
       else if(sort==='oldest')active.sort((a,b)=>a.createdAt-b.createdAt);
-      // resolved-yes / resolved-no filtering
       if(sort==='resolved-yes')return resolved.filter(m=>m.resolution==='YES');
       if(sort==='resolved-no')return resolved.filter(m=>m.resolution==='NO');
       if(sort==='resolved')return resolved;
@@ -1299,8 +1377,7 @@ async function renderMarkets(searchQuery=''){
                 </select>
               </div>
 
-
-              ${displayed.length===0?`<div class="empty-state"><div class="emoji">🎯</div><h3>No forecasts yet</h3><p>Be the first to create a prediction question!</p></div>`:`
+              ${displayed.length===0?`<div class="empty-state"><div class="emoji">🎯</div><h3>No forecasts found</h3><p>Be the first to create a prediction question!</p></div>`:`
                 <div class="market-grid">
                   ${displayed.map(m=>renderMarketCard(m,priceHistoryData)).join('')}
                 </div>
@@ -1328,13 +1405,15 @@ async function renderMarkets(searchQuery=''){
       const cb=document.getElementById('create-market-btn');
       if(cb)cb.onclick=()=>{showCreateAnyModal();selectCreateType('forecast')};
 
-      // Draw sparklines
-      c.querySelectorAll('[data-sparkline]').forEach(canvas=>{
-        const mid=canvas.dataset.sparkline;
-        const ph=priceHistoryData&&priceHistoryData[mid];
-        const phArr=ph?Object.values(ph).sort((a,b)=>a.timestamp-b.timestamp):[];
-        const m=markets.find(x=>x.id===mid);
-        drawSparkline(canvas,phArr,m?.yesPrice||0.5);
+      // Draw sparklines after DOM is ready
+      requestAnimationFrame(()=>{
+        c.querySelectorAll('[data-sparkline]').forEach(canvas=>{
+          const mid=canvas.dataset.sparkline;
+          const ph=priceHistoryData&&priceHistoryData[mid];
+          const phArr=ph?Object.values(ph).sort((a,b)=>a.timestamp-b.timestamp):[];
+          const m=markets.find(x=>x.id===mid);
+          drawSparkline(canvas,phArr,m?.yesPrice||0.5);
+        });
       });
 
       loadLiveFeed().then(updateLiveFeedUI);
@@ -1402,40 +1481,37 @@ async function loadTradeModal(marketId,side){
     const market=await dbGet(`markets/${marketId}`);
     if(!market){showToast('Market not found','error');closeModal();return}
     if(market.status!=='active'){showToast('This forecast is not open','error');closeModal();return}
-    let price=side==='YES'?market.yesPrice:(1-market.yesPrice); // Changed to let so we can update it
+    let price=side==='YES'?market.yesPrice:(1-market.yesPrice);
     let shares=10;
     let limitEnabled=false;
     let limitTarget=price;
 
-    // Helper to update numbers without re-rendering the whole modal
     function updateSummary(){
       const actualPrice=limitEnabled?limitTarget:price;
       const cost=shares*actualPrice;
       const profit=shares-cost;
-      
       const costEl=document.getElementById('calc-cost');
       const profitEl=document.getElementById('calc-profit');
       const sharesEl=document.getElementById('calc-shares');
       const priceEl=document.getElementById('calc-price');
       const btnEl=document.getElementById('trade-confirm');
-      
-      if(costEl) costEl.textContent=cost.toFixed(2)+' pts';
-      if(profitEl) profitEl.textContent='+'+profit.toFixed(2)+' pts';
-      if(sharesEl) sharesEl.textContent=shares;
-      if(priceEl) priceEl.textContent=actualPrice.toFixed(3);
-      
-      if(btnEl && !limitEnabled){
+      if(costEl)costEl.textContent=cost.toFixed(2)+' pts';
+      if(profitEl)profitEl.textContent='+'+profit.toFixed(2)+' pts';
+      if(sharesEl)sharesEl.textContent=shares;
+      if(priceEl)priceEl.textContent=actualPrice.toFixed(3);
+      if(btnEl&&!limitEnabled){
         btnEl.textContent=`Forecast ${side} — ${cost.toFixed(2)} pts`;
-        btnEl.className = side==='YES' ? 'btn btn-primary' : 'btn btn-danger';
-      } else if (btnEl && limitEnabled) {
-        btnEl.className = 'btn btn-secondary';
-        btnEl.textContent = 'Set Limit Order';
+        btnEl.className=side==='YES'?'btn btn-primary':'btn btn-danger';
+        btnEl.style.width='100%';btnEl.style.padding='12px';
+      }else if(btnEl&&limitEnabled){
+        btnEl.className='btn btn-secondary';
+        btnEl.style.width='100%';btnEl.style.padding='12px';
+        btnEl.textContent='Set Limit Order';
       }
     }
 
     const boostNote=market.boosted?`<div style="font-size:.72rem;color:var(--gold);margin-top:4px">⚡ Boosted market — 2× point reward on win!</div>`:'';
     
-    // Initial Render
     document.getElementById('trade-modal-content').innerHTML=`
       <h3 style="font-size:.85rem;font-weight:600;margin-bottom:14px;color:var(--text-secondary);line-height:1.4">${esc(market.title)}</h3>
       <div class="trade-tabs">
@@ -1444,7 +1520,6 @@ async function loadTradeModal(marketId,side){
       </div>
       <div class="trade-input-group">
         <label>Shares</label>
-        <!-- Removed max="500" and added IDs for updates -->
         <input type="number" id="trade-shares" value="${shares}" min="1" step="1">
       </div>
       <div style="margin-bottom:10px">
@@ -1473,47 +1548,37 @@ async function loadTradeModal(marketId,side){
       <button class="btn ${side==='YES'?'btn-primary':'btn-danger'}" id="trade-confirm" style="width:100%;padding:12px">Forecast ${side} — ${(shares*price).toFixed(2)} pts</button>
     `;
 
-    // Event Listeners
     document.getElementById('trade-shares').oninput=e=>{
-      // Removed Math.min(500, ...) cap. Users can type freely.
       shares=Math.max(1,parseInt(e.target.value)||1);
       updateSummary();
     };
-    
     document.getElementById('tt-yes').onclick=()=>{
-      side='YES';
-      price=market.yesPrice;
+      side='YES';price=market.yesPrice;
       document.getElementById('tt-yes').className='trade-tab active-yes';
       document.getElementById('tt-no').className='trade-tab';
       updateSummary();
     };
-    
     document.getElementById('tt-no').onclick=()=>{
-      side='NO';
-      price=1-market.yesPrice;
+      side='NO';price=1-market.yesPrice;
       document.getElementById('tt-yes').className='trade-tab';
       document.getElementById('tt-no').className='trade-tab active-no';
       updateSummary();
     };
-    
     document.getElementById('limit-toggle').onchange=e=>{
       limitEnabled=e.target.checked;
       document.getElementById('limit-fields').style.display=limitEnabled?'block':'none';
       updateSummary();
     };
-    
     const lp=document.getElementById('limit-price');
     if(lp){lp.oninput=e=>{
       limitTarget=e.target.value/100;
       document.getElementById('limit-price-display').textContent=e.target.value+'%';
       updateSummary();
     }}
-
     document.getElementById('trade-confirm').onclick=()=>{
       if(limitEnabled)executeLimitOrder(marketId,side,shares,limitTarget,market);
       else executeTrade(marketId,side,shares,market);
     };
-    
     document.getElementById('modal-footer').innerHTML='';
   }catch(err){showToast('Failed to load','error');closeModal()}
 }
@@ -1547,8 +1612,9 @@ async function executeTradeRaw(marketId,side,shares,market){
   if(side==='YES')newYesShares+=shares;else newNoShares+=shares;
   const newYesPrice=Math.min(0.95,Math.max(0.05,newYesShares/(newYesShares+newNoShares)));
   await dbUpdate(`markets/${marketId}`,{yesPrice:newYesPrice,noPrice:1-newYesPrice,yesShares:newYesShares,noShares:newNoShares,volume:(market.volume||0)+cost,totalTraders:(market.totalTraders||0)+1});
-  await dbPush('trades',{marketId,userId:currentUser.id,userName:currentUser.name,side,shares,price,cost,boostMult,timestamp:Date.now()});
+  // FIX: priceHistory correctly pushed with timestamp for accurate sparklines
   await dbPush(`priceHistory/${marketId}`,{yesPrice:newYesPrice,timestamp:Date.now()});
+  await dbPush('trades',{marketId,userId:currentUser.id,userName:currentUser.name,side,shares,price,cost,boostMult,timestamp:Date.now()});
   addLiveFeedItem(`${currentUser.name} forecasted ${side} on "${market.title.slice(0,35)}…"`);
   await checkAndAwardAchievements({...currentUser,id:currentUser.id});
   return true;
@@ -1560,7 +1626,6 @@ async function executeTrade(marketId,side,shares,market){
   if(cost>currentUser.balance){showToast('Not enough accuracy points','error');return}
   const bigBet=shares>100;
   if(bigBet){
-    // Require reasoning
     openModal('Share Your Reasoning',`
       <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px">You're forecasting ${shares} shares — large positions require a brief reasoning statement. This will appear as <strong>Smart Money Logic</strong> in the discussion.</p>
       <div class="form-group"><textarea id="reason-text" placeholder="Why do you think this will ${side}? (min 20 chars)" rows="3"></textarea></div>
@@ -1581,35 +1646,50 @@ async function executeTrade(marketId,side,shares,market){
 
 async function doExecuteTrade(marketId,side,shares,market,reason){
   try{
-    await executeTradeRaw(marketId,side,shares,market);
+    const success=await executeTradeRaw(marketId,side,shares,market);
+    if(!success){showToast('Not enough points','error');return}
     document.getElementById('balance-amount').textContent=fmtPts(currentUser.balance);
+
+    // FEATURE: Confetti for big wins (>50 shares)
+    if(shares>50&&typeof confetti!=='undefined'){
+      confetti({particleCount:120,spread:70,origin:{y:0.6},colors:['#00e5a0','#ffffff','#3b82f6']});
+    }
+
     if(reason){
       await dbPush(`comments/${marketId}`,{userId:currentUser.id,userName:currentUser.name,text:reason,timestamp:Date.now(),smartMoney:true,side});
+      await dbUpdate(`markets/${marketId}`,{commentCount:(market.commentCount||0)+1});
     }
     closeModal();showToast(`Forecasted ${shares} shares on ${side}!`,'success');
     if(currentPage==='market-detail')renderMarketDetail(marketId);else renderMarkets();
   }catch(err){showToast('Forecast failed: '+err.message,'error')}
 }
 
-// SELL POSITION
+// FIX: Sell position with warning
 async function sellPosition(tradeId,tradeData){
   const market=await dbGet(`markets/${tradeData.marketId}`);
   if(!market){showToast('Market not found','error');return}
   if(market.status!=='active'){showToast('Can only sell in active markets','error');return}
   const currentP=tradeData.side==='YES'?market.yesPrice:(1-market.yesPrice);
-  const sellValue=tradeData.shares*currentP*0.9; // 10% exit fee to discourage early exits
+  const sellValue=tradeData.shares*currentP*0.9;
   const profit=sellValue-tradeData.cost;
   openModal('Cash Out Position',`
+    <!-- FIX: Prominent sell warning -->
+    <div class="sell-warning">
+      <span style="font-size:1.2rem">⚠️</span>
+      <div>
+        <strong>Early Exit Fee</strong><br>
+        Selling now incurs a 10% penalty. If you are right, you are paying to exit early. Holding to resolution is almost always more profitable if you're confident.
+      </div>
+    </div>
     <div class="trade-summary">
       <div><span>Your position</span><span style="font-weight:700">${tradeData.shares} shares ${tradeData.side}</span></div>
-      <div><span>Original cost</span><span style="font-family:var(--mono)">${tradeData.cost.toFixed(2)} pts</span></div>
+      <div><span>Original cost</span><span style="font-family:var(--mono)">${(tradeData.cost||0).toFixed(2)} pts</span></div>
       <div><span>Current value</span><span style="font-family:var(--mono)">${(tradeData.shares*currentP).toFixed(2)} pts</span></div>
       <div><span>Exit fee (10%)</span><span style="font-family:var(--mono);color:var(--red)">−${(tradeData.shares*currentP*0.1).toFixed(2)} pts</span></div>
       <div class="total"><span>You receive</span><span style="color:${profit>=0?'var(--accent)':'var(--red)'};font-family:var(--mono)">${sellValue.toFixed(2)} pts (${profit>=0?'+':''}${profit.toFixed(2)})</span></div>
     </div>
-    <p style="font-size:.73rem;color:var(--text-muted);margin-top:8px">Note: Early exits have a 10% fee. Holding to resolution is usually more profitable if you're confident.</p>
   `,`
-    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-secondary" onclick="closeModal()">Keep Position</button>
     <button class="btn ${profit>=0?'btn-primary':'btn-danger'}" id="sell-confirm">Cash Out for ${sellValue.toFixed(2)} pts</button>
   `);
   document.getElementById('sell-confirm').onclick=async()=>{
@@ -1625,24 +1705,42 @@ async function sellPosition(tradeId,tradeData){
   };
 }
 
+// ===================== COPY TRADE =====================
+window.copyTrade=function(side,shares,marketId){
+  if(!currentUser)return showToast('Login first','error');
+  openModal('Copy Trade',`
+    <div style="text-align:center;padding:16px 0">
+      <p style="color:var(--text-secondary);margin-bottom:12px;font-size:.85rem">Copy this position?</p>
+      <div style="font-size:2.5rem;font-weight:900;color:${side==='YES'?'var(--accent)':'var(--red)'}">${side}</div>
+      <div style="font-size:1.1rem;font-weight:700;margin-top:4px">${shares} Shares</div>
+    </div>
+  `,`
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="closeModal();showTradeModal('${marketId}','${side}')">📋 Execute Copy Trade</button>
+  `);
+};
 
 // ===================== MARKET DETAIL =====================
 async function renderMarketDetail(marketId){
   const c=document.getElementById('page-content');
   try{
-    const[market,tradesAll,commentData,priceHistory,myTradesAll]=await Promise.all([
-      dbGet(`markets/${marketId}`),dbGet('trades'),dbGet(`comments/${marketId}`),dbGet(`priceHistory/${marketId}`),dbGet('trades')
+    const[market,tradesAll,commentData,priceHistory]=await Promise.all([
+      dbGet(`markets/${marketId}`),dbGet('trades'),dbGet(`comments/${marketId}`),dbGet(`priceHistory/${marketId}`)
     ]);
     if(!market){c.innerHTML='<div class="empty-state"><h3>Forecast not found</h3></div>';return}
     
     const allTrades=tradesAll?Object.entries(tradesAll).map(([id,t])=>({id,...t})):[];
     const marketTrades=allTrades.filter(t=>t.marketId===marketId&&t.status!=='sold').sort((a,b)=>b.timestamp-a.timestamp);
     const myTrades=currentUser?allTrades.filter(t=>t.marketId===marketId&&t.userId===currentUser.id&&t.status!=='sold'):[];
-    const commentsList=commentData?Object.entries(commentData).map(([id,cm])=>({id,...cm})).filter(c=>c.status!=='hidden').sort((a,b)=>b.timestamp-a.timestamp):[];
+    const commentsList=commentData?Object.entries(commentData).map(([id,cm])=>({id,...cm})).filter(c=>c.status!=='hidden').sort((a,b)=>{
+      // Pinned first, then by time
+      if(a.pinned&&!b.pinned)return -1;
+      if(!a.pinned&&b.pinned)return 1;
+      return b.timestamp-a.timestamp;
+    }):[];
     const priceData=priceHistory?Object.values(priceHistory).sort((a,b)=>a.timestamp-b.timestamp):[];
     const isMulti=market.type==='multi';
 
-    // Get user positions for coloring comments
     const userPositions={};
     marketTrades.forEach(t=>{if(!userPositions[t.userId])userPositions[t.userId]=t.side});
 
@@ -1662,7 +1760,6 @@ async function renderMarketDetail(marketId){
         ${market.status==='locked'?`<div style="padding:12px 16px;border-radius:8px;background:var(--orange-dim);border:1px solid rgba(249,115,22,0.25);color:var(--orange);font-weight:700;margin-bottom:14px;font-size:.85rem">🔒 Market locked — awaiting resolution</div>`:''}
         <div class="market-detail-grid">
           <div>
-            <!-- Main info -->
             <div class="card" style="margin-bottom:16px">
               <div class="card-body">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
@@ -1679,23 +1776,24 @@ async function renderMarketDetail(marketId){
                   ${market.closeDate?`<span>Closes: ${new Date(market.closeDate).toLocaleDateString()}</span>`:''}
                   ${market.resolutionSource?`<a href="${esc(market.resolutionSource)}" target="_blank" style="color:var(--accent)">Resolution source ↗</a>`:''}
                 </div>
-                <!-- Market Reactions -->
                 <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
                   <span style="font-size:.68rem;color:var(--text-muted);align-self:center;font-weight:700">React:</span>
                   ${[{k:'insightful',e:'👍',l:'Insightful'},{k:'hot_take',e:'🔥',l:'Hot Take'},{k:'bearish',e:'📉',l:'Bearish'},{k:'bullish',e:'📈',l:'Bullish'},{k:'hmm',e:'🤔',l:'Hmm'}].map(r=>{
                     const mr=market.reactions||{};const cnt=mr[r.k]||0;const reacted=currentUser&&mr[`_${currentUser.id}_${r.k}`];
-                    return`<button class="reaction-btn ${reacted?'reacted':''}" onclick="reactToMarket('${marketId}','${r.k}')" title="${r.l}" style="display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:18px;font-size:.74rem;background:${reacted?'var(--accent-dim)':'var(--bg-surface)'};border:1px solid ${reacted?'rgba(0,229,160,.22)':'var(--border)'};color:${reacted?'var(--accent)':'var(--text-secondary)'};cursor:pointer;transition:all .15s">${r.e}${cnt>0?` <strong>${cnt}</strong>`:''}</button>`;
+                    return`<button class="reaction-btn ${reacted?'reacted':''}" onclick="reactToMarket('${marketId}','${r.k}')" title="${r.l}">${r.e}${cnt>0?` <strong>${cnt}</strong>`:''}</button>`;
                   }).join('')}
                 </div>
               </div>
             </div>
 
-            <!-- Stats -->
             <div class="stats-grid">
               ${isMulti?
                 (market.options||[]).map(o=>{
-                  const s=market.shares||{};const tot=Object.values(s).reduce((a,b)=>a+b,0)||1;
-                  const pct=Math.round((s[o]||0)/tot*100);
+                  // FIX A: Correct multi-choice pricing — normalize by total shares of ALL options
+                  const s=market.shares||{};
+                  const totalShares=Object.values(s).reduce((a,b)=>a+b,0)||1;
+                  const price=(s[o]||0)/totalShares;
+                  const pct=Math.round(price*100);
                   return`<div class="stat-card"><div class="stat-label">${esc(o)}</div><div class="stat-value" style="font-size:.95rem">${pct}%</div></div>`;
                 }).join(''):
                 `<div class="stat-card"><div class="stat-label">Yes Probability</div><div class="stat-value green">${Math.round((market.yesPrice||0.5)*100)}%</div></div>
@@ -1705,7 +1803,6 @@ async function renderMarketDetail(marketId){
               }
             </div>
 
-            <!-- Chart -->
             ${!isMulti?`
               <div class="card" style="margin-bottom:16px">
                 <div class="card-header"><strong style="font-size:.85rem">Probability History</strong></div>
@@ -1715,7 +1812,6 @@ async function renderMarketDetail(marketId){
               </div>
             `:''}
 
-            <!-- My open positions -->
             ${myTrades.length>0?`
               <div class="card" style="margin-bottom:16px">
                 <div class="card-header"><strong style="font-size:.85rem">My Open Positions</strong></div>
@@ -1728,7 +1824,7 @@ async function renderMarketDetail(marketId){
                       </div>
                       <div style="display:flex;align-items:center;gap:10px">
                         <span style="font-size:.75rem;color:var(--text-muted)">${(t.cost||0).toFixed(2)} pts</span>
-                        ${market.status==='active'?`<button class="btn btn-secondary btn-sm" onclick="loadTradeForSell('${t.id}',${JSON.stringify(t)})">Cash Out</button>`:''}
+                        ${market.status==='active'?`<button class="btn btn-secondary btn-sm" onclick="loadTradeForSell('${t.id}',${JSON.stringify(t).replace(/'/g,'&#39;')})">Cash Out</button>`:''}
                       </div>
                     </div>
                   `).join('')}
@@ -1736,27 +1832,28 @@ async function renderMarketDetail(marketId){
               </div>
             `:''}
 
-            <!-- Recent activity -->
             <div class="card" style="margin-bottom:16px">
               <div class="card-header"><strong style="font-size:.85rem">Recent Activity</strong></div>
               <div style="padding:0">
                 ${marketTrades.length===0?'<div style="padding:18px;text-align:center;color:var(--text-muted);font-size:.8rem">No activity yet</div>':
-                  marketTrades.slice(0,15).map(t=>`
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 18px;border-bottom:1px solid var(--border)">
-                      <div style="display:flex;align-items:center;gap:8px">
+                  marketTrades.slice(0,15).map(t=>{
+                    // FEATURE: Copy Trade button for whales (>50 shares)
+                    const isWhale=t.shares>50;
+                    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 18px;border-bottom:1px solid var(--border)">
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                         <span class="badge ${t.side==='YES'?'badge-active':'badge-rejected'}">${t.side}</span>
                         <span style="font-size:.8rem;font-weight:600">${esc(t.userName)}</span>
+                        ${isWhale?`<button class="copy-trade-btn" onclick="copyTrade('${t.side}',${t.shares},'${marketId}')">📋 Copy</button>`:''}
                       </div>
                       <div style="text-align:right">
                         <div style="font-size:.8rem;font-weight:700;font-family:var(--mono)">${t.shares} shares</div>
                         <div style="font-size:.67rem;color:var(--text-muted)">${timeAgo(t.timestamp)}</div>
                       </div>
-                    </div>
-                  `).join('')}
+                    </div>`;
+                  }).join('')}
               </div>
             </div>
 
-            <!-- Comments -->
             <div class="card">
               <div class="card-header">
                 <strong style="font-size:.85rem">Discussion</strong>
@@ -1782,7 +1879,7 @@ async function renderMarketDetail(marketId){
                     return`
                       <div class="comment ${posClass} ${pinned?'pinned':''} ${smartMoney?'smart-money':''} ${isInfluencer?'influencer-comment':''}">
                         ${pinned?`<div style="font-size:.65rem;color:var(--gold);font-weight:800;margin-bottom:4px">📌 PINNED</div>`:''}
-                        ${smartMoney?`<div style="font-size:.65rem;color:var(--blue);font-weight:800;margin-bottom:4px">💡 Smart Money Logic</div>`:''}
+                        ${smartMoney?`<div class="smart-money-badge">💡 Smart Money Logic</div>`:''}
                         <div class="comment-header">
                           <div class="comment-avatar ${isInfluencer?'influencer-gold':''}" style="background:${avatarColor(cm.userName)}22;color:${avatarColor(cm.userName)}">${initials(cm.userName)}</div>
                           <span class="comment-name">${esc(cm.userName)}</span>
@@ -1796,7 +1893,6 @@ async function renderMarketDetail(marketId){
                           }
                         </div>
                         <div class="comment-text">${esc(cm.text)}</div>
-
                       </div>
                     `;
                   }).join('')}
@@ -1804,18 +1900,20 @@ async function renderMarketDetail(marketId){
             </div>
           </div>
 
-          <!-- Right sidebar -->
           <div>
-            <div class="trade-panel" style="position:sticky;top:calc(var(--header-h) + 12px)">
+            <div class="trade-panel" style="position:sticky;top:calc(var(--header-h) + 44px)">
               <h3 style="font-size:.9rem;font-weight:800;margin-bottom:14px;letter-spacing:-.02em">Make a Forecast</h3>
               ${market.status!=='active'?
                 `<p style="color:var(--text-muted);font-size:.82rem;text-align:center;padding:20px 0">${market.status==='locked'?'🔒 Market locked':'Forecasting closed'}</p>`:
                 isMulti?`
                   <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:12px">Click an option to forecast:</p>
                   ${(market.options||[]).map(o=>{
-                    const s=market.shares||{};const tot=Object.values(s).reduce((a,b)=>a+b,0)||1;
-                    const pct=Math.round((s[o]||0)/tot*100);
-                    return`<button class="pred-btn yes" style="width:100%;margin-bottom:6px;display:flex;justify-content:space-between" onclick="showMultiTradeModal('${marketId}','${o.replace(/'/g,"\\'")}',${JSON.stringify(market)})"><span>${esc(o)}</span><span style="font-family:var(--mono)">${pct}%</span></button>`;
+                    // FIX A: Use normalized totalShares for correct probability display
+                    const s=market.shares||{};
+                    const totalShares=Object.values(s).reduce((a,b)=>a+b,0)||1;
+                    const price=(s[o]||0)/totalShares;
+                    const pct=Math.round(price*100);
+                    return`<button class="pred-btn yes" style="width:100%;margin-bottom:6px;display:flex;justify-content:space-between" onclick="showMultiTradeModal('${marketId}','${o.replace(/'/g,"\\'")}',${JSON.stringify(market).replace(/</g,'\\u003c')})"><span>${esc(o)}</span><span style="font-family:var(--mono)">${pct}%</span></button>`;
                   }).join('')}
                 `:`
                   <div style="display:flex;gap:7px;margin-bottom:12px">
@@ -1826,10 +1924,9 @@ async function renderMarketDetail(marketId){
                     <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--text-muted)">Total volume</span><span style="font-family:var(--mono)">${fmtPts(market.volume)} pts</span></div>
                     <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Liquidity pool</span><span style="font-family:var(--mono)">${fmtPts(market.liquidity)} pts</span></div>
                   </div>
-                  ${market.boosted?`<div style="margin-top:10px;padding:8px 10px;background:var(--gold-dim);border-radius:8px;font-size:.75rem;color:var(--gold);font-weight:700;border:1px solid rgba(245,158,11,0.2)">⚡ Boosted: win 2× your profit on this market!</div>`:''}
+                  ${market.boosted?`<div style="margin-top:10px;padding:8px 10px;background:var(--gold-dim);border-radius:8px;font-size:.75rem;color:var(--gold);font-weight:700;border:1px solid rgba(245,158,11,0.2)">⚡ Boosted: win 2× your profit!</div>`:''}
                 `
               }
-
             </div>
           </div>
         </div>
@@ -1846,6 +1943,7 @@ async function renderMarketDetail(marketId){
       const text=inp.value.trim();if(!text)return;
       try{
         await dbPush(`comments/${marketId}`,{userId:currentUser.id,userName:currentUser.name,text,timestamp:Date.now(),reactions:{}});
+        await dbUpdate(`markets/${marketId}`,{commentCount:(market.commentCount||0)+1});
         inp.value='';showToast('Comment posted!','success');renderMarketDetail(marketId);
       }catch(err){showToast('Failed to post','error')}
     };
@@ -1855,29 +1953,13 @@ async function renderMarketDetail(marketId){
 }
 
 window.loadTradeForSell=async function(tradeId,tradeData){
+  if(typeof tradeData==='string'){try{tradeData=JSON.parse(tradeData)}catch(e){}}
   await sellPosition(tradeId,tradeData);
 };
 
 async function pinComment(marketId,commentId,pinned){
   try{await dbUpdate(`comments/${marketId}/${commentId}`,{pinned});showToast(pinned?'Comment pinned':'Comment unpinned','success');renderMarketDetail(marketId)}
   catch(err){showToast('Failed','error')}
-}
-async function reactToComment(marketId,commentId,reaction){
-  if(!currentUser?.verified){showToast('Verify email first','error');return}
-  try{
-    const cm=await dbGet(`comments/${marketId}/${commentId}`);
-    const reactions=cm.reactions||{};
-    const userKey=`_${currentUser.id}_${reaction}`;
-    if(reactions[userKey]){
-      reactions[reaction]=Math.max(0,(reactions[reaction]||1)-1);
-      delete reactions[userKey];
-    }else{
-      reactions[reaction]=(reactions[reaction]||0)+1;
-      reactions[userKey]=true;
-    }
-    await dbUpdate(`comments/${marketId}/${commentId}`,{reactions});
-    renderMarketDetail(marketId);
-  }catch(err){showToast('Failed','error')}
 }
 
 async function reactToMarket(marketId,reaction){
@@ -1900,8 +1982,11 @@ async function reactToMarket(marketId,reaction){
 }
 
 async function showMultiTradeModal(marketId,option,market){
-  const s=market.shares||{};const tot=Object.values(s).reduce((a,b)=>a+b,0)||1;
-  const price=(s[option]||0)/tot;
+  // FIX A: Correct multi-choice pricing — normalize by total shares of ALL options
+  const s=market.shares||{};
+  const totalShares=Object.values(s).reduce((a,b)=>a+b,0)||1;
+  const price=(s[option]||0)/totalShares;
+
   openModal(`Forecast: ${option}`,`
     <h3 style="font-size:.85rem;color:var(--text-secondary);margin-bottom:14px">${esc(market.title)}</h3>
     <div class="trade-summary">
@@ -1909,18 +1994,35 @@ async function showMultiTradeModal(marketId,option,market){
       <div><span>Current probability</span><span style="font-family:var(--mono)">${Math.round(price*100)}%</span></div>
     </div>
     <div class="trade-input-group" style="margin-top:12px"><label>Shares</label><input type="number" id="mt-shares" value="10" min="1"></div>
-    <button class="btn btn-primary" id="mt-confirm" style="width:100%;margin-top:12px">Forecast ${option}</button>
+    <div id="mt-summary" style="margin-top:10px;padding:10px;background:var(--bg-surface);border-radius:8px;font-size:.78rem;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Cost</span><span id="mt-cost" style="font-family:var(--mono)">${(10*price).toFixed(2)} pts</span></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="color:var(--text-muted)">If wins</span><span id="mt-profit" style="color:var(--accent);font-family:var(--mono)">+${(10-10*price).toFixed(2)} pts</span></div>
+    </div>
+    <div style="font-size:.73rem;color:var(--text-muted);margin:8px 0">Your score: <strong style="color:var(--text)">${fmtPts(currentUser.balance)} pts</strong></div>
+    <button class="btn btn-primary" id="mt-confirm" style="width:100%;margin-top:12px;padding:12px">Forecast ${esc(option)}</button>
   `,'');
+
+  document.getElementById('mt-shares').oninput=e=>{
+    const sh=Math.max(1,parseInt(e.target.value)||1);
+    const cost=sh*price;
+    document.getElementById('mt-cost').textContent=cost.toFixed(2)+' pts';
+    document.getElementById('mt-profit').textContent='+'+(sh-cost).toFixed(2)+' pts';
+    document.getElementById('mt-confirm').textContent=`Forecast ${option} — ${cost.toFixed(2)} pts`;
+  };
+
   document.getElementById('mt-confirm').onclick=async()=>{
-    const shares=parseInt(document.getElementById('mt-shares').value)||10;
+    const shares=Math.max(1,parseInt(document.getElementById('mt-shares').value)||10);
     const cost=shares*price;
     if(cost>currentUser.balance){showToast('Not enough points','error');return}
     try{
       const newBal=currentUser.balance-cost;
       await dbUpdate(`users/${currentUser.id}`,{balance:newBal,trades:(currentUser.trades||0)+1,predictions:(currentUser.predictions||0)+1});
       currentUser.balance=newBal;saveSession(currentUser);
-      const newShares={...(market.shares||{})};newShares[option]=(newShares[option]||0)+shares;
-      await dbUpdate(`markets/${marketId}`,{shares:newShares,volume:(market.volume||0)+cost,totalTraders:(market.totalTraders||0)+1});
+      // FIX: Update shares and recalculate properly
+      const freshMarket=await dbGet(`markets/${marketId}`);
+      const newShares={...(freshMarket.shares||{})};
+      newShares[option]=(newShares[option]||0)+shares;
+      await dbUpdate(`markets/${marketId}`,{shares:newShares,volume:(freshMarket.volume||0)+cost,totalTraders:(freshMarket.totalTraders||0)+1});
       await dbPush('trades',{marketId,userId:currentUser.id,userName:currentUser.name,side:option,shares,price,cost,timestamp:Date.now(),multiChoice:true});
       document.getElementById('balance-amount').textContent=fmtPts(newBal);
       closeModal();showToast(`Forecasted ${shares} shares on "${option}"!`,'success');
@@ -1969,7 +2071,7 @@ async function renderCensus(searchQuery=''){
                       <div class="mc-meta" style="margin-bottom:9px"><span>${timeAgo(p.createdAt)}</span><span>${total} vote${total!==1?'s':''}</span>${p.anonymous?'<span>🔒 Anon</span>':''}</div>
                       ${total>0?`<div>${opts.slice(0,3).map(o=>{
                         const pct=total>0?Math.round((counts[o]||0)/total*100):0;const isLead=o===leading;
-                        return`<div class="poll-option-bar" style="margin-bottom:6px">
+                        return`<div style="margin-bottom:6px">
                           <div style="display:flex;justify-content:space-between;font-size:.74rem;margin-bottom:3px"><span style="font-weight:${isLead?700:400}">${esc(o)}</span><span style="font-weight:700;color:${isLead?'var(--accent)':'var(--purple)'}">${pct}%</span></div>
                           <div style="height:5px;background:var(--bg-surface);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${isLead?'var(--accent)':'var(--purple)'};border-radius:3px;transition:width .6s"></div></div>
                         </div>`;
@@ -2060,7 +2162,7 @@ async function renderCensusDetail(censusId){
             `}
           </div>
           <div>
-            <div class="trade-panel" style="position:sticky;top:calc(var(--header-h) + 12px)">
+            <div class="trade-panel" style="position:sticky;top:calc(var(--header-h) + 44px)">
               <h3 style="font-size:.9rem;font-weight:800;margin-bottom:12px">📊 Poll Stats</h3>
               <div style="display:flex;flex-direction:column;gap:8px">
                 <div style="background:var(--bg-surface);border-radius:8px;padding:11px;border:1px solid var(--border)">
@@ -2106,43 +2208,67 @@ async function submitVote(censusId,option){
     if(poll.votes&&poll.votes[currentUser.id]){showToast('Already voted','error');return}
     await dbUpdate(`censuses/${censusId}/votes`,{[currentUser.id]:option});
     await dbUpdate(`censuses/${censusId}`,{totalVotes:(poll.totalVotes||0)+1});
+    // Track poll votes for Poll Master achievement
+    await dbUpdate(`users/${currentUser.id}`,{pollVotes:(currentUser.pollVotes||0)+1});
+    currentUser.pollVotes=(currentUser.pollVotes||0)+1;saveSession(currentUser);
     showToast(`Voted for "${option}"!`,'success');
-    await pushNotif(poll.creatorId,{text:`${currentUser.name} voted on your poll: "${poll.title}"`,icon:'🗳️',color:'#a855f7'});
+    await pushNotif(poll.creatorId,{text:`${currentUser.name} voted on your poll: "${poll.title}"`,icon:'🗳️',color:'#a855f7',page:'census-detail',target:censusId});
     renderCensusDetail(censusId);
   }catch(err){showToast('Failed to vote: '+err.message,'error')}
 }
 
 // ===================== LEADERBOARD =====================
+let lbPage=0;
+const LB_PAGE_SIZE=20;
+
 async function renderLeaderboard(){
   const c=document.getElementById('page-content');
   try{
     const usersData=await dbGet('users');
     if(!usersData){c.innerHTML='<div class="empty-state"><h3>No users yet</h3></div>';return}
     
-    // Prepare lists for sorting
     let list=Object.entries(usersData).map(([id,u])=>({id,...u})).filter(u=>u.role!=='banned');
     
-    // Sort by individual metrics
-    const sortByBalance = [...list].sort((a,b)=>(b.balance||0)-(a.balance||0));
-    const sortByPredictions = [...list].sort((a,b)=>(b.predictions||b.trades||0)-(a.predictions||a.trades||0));
-    const sortByProfit = [...list].sort((a,b)=>(b.profit||0)-(a.profit||0));
+    const sortByBalance=[...list].sort((a,b)=>(b.balance||0)-(a.balance||0));
+    const sortByProfit=[...list].sort((a,b)=>(b.profit||0)-(a.profit||0));
 
-    // Calculate Average Rank for each user
-    list = list.map(user => {
-      // Find rank in each category (index + 1)
-      const rBalance = sortByBalance.findIndex(u => u.id === user.id) + 1;
-      const rActivity = sortByPredictions.findIndex(u => u.id === user.id) + 1;
-      const rProfit = sortByProfit.findIndex(u => u.id === user.id) + 1;
-
-      // Calculate average (Activity doesn't factor heavily, but ensures tie-breaking)
-      // Formula: Average of (Balance Rank + Profit Rank)
-      const avgRank = (rBalance + rProfit) / 2;
-      
-      return { ...user, avgRank, rBalance, rActivity, rProfit };
+    list=list.map(user=>{
+      const rBalance=sortByBalance.findIndex(u=>u.id===user.id)+1;
+      const rProfit=sortByProfit.findIndex(u=>u.id===user.id)+1;
+      const avgRank=(rBalance+rProfit)/2;
+      return{...user,avgRank,rBalance,rProfit};
     });
 
-    // Sort final list by Average Rank
-    const sorted = [...list].sort((a, b) => a.avgRank - b.avgRank);
+    const sorted=[...list].sort((a,b)=>a.avgRank-b.avgRank);
+    lbPage=0;
+
+    function renderRows(page){
+      const slice=sorted.slice(0,LB_PAGE_SIZE*(page+1));
+      return slice.map((u,i)=>{
+        const rankPos=i+1;
+        let rankClass='';
+        let rankIcon=rankPos;
+        if(rankPos<=3){rankClass='gold';rankIcon=['🥇','🥈','🥉'][rankPos-1]}
+        else if(rankPos<=6){rankClass='silver'}
+        else if(rankPos<=9){rankClass='bronze'}
+        return`<div class="lb-row" data-user-id="${u.id}">
+          <div class="lb-rank ${rankClass}">${rankIcon}</div>
+          <div class="lb-avatar" style="background:${avatarColor(u.name)}22;color:${avatarColor(u.name)}">${initials(u.name)}</div>
+          <div class="lb-info">
+            <div class="lb-name">
+              ${esc(u.name)}
+              ${u.verified?`<svg width="11" height="11" viewBox="0 0 24 24" fill="var(--accent)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`:''}
+              ${renderAchievementBadges(u,1)}
+            </div>
+            <div class="lb-sub">Score: ${fmtPts(u.balance)} · Profit: ${fmtPts(u.profit||0)}</div>
+          </div>
+          <div class="lb-value" style="font-size:.8rem;text-align:right">
+            <div style="font-weight:800;color:var(--accent)">${fmtPts(u.balance)} pts</div>
+            <div style="font-size:.7rem;color:var(--text-muted)">#${u.rBalance} Acc · #${u.rProfit} Profit</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
 
     c.innerHTML=`
       <div class="page">
@@ -2150,46 +2276,26 @@ async function renderLeaderboard(){
         <div style="margin-bottom:18px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;font-size:.82rem;color:var(--text-secondary)">
           Ranking is calculated based on average position across <strong style="color:var(--text)">Accuracy Score</strong> and <strong style="color:var(--text)">Profit</strong>.
         </div>
-        <div class="card" style="overflow:hidden">
-          ${sorted.map((u,i)=>{
-            const rankPos=i+1;
-            
-            // Assign Tier Classes
-            let rankClass = '';
-            let rankIcon = rankPos;
-            
-            if(rankPos <= 3) {
-              rankClass = 'gold'; // Top 3 uses existing gold styling
-              rankIcon = ['🥇','🥈','🥉'][rankPos-1];
-            } else if(rankPos <= 6) {
-              rankClass = 'silver'; // 4-6
-            } else if(rankPos <= 9) {
-              rankClass = 'bronze'; // 7-9
-            }
-            // 10+ has no special class/icon formatting
-
-            return`<div class="lb-row" data-user-id="${u.id}">
-              <div class="lb-rank ${rankClass}">${rankIcon}</div>
-              <div class="lb-avatar" style="background:${avatarColor(u.name)}22;color:${avatarColor(u.name)}">${initials(u.name)}</div>
-              <div class="lb-info">
-                <div class="lb-name">
-                  ${esc(u.name)}
-                  ${u.verified?`<svg width="11" height="11" viewBox="0 0 24 24" fill="var(--accent)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`:''}
-                </div>
-                <div class="lb-sub">
-                  Score: ${fmtPts(u.balance)} · Profit: ${fmtPts(u.profit||0)}
-                </div>
-              </div>
-              <div class="lb-value" style="font-size:.8rem; text-align:right">
-                <div style="font-weight:800;color:var(--accent)">${fmtPts(u.balance)} pts</div>
-                <div style="font-size:.7rem;color:var(--text-muted)">#${u.rBalance} Acc · #${u.rProfit} Profit</div>
-              </div>
-            </div>`;
-          }).join('')}
+        <div class="card" style="overflow:hidden" id="lb-list">
+          ${renderRows(0)}
         </div>
+        <!-- FIX: Leaderboard pagination / Load More -->
+        ${sorted.length>LB_PAGE_SIZE?`<div style="text-align:center;margin-top:14px">
+          <button class="btn btn-secondary" id="lb-load-more">Load More (${sorted.length-LB_PAGE_SIZE} remaining)</button>
+        </div>`:''}
       </div>`;
+
+    const lbLoadMore=document.getElementById('lb-load-more');
+    if(lbLoadMore){lbLoadMore.onclick=()=>{
+      lbPage++;
+      document.getElementById('lb-list').innerHTML=renderRows(lbPage);
+      const remaining=sorted.length-LB_PAGE_SIZE*(lbPage+1);
+      if(remaining<=0)lbLoadMore.style.display='none';
+      else lbLoadMore.textContent=`Load More (${remaining} remaining)`;
+    }}
   }catch(err){c.innerHTML=`<div class="empty-state"><h3>Error</h3><p>${esc(err.message)}</p></div>`}
 }
+
 // ===================== PROFILE =====================
 async function renderProfile(){
   const c=document.getElementById('page-content');
@@ -2201,18 +2307,27 @@ async function renderProfile(){
     if(user){currentUser={...currentUser,...user,id:currentUser.id};saveSession(currentUser)}
     
     const markets=marketsData||{};
-    
     const allTrades=tradesData?Object.entries(tradesData).map(([id,t])=>({id,...t})).filter(t=>t.userId===currentUser.id):[];
     const openTrades=allTrades.filter(t=>{
       if(t.status==='sold')return false;
       const m=markets[t.marketId];
       return m&&(m.status==='active'||m.status==='locked');
     });
-    const totalCost=openTrades.reduce((s,t)=>s+(t.cost||0),0);
-    
     const myLimitOrders=limitOrdersData?Object.entries(limitOrdersData).map(([id,o])=>({id,...o})).filter(o=>o.status==='pending'):[];
     const earned=currentUser.achievements||{};
     const allAchKeys=Object.keys(ACHIEVEMENTS);
+
+    // FEATURE A: Portfolio Value — sum shares × current price for open positions
+    let portfolioValue=0;
+    openTrades.forEach(t=>{
+      const m=markets[t.marketId];
+      if(m){
+        // Use current market price, not original entry price
+        const currentP=t.side==='YES'?m.yesPrice:(1-(m.yesPrice||0.5));
+        portfolioValue+=(t.shares*currentP);
+      }
+    });
+
     let activeTab='history';
 
     function render(tab){
@@ -2236,8 +2351,10 @@ async function renderProfile(){
             </div>
           </div>
 
-          <div class="portfolio-grid">
+          <!-- FEATURE A: Portfolio Value added as 5th stat -->
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
             <div class="stat-card"><div class="stat-label">Accuracy Score</div><div class="stat-value green">${fmtPts(currentUser.balance)}</div></div>
+            <div class="stat-card"><div class="stat-label">Portfolio Value</div><div class="stat-value gold">${fmtPts(portfolioValue)}</div></div>
             <div class="stat-card"><div class="stat-label">Forecasts Made</div><div class="stat-value">${currentUser.predictions||currentUser.trades||0}</div></div>
             <div class="stat-card"><div class="stat-label">Correct</div><div class="stat-value">${currentUser.correct||0}</div></div>
             <div class="stat-card"><div class="stat-label">Profit</div><div class="stat-value ${(currentUser.profit||0)>=0?'green':'red'}">${fmtPts(currentUser.profit||0)}</div></div>
@@ -2294,7 +2411,7 @@ async function renderProfile(){
                       </div>
                       <div style="text-align:right">
                         <div style="font-size:.8rem;font-weight:700;font-family:var(--mono);color:${pnl>=0?'var(--accent)':'var(--red)'}">${pnl>=0?'+':''}${pnl.toFixed(2)}</div>
-                        ${m?.status==='active'?`<button class="btn btn-secondary btn-sm" style="margin-top:3px" onclick="loadTradeForSell('${t.id}',${JSON.stringify({...t,marketId:t.marketId})})">Cash Out</button>`:''}
+                        ${m?.status==='active'?`<button class="btn btn-secondary btn-sm" style="margin-top:3px" onclick="loadTradeForSell('${t.id}',${JSON.stringify({...t}).replace(/'/g,'&#39;')})">Cash Out</button>`:''}
                       </div>
                     </div>`;
                   }).join('')}
@@ -2331,7 +2448,7 @@ async function renderProfile(){
                       <div style="font-size:.75rem;color:var(--text-muted)">${a.desc}</div>
                     </div>
                   </div>
-                  ${has?`<div style="font-size:.7rem;color:var(--accent)">Earned ${timeAgo(earnedAt)}</div>`:`<div style="font-size:.7rem;color:var(--text-muted)">Not yet earned</div>`}
+                  ${has?`<div style="font-size:.7rem;color:var(--accent)">✓ Earned ${timeAgo(earnedAt)}</div>`:`<div style="font-size:.7rem;color:var(--text-muted)">Not yet earned</div>`}
                 </div>`;
               }).join('')}
             </div>
@@ -2351,7 +2468,6 @@ async function cancelLimitOrder(orderId){
     showToast('Limit order cancelled','info');renderProfile();
   }catch(err){showToast('Failed','error')}
 }
-
 
 // ===================== REPORT & DELETE COMMENTS =====================
 async function reportComment(marketId,commentId,commentText,commentUser){
@@ -2392,7 +2508,6 @@ async function renderAdmin(){
 
     function render(t){
       tab=t;
-      const selAll=pendingM.length>0||pendingC.length>0;
       c.innerHTML=`
         <div class="page">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
@@ -2428,7 +2543,6 @@ async function renderAdmin(){
                       <div style="font-size:.7rem;color:var(--text-muted)">By ${esc(m.creatorName)} · ${esc(m.category||'Misc')} · ${timeAgo(m.createdAt)}</div>
                     </div>
                     <div style="display:flex;gap:6px;flex-wrap:wrap">
-                      <label class="btn btn-gold btn-sm" style="cursor:pointer"><input type="checkbox" data-select-m="${m.id}" style="width:auto;margin-right:4px">Select</label>
                       <button class="btn btn-primary btn-sm" data-approve="${m.id}">Approve</button>
                       <button class="btn btn-danger btn-sm" data-reject="${m.id}">Reject</button>
                     </div>
@@ -2456,10 +2570,9 @@ async function renderAdmin(){
           ${tab==='active'?`
             ${activeM.length===0?'<div class="empty-state"><h3>No active forecasts</h3></div>':`
               <table class="admin-table">
-                <thead><tr><th><input type="checkbox" id="select-all-active" style="width:auto"></th><th>Forecast</th><th>Yes %</th><th>Volume</th><th>Status</th><th>Resolve / Manage</th></tr></thead>
+                <thead><tr><th>Forecast</th><th>Yes %</th><th>Volume</th><th>Status</th><th>Resolve / Manage</th></tr></thead>
                 <tbody>
                   ${activeM.map(m=>`<tr>
-                    <td><input type="checkbox" class="active-select" data-id="${m.id}" style="width:auto"></td>
                     <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">${esc(m.title)}</td>
                     <td style="font-family:var(--mono)">${Math.round((m.yesPrice||0.5)*100)}%</td>
                     <td style="font-family:var(--mono)">${fmtPts(m.volume)}</td>
@@ -2566,7 +2679,7 @@ async function renderAdmin(){
         </div>`;
 
       c.querySelectorAll('.tab-bar button').forEach(b=>{if(b.dataset.tab)b.onclick=()=>render(b.dataset.tab)});
-      c.querySelectorAll('[data-approve]').forEach(b=>{b.onclick=async()=>{try{await dbUpdate(`markets/${b.dataset.approve}`,{status:'active'});const m2=await dbGet(`markets/${b.dataset.approve}`);await pushNotif(m2.creatorId,{text:`Your forecast "${m2.title}" was approved!`,icon:'✅',color:'#00e5a0'});showToast('Approved!','success');renderAdmin()}catch(e){showToast('Failed','error')}}});
+      c.querySelectorAll('[data-approve]').forEach(b=>{b.onclick=async()=>{try{await dbUpdate(`markets/${b.dataset.approve}`,{status:'active'});const m2=await dbGet(`markets/${b.dataset.approve}`);await pushNotif(m2.creatorId,{text:`Your forecast "${m2.title}" was approved!`,icon:'✅',color:'#00e5a0',page:'market-detail',target:b.dataset.approve});showToast('Approved!','success');renderAdmin()}catch(e){showToast('Failed','error')}}});
       c.querySelectorAll('[data-reject]').forEach(b=>{b.onclick=async()=>{try{await dbUpdate(`markets/${b.dataset.reject}`,{status:'rejected'});showToast('Rejected','info');renderAdmin()}catch(e){showToast('Failed','error')}}});
       c.querySelectorAll('[data-approve-census]').forEach(b=>{b.onclick=async()=>{try{await dbUpdate(`censuses/${b.dataset.approveCensus}`,{status:'active'});showToast('Poll approved!','success');renderAdmin()}catch(e){showToast('Failed','error')}}});
       c.querySelectorAll('[data-reject-census]').forEach(b=>{b.onclick=async()=>{try{await dbUpdate(`censuses/${b.dataset.rejectCensus}`,{status:'rejected'});showToast('Poll rejected','info');renderAdmin()}catch(e){showToast('Failed','error')}}});
@@ -2620,7 +2733,6 @@ async function resolveMarket(marketId,resolution,resolutionSource=''){
       const user=await dbGet(`users/${trade.userId}`);
       if(user){
         const boostMult=(market?.boosted&&market?.boostMultiplier)||1;
-        // CORRECT PAYOUT: 1 share = 1 point, profit = shares - cost, boosted doubles profit
         const profit=(trade.shares-trade.cost)*boostMult;
         const payout=trade.cost+profit;
         const newBalance=(user.balance||0)+payout;
@@ -2630,14 +2742,16 @@ async function resolveMarket(marketId,resolution,resolutionSource=''){
         if(trade.category==='Sports')updates.sportStreak=(user.sportStreak||0)+1;
         if((user.balance||0)<0&&newBalance>0)updates.hadComeback=true;
         await dbUpdate(`users/${trade.userId}`,updates);
-        await pushNotif(trade.userId,{text:`✅ You won! "${market?.title||'Market'}" resolved ${resolution}. +${profit.toFixed(2)} pts profit`,icon:'🎉',color:'#00e5a0',page:'profile'});
+        // FIX C: Notification with proper page/target navigation
+        await pushNotif(trade.userId,{text:`✅ You won! "${market?.title||'Market'}" resolved ${resolution}. +${profit.toFixed(2)} pts profit`,icon:'🎉',color:'#00e5a0',page:'market-detail',target:marketId});
         await checkAndAwardAchievements({...user,...updates,id:trade.userId});
       }
     }catch(e){}
   }
   for(const[tid,trade]of loserTrades){
     try{
-      await pushNotif(trade.userId,{text:`❌ "${market?.title||'Market'}" resolved ${resolution}. You lost ${trade.cost.toFixed(2)} pts.`,icon:'😔',color:'#ff3d5a',page:'profile'});
+      // FIX C: Notification with proper page/target
+      await pushNotif(trade.userId,{text:`❌ "${market?.title||'Market'}" resolved ${resolution}. You lost ${trade.cost.toFixed(2)} pts.`,icon:'😔',color:'#ff3d5a',page:'market-detail',target:marketId});
       const user=await dbGet(`users/${trade.userId}`);
       if(user){const s=trade.category==='Sports'?{sportStreak:0}:{};if(Object.keys(s).length>0)await dbUpdate(`users/${trade.userId}`,s)}
     }catch(e){}
@@ -2649,46 +2763,82 @@ async function resolveMarket(marketId,resolution,resolutionSource=''){
 async function refundMarket(marketId){
   if(!confirm('Refund all participants? This returns all points and cancels the market.'))return;
   try{
+    // FIX D: Set systemLocked flag first to immediately prevent new trades, then process refunds
+    await dbUpdate(`markets/${marketId}`,{status:'locked',_refunding:true});
+    showToast('Processing refunds…','info');
+    
     const trades=await dbGet('trades');
     if(trades){
       const marketTrades=Object.entries(trades).filter(([_,t])=>t.marketId===marketId&&t.status!=='sold');
       for(const[tid,trade]of marketTrades){
-        const user=await dbGet(`users/${trade.userId}`);
-        if(user){
-          await dbUpdate(`users/${trade.userId}`,{balance:(user.balance||0)+trade.cost});
-          await pushNotif(trade.userId,{text:`↩ Market refunded: "${(await dbGet(`markets/${marketId}`))?.title||'Market'}". You got back ${trade.cost.toFixed(2)} pts.`,icon:'↩',color:'#ffc107'});
-        }
+        try{
+          const user=await dbGet(`users/${trade.userId}`);
+          if(user){
+            await dbUpdate(`users/${trade.userId}`,{balance:(user.balance||0)+trade.cost});
+            const m=await dbGet(`markets/${marketId}`);
+            await pushNotif(trade.userId,{text:`↩ Market refunded: "${m?.title||'Market'}". You got back ${trade.cost.toFixed(2)} pts.`,icon:'↩',color:'#ffc107',page:'profile'});
+          }
+        }catch(e){}
       }
     }
-    await dbUpdate(`markets/${marketId}`,{status:'refunded'});
+    await dbUpdate(`markets/${marketId}`,{status:'refunded',_refunding:false});
     showToast('Market refunded — all points returned','success');renderAdmin();
   }catch(e){showToast('Failed: '+e.message,'error')}
 }
 
+// FIX D: Panic button now uses System Lock pattern
 async function adminPanicButton(){
   if(!confirm('⚠️ PANIC BUTTON: This will lock ALL active markets, hide them from public, and refund all participants. Are you absolutely sure?'))return;
   if(!confirm('This cannot be undone easily. Last chance — continue?'))return;
   try{
+    // Set global system lock FIRST — this instantly hides/locks everything
+    await dbSet('systemLocked',{locked:true,lockedAt:Date.now(),lockedBy:currentUser.name});
+    showToast('🔒 System locked — processing refunds…','warn');
+    
     const markets=await dbGet('markets');
     if(markets){
       for(const[mid,m]of Object.entries(markets)){
         if(m.status==='active'){
-          await refundMarket(mid);
-          await dbUpdate(`markets/${mid}`,{status:'locked',hidden:true});
+          try{
+            // Lock each market immediately
+            await dbUpdate(`markets/${mid}`,{status:'locked',hidden:true});
+          }catch(e){}
+        }
+      }
+      // Now process refunds for each locked market sequentially
+      for(const[mid,m]of Object.entries(markets)){
+        if(m.status==='active'||m._justLocked){
+          try{await refundMarketSilent(mid)}catch(e){}
         }
       }
     }
-    showToast('🚨 Panic executed — all markets locked and refunded','warn');renderAdmin();
+    // Release system lock after all refunds done
+    await dbSet('systemLocked',{locked:false});
+    showToast('🚨 Panic complete — all markets locked and refunded','warn');
+    renderAdmin();
   }catch(e){showToast('Partial failure: '+e.message,'error')}
+}
+
+async function refundMarketSilent(marketId){
+  const trades=await dbGet('trades');
+  if(!trades)return;
+  const marketTrades=Object.entries(trades).filter(([_,t])=>t.marketId===marketId&&t.status!=='sold');
+  for(const[tid,trade]of marketTrades){
+    try{
+      const user=await dbGet(`users/${trade.userId}`);
+      if(user)await dbUpdate(`users/${trade.userId}`,{balance:(user.balance||0)+trade.cost});
+    }catch(e){}
+  }
+  await dbUpdate(`markets/${marketId}`,{status:'refunded',hidden:true});
 }
 
 // ===================== HELPERS =====================
 window.deleteComment=deleteComment;
 window.reportComment=reportComment;
-window.selectVoteOption=function(opt,el){
-  document.querySelectorAll('.census-vote-option').forEach(e=>e.classList.remove('selected'));
-  el.classList.add('selected');
-};
+window.pinComment=pinComment;
+window.reactToMarket=reactToMarket;
+window.showMultiTradeModal=showMultiTradeModal;
+window.cancelLimitOrder=cancelLimitOrder;
 
 // ===================== START =====================
 init();
